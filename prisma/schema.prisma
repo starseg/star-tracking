@@ -18,6 +18,70 @@ model User {
   type      UserType @default(USER)
 }
 
+model IButton {
+  ibuttonId Int    @id @default(autoincrement())
+  number    String
+  comments  String
+  status    Status @default(ACTIVE)
+
+  driver Driver[]
+}
+
+model Tracker {
+  trackerId Int    @id @default(autoincrement())
+  number    String
+  comments  String
+  status    Status @default(ACTIVE)
+
+  vehicle Vehicle[]
+}
+
+model Fleet {
+  fleetId     Int    @id @default(autoincrement())
+  name        String
+  responsible String
+  contact     String
+  comments    String
+  status      Status @default(ACTIVE)
+
+  driver  Driver[]
+  vehicle Vehicle[]
+}
+
+model Driver {
+  driverId        Int    @id @default(autoincrement())
+  code            String
+  name            String
+  cpf             String
+  cnh             String
+  programmedField String
+  comments        String
+  status          Status @default(ACTIVE)
+
+  fleet   Fleet @relation(fields: [fleetId], references: [fleetId])
+  fleetId Int
+
+  ibutton   IButton @relation(fields: [ibuttonId], references: [ibuttonId])
+  ibuttonId Int
+}
+
+model Vehicle {
+  vehicleId        Int      @id @default(autoincrement())
+  model            String
+  licensePlate     String
+  renavam          String
+  chassis          String
+  year             String
+  installationDate DateTime
+  comments         String
+  status           Status   @default(ACTIVE)
+
+  fleet     Fleet   @relation(fields: [fleetId], references: [fleetId])
+  fleetId   Int
+  tracker   Tracker @relation(fields: [trackerId], references: [trackerId])
+  trackerId Int
+}
+
 enum Status {
   ACTIVE
   INACTIVE

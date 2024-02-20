@@ -15,10 +15,7 @@ export default function BackButton({ className }: ButtonProps) {
 
   return (
     <button
-      className={cn(
-        "hover:scale-110 transition ease-in text-slate-950",
-        className
-      )}
+      className={cn("hover:scale-110 transition ease-in", className)}
       onClick={goBack}
     >
       <ArrowLeft size={"2.5rem"} />

@@ -17,11 +17,12 @@ export async function POST(request: NextRequest) {
       const user = await prisma.user.findFirst({
         where: {
           username: data.username,
+          status: "ACTIVE",
         },
       });
       if (!user) {
         return Response.json(
-          { message: "Usuário não encontrado" },
+          { message: "Usuário não encontrado ou inativo" },
           { status: 401 }
         );
       }

@@ -19,7 +19,7 @@ async function createSessionToken(payload = {}) {
   cookies().set("session", session, {
     expires: (exp as number) * 1000,
     path: "/",
-    httpOnly: true, // apenas lado do servidor
+    httpOnly: false, // true para permitir apenas lado do servidor
   });
 }
 
@@ -38,11 +38,31 @@ function destroySession() {
   cookies().delete("session");
 }
 
+interface UserToken {
+  sub: number;
+  name: string;
+  exp: number;
+}
+async function getPayload() {
+  const token = cookies().get("session");
+  if (token) {
+    const payload = await AuthService.openSessionToken(token.value);
+    const user: UserToken = {
+      sub: Number(payload.sub),
+      name: payload.name as string,
+      exp: payload.exp as number,
+    };
+    return user;
+  }
+  return false;
+}
+
 const AuthService = {
   openSessionToken,
   createSessionToken,
   isSessionValid,
   destroySession,
+  getPayload,
 };
 
 export default AuthService;

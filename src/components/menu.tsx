@@ -18,7 +18,7 @@ export function Menu({ url = "" }: { url?: string }) {
       {url === "" ? (
         <BackButton />
       ) : url === "x" ? (
-        ""
+        <div></div>
       ) : (
         <Link href={`${url}`}>
           <ArrowLeft size={"2.5rem"} />
@@ -44,7 +44,7 @@ export function Menu({ url = "" }: { url?: string }) {
               href="/api/logout"
               className="flex items-center justify-center gap-2"
             >
-              <SignOut /> Sair
+              <SignOut size={24} /> Sair
             </Link>
           </DropdownMenuItem>
         </DropdownMenuContent>

@@ -26,6 +26,7 @@ import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import { InputPassword } from "./input-password";
 import "react-toastify/dist/ReactToastify.css";
+import Image from "next/image";
 
 const FormSchema = z.object({
   username: z.string().min(5, {
@@ -53,7 +54,7 @@ export function LoginForm() {
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 401) {
-        toast.error("Login incorreto", {
+        toast.error(error.response.data.message, {
           position: "bottom-center",
           autoClose: 3000,
           hideProgressBar: false,
@@ -73,9 +74,14 @@ export function LoginForm() {
     <>
       <ToastContainer />
       <Card className="w-[300px] md:w-[400px] border-yellow-600">
-        <CardHeader className="flex flex-col items-center my-2">
-          <CardTitle>Entrar</CardTitle>
-          <CardDescription>Acesse sua conta.</CardDescription>
+        <CardHeader className="flex flex-col items-center mt-2">
+          <Image
+            src="/logo.svg"
+            alt="Logo"
+            height={45}
+            width={237}
+            priority={true}
+          />
         </CardHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
