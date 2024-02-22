@@ -16,32 +16,41 @@ model User {
   updatedAt DateTime @updatedAt
   status    Status   @default(ACTIVE)
   type      UserType @default(USER)
+
+  ComunicationDescription ComunicationDescription[]
 }
 
 model IButton {
-  ibuttonId Int    @id @default(autoincrement())
-  number    String
-  comments  String
-  status    Status @default(ACTIVE)
+  ibuttonId       Int    @id @default(autoincrement())
+  number          String
+  code            String
+  programmedField Int
+  comments        String
+  status          Status @default(ACTIVE)
 
-  driver Driver[]
+  driverIButton DriverIButton[]
 }
 
 model Tracker {
-  trackerId Int    @id @default(autoincrement())
-  number    String
-  comments  String
-  status    Status @default(ACTIVE)
+  trackerId    Int    @id @default(autoincrement())
+  number       String
+  model        String
+  chipOperator String
+  iccid        String
+  output       String
+  comments     String
+  status       Status @default(ACTIVE)
 
-  vehicle Vehicle[]
+  vehicleTracker VehicleTracker[]
 }
 
 model Fleet {
   fleetId     Int    @id @default(autoincrement())
   name        String
   responsible String
-  contact     String
-  comments    String
+  telephone   String
+  email       String
+  color       String
   status      Status @default(ACTIVE)
 
   driver  Driver[]
@@ -49,26 +58,24 @@ model Fleet {
 }
 
 model Driver {
-  driverId        Int    @id @default(autoincrement())
-  code            String
-  name            String
-  cpf             String
-  cnh             String
-  programmedField String
-  comments        String
-  status          Status @default(ACTIVE)
+  driverId Int    @id @default(autoincrement())
+  name     String
+  cpf      String
+  cnh      String
+  comments String
+  status   Status @default(ACTIVE)
 
   fleet   Fleet @relation(fields: [fleetId], references: [fleetId])
   fleetId Int
 
-  ibutton   IButton @relation(fields: [ibuttonId], references: [ibuttonId])
-  ibuttonId Int
+  driverIButton DriverIButton[]
 }
 
 model Vehicle {
   vehicleId        Int      @id @default(autoincrement())
   model            String
   licensePlate     String
+  code             String
   renavam          String
   chassis          String
   year             String
@@ -76,8 +83,58 @@ model Vehicle {
   comments         String
   status           Status   @default(ACTIVE)
 
-  fleet     Fleet   @relation(fields: [fleetId], references: [fleetId])
-  fleetId   Int
+  fleet   Fleet @relation(fields: [fleetId], references: [fleetId])
+  fleetId Int
+
+  vehicleTracker      VehicleTracker[]
+  comunicationProblem ComunicationProblem[]
+}
+
+model ComunicationProblem {
+  comunicationProblemId Int      @id @default(autoincrement())
+  createdAt             DateTime @default(now())
+  status                Status   @default(ACTIVE)
+
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [vehicleId], onDelete: Cascade)
+  vehicleId Int
+
+  comunicationDescription ComunicationDescription[]
+}
+
+model ComunicationDescription {
+  comunicationDescriptionId Int      @id @default(autoincrement())
+  date                      DateTime
+  description               String
+
+  user   User @relation(fields: [userId], references: [userId])
+  userId Int
+
+  comunicationProblem   ComunicationProblem @relation(fields: [comunicationProblemId], references: [comunicationProblemId], onDelete: Cascade)
+  comunicationProblemId Int
+}
+
+model DriverIButton {
+  driverIButtonId Int      @id @default(autoincrement())
+  status          Status   @default(ACTIVE)
+  startDate       DateTime @default(now())
+  endDate         DateTime
+
+  driver   Driver @relation(fields: [driverId], references: [driverId])
+  driverId Int
+
+  ibutton   IButton @relation(fields: [ibuttonId], references: [ibuttonId])
+  ibuttonId Int
+}
+
+model VehicleTracker {
+  vehicleTrackerId Int      @id @default(autoincrement())
+  status           Status   @default(ACTIVE)
+  startDate        DateTime @default(now())
+  endDate          DateTime
+
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [vehicleId])
+  vehicleId Int
+
   tracker   Tracker @relation(fields: [trackerId], references: [trackerId])
   trackerId Int
 }

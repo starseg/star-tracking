@@ -5,7 +5,13 @@ export const config = {
   matcher: "/((?!_next/static|_next/image|favicon.ico).*)",
 };
 
-const publicRoutes = ["/", "/login", "/api/users/login", "/api/users/signup"];
+const publicRoutes = [
+  "/",
+  "/logo.svg",
+  "/login",
+  "/api/users/login",
+  "/api/users/signup",
+];
 
 export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
