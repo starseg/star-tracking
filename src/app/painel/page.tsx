@@ -15,7 +15,7 @@ export default function Home() {
     <>
       <Menu url="x" />
       <main className="max-w-screen-lg mx-auto">
-        <h1 className="text-4xl flex gap-2 items-center mb-8 hover:animate-bounce hover:text-primary transition-all">
+        <h1 className="text-4xl flex gap-2 items-center mb-8 px-2 hover:animate-bounce hover:text-primary transition-all">
           <Footprints weight="fill" /> Rastreamento
         </h1>
         <div className="flex gap-16 flex-wrap items-center justify-center">

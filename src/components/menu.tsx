@@ -27,8 +27,8 @@ export function Menu({ url = "" }: { url?: string }) {
       <Image
         src="/logo.svg"
         alt="Logo Star Tracking"
-        width={356}
-        height={68}
+        width={352}
+        height={46}
         priority={true}
         className="max-w-[80%] hidden md:block"
       />
