@@ -20,6 +20,7 @@ import {
 import api from "@/lib/axios";
 import { cn } from "@/lib/utils";
 import Swal from "sweetalert2";
+import ColorItem from "./color-item";
 
 // const [fieldColor, setFieldColor] = useState("bg-[#ffff11]");
 //   setFieldColor(`bg-[${data.color}]`);
@@ -29,11 +30,12 @@ import Swal from "sweetalert2";
 export default function FleetTable() {
   // busca das frotas
   const [fleets, setFleets] = useState<Fleet[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const fetch = async () => {
     try {
       const response = await api.get("fleet");
       setFleets(response.data);
-      console.log(response.data);
+      setIsLoading(false);
     } catch (error) {
       console.error("Erro ao obter dados:", error);
     }
@@ -55,7 +57,12 @@ export default function FleetTable() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await api.delete("fleet");
+          console.log("TESTE");
+
+          const res = await api.delete("fleet", {
+            data: id,
+          });
+          console.log(res);
           fetch();
           Swal.fire({
             title: "Excluído!",
@@ -71,56 +78,62 @@ export default function FleetTable() {
 
   return (
     <div>
-      <Table className="max-h-[60vh] overflow-x-auto border border-stone-800 rouded-lg">
-        <TableHeader className="bg-stone-800 font-semibold">
-          <TableRow>
-            <TableHead>Nome</TableHead>
-            <TableHead>Responsável</TableHead>
-            <TableHead>Telefone</TableHead>
-            <TableHead>E-mail</TableHead>
-            <TableHead>Ações</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {fleets.map((fleet) => {
-            const color = `bg-[${fleet.color}]`;
-            return (
-              <TableRow key={fleet.fleetId}>
-                <TableCell className="flex items-center gap-2">
-                  <div
-                    className={`bg-[${fleet.color}] border h-6 w-6 rounded-full mr-4`}
-                  ></div>
-                  {fleet.name}
-                </TableCell>
-                <TableCell>{fleet.responsible}</TableCell>
-                <TableCell>{fleet.telephone}</TableCell>
-                <TableCell>{fleet.email}</TableCell>
-                <TableCell className="flex gap-4 text-2xl">
-                  <Link href={`/veiculos?query=${fleet.fleetId}`}>
-                    <Car />
-                  </Link>
-                  <Link href={`/frotas/atualizar?id=${fleet.fleetId}`}>
-                    <PencilLine />
-                  </Link>
-                  <button
-                    title="Excluir"
-                    onClick={() => deleteFleet(fleet.fleetId)}
-                  >
-                    <Trash />
-                  </button>
-                </TableCell>
+      {isLoading ? (
+        <div className="w-full mt-16 flex items-center justify-center">
+          carregando...
+        </div>
+      ) : (
+        <div>
+          <Table className="max-h-[60vh] overflow-x-auto border border-stone-800 rouded-lg">
+            <TableHeader className="bg-stone-800 font-semibold">
+              <TableRow>
+                <TableHead>Nome</TableHead>
+                <TableHead>Responsável</TableHead>
+                <TableHead>Telefone</TableHead>
+                <TableHead>E-mail</TableHead>
+                <TableHead>Ações</TableHead>
               </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-      <div className="mt-8">
-        <Link href="frotas/registro">
-          <Button className="flex gap-2 font-semibold">
-            <FilePlus size={24} /> Registrar nova
-          </Button>
-        </Link>
-      </div>
+            </TableHeader>
+            <TableBody>
+              {fleets.map((fleet) => {
+                const color = `bg-[${fleet.color}]`;
+                return (
+                  <TableRow key={fleet.fleetId}>
+                    <TableCell className={`flex items-center gap-2`}>
+                      <ColorItem color={fleet.color} />
+                      {fleet.name}
+                    </TableCell>
+                    <TableCell>{fleet.responsible}</TableCell>
+                    <TableCell>{fleet.telephone}</TableCell>
+                    <TableCell>{fleet.email}</TableCell>
+                    <TableCell className="flex gap-4 text-2xl">
+                      <Link href={`/veiculos?query=${fleet.fleetId}`}>
+                        <Car />
+                      </Link>
+                      <Link href={`/frotas/atualizar?id=${fleet.fleetId}`}>
+                        <PencilLine />
+                      </Link>
+                      <button
+                        title="Excluir"
+                        onClick={() => deleteFleet(fleet.fleetId)}
+                      >
+                        <Trash />
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+          <div className="mt-8">
+            <Link href="frotas/registro">
+              <Button className="flex gap-2 font-semibold">
+                <FilePlus size={24} /> Registrar nova
+              </Button>
+            </Link>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
