@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Fleet } from "@prisma/client";
+import { IButton } from "@prisma/client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,13 +19,19 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import api from "@/lib/axios";
 import Swal from "sweetalert2";
-import ColorItem from "./color-item";
 import { useSearchParams } from "next/navigation";
 import { SkeletonTable } from "@/components/skeletons/skeleton-table";
 
-export default function FleetTable() {
+interface IButtonProps extends IButton {
+  ibuttonStatus: {
+    ibuttonStatusId: number;
+    description: string;
+  };
+}
+
+export default function IButtonTable() {
   // busca das frotas
-  const [fleets, setFleets] = useState<Fleet[]>([]);
+  const [IButtons, setIButtons] = useState<IButtonProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const searchParams = useSearchParams();
@@ -34,10 +40,10 @@ export default function FleetTable() {
   const fetch = async () => {
     try {
       let path;
-      if (!params.get("query")) path = "fleet";
-      else path = `fleet?query=${params.get("query")}`;
+      if (!params.get("query")) path = "ibutton";
+      else path = `ibutton?query=${params.get("query")}`;
       const response = await api.get(path);
-      setFleets(response.data);
+      setIButtons(response.data);
       setIsLoading(false);
     } catch (error) {
       console.error("Erro ao obter dados:", error);
@@ -47,9 +53,9 @@ export default function FleetTable() {
     fetch();
   }, [searchParams]);
   // deletar frota
-  const deleteFleet = async (id: number) => {
+  const deleteIButton = async (id: number) => {
     Swal.fire({
-      title: "Excluir data?",
+      title: "Excluir IButton?",
       text: "Essa ação não poderá ser revertida!",
       icon: "warning",
       showCancelButton: true,
@@ -60,11 +66,11 @@ export default function FleetTable() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await api.delete(`fleet/${id}`);
+          await api.delete(`ibutton/${id}`);
           fetch();
           Swal.fire({
             title: "Excluído!",
-            text: "Essa frota acabou de ser apagada.",
+            text: "Esse IButton acabou de ser apagado.",
             icon: "success",
           });
         } catch (error) {
@@ -83,43 +89,40 @@ export default function FleetTable() {
           <Table className="max-h-[60vh] overflow-x-auto border border-stone-800">
             <TableHeader className="bg-stone-800 font-semibold">
               <TableRow>
-                <TableHead>Nome</TableHead>
-                <TableHead>Responsável</TableHead>
-                <TableHead>Telefone</TableHead>
-                <TableHead>E-mail</TableHead>
+                <TableHead>ID</TableHead>
+                <TableHead>Número</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Código</TableHead>
+                <TableHead>Campo prog.</TableHead>
+                <TableHead>Observação</TableHead>
                 <TableHead>Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {fleets.length > 0 ? (
-                fleets.map((fleet) => {
+              {IButtons.length > 0 ? (
+                IButtons.map((IButton) => {
                   return (
-                    <TableRow key={fleet.fleetId}>
-                      <TableCell className="flex items-center gap-2">
-                        <ColorItem color={fleet.color} />
-                        {fleet.name}
-                      </TableCell>
-                      <TableCell>{fleet.responsible}</TableCell>
-                      <TableCell>{fleet.telephone}</TableCell>
-                      <TableCell>{fleet.email}</TableCell>
+                    <TableRow key={IButton.ibuttonId}>
+                      <TableCell>{IButton.ibuttonId}</TableCell>
+                      <TableCell>{IButton.number}</TableCell>
+                      <TableCell>{IButton.ibuttonStatus.description}</TableCell>
+                      <TableCell>{IButton.code}</TableCell>
+                      <TableCell>{IButton.programmedField}</TableCell>
                       <TableCell>
-                        {fleet.status === "ACTIVE" ? (
-                          <p className="text-green-400">ATIVA</p>
-                        ) : (
-                          <p className="text-red-400">INATIVA</p>
-                        )}
+                        {IButton.comments ? IButton.comments : "Nenhuma"}
                       </TableCell>
                       <TableCell className="flex gap-4 text-2xl">
-                        <Link href={`/veiculos?frota=${fleet.fleetId}`}>
+                        <Link href={`/motoristas?ibutton=${IButton.ibuttonId}`}>
                           <Car />
                         </Link>
-                        <Link href={`/frotas/atualizar?id=${fleet.fleetId}`}>
+                        <Link
+                          href={`/ibuttons/atualizar?id=${IButton.ibuttonId}`}
+                        >
                           <PencilLine />
                         </Link>
                         <button
                           title="Excluir"
-                          onClick={() => deleteFleet(fleet.fleetId)}
+                          onClick={() => deleteIButton(IButton.ibuttonId)}
                         >
                           <Trash />
                         </button>
@@ -129,7 +132,7 @@ export default function FleetTable() {
                 })
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center">
+                  <TableCell colSpan={7} className="h-24 text-center">
                     Nenhum resultado encontrado.
                   </TableCell>
                 </TableRow>
@@ -137,13 +140,13 @@ export default function FleetTable() {
             </TableBody>
           </Table>
           <div className="mt-8 flex justify-between">
-            <Link href="frotas/registro">
+            <Link href="ibuttons/registro">
               <Button className="flex gap-2 font-semibold">
-                <FilePlus size={24} /> Registrar nova
+                <FilePlus size={24} /> Registrar novo
               </Button>
             </Link>
             <div className="py-2 px-6 rounded-md bg-muted">
-              Total: {fleets.length}
+              Total: {IButtons.length}
             </div>
           </div>
         </div>

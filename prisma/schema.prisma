@@ -10,7 +10,7 @@ datasource db {
 model User {
   userId    Int      @id @default(autoincrement())
   name      String
-  username  String
+  username  String   @unique
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -21,14 +21,23 @@ model User {
 }
 
 model IButton {
-  ibuttonId       Int    @id @default(autoincrement())
+  ibuttonId       Int     @id @default(autoincrement())
   number          String
   code            String
-  programmedField Int
-  comments        String
-  status          Status @default(ACTIVE)
+  programmedField String
+  comments        String?
+
+  ibuttonStatus   IButtonStatus @relation(fields: [ibuttonStatusId], references: [ibuttonStatusId])
+  ibuttonStatusId Int           @default(1)
 
   driverIButton DriverIButton[]
+}
+
+model IButtonStatus {
+  ibuttonStatusId Int    @id @default(autoincrement())
+  description     String
+
+  ibutton IButton[]
 }
 
 model Tracker {
@@ -60,7 +69,7 @@ model Fleet {
 model Driver {
   driverId Int    @id @default(autoincrement())
   name     String
-  cpf      String
+  cpf      String @unique
   cnh      String
   comments String
   status   Status @default(ACTIVE)
@@ -74,7 +83,7 @@ model Driver {
 model Vehicle {
   vehicleId        Int      @id @default(autoincrement())
   model            String
-  licensePlate     String
+  licensePlate     String   @unique
   code             String
   renavam          String
   chassis          String

@@ -1,13 +1,35 @@
 -- CreateTable
+CREATE TABLE `User` (
+    `userId` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(191) NOT NULL,
+    `username` VARCHAR(191) NOT NULL,
+    `password` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `status` ENUM('ACTIVE', 'INACTIVE') NOT NULL DEFAULT 'ACTIVE',
+    `type` ENUM('USER', 'ADMIN') NOT NULL DEFAULT 'USER',
+
+    PRIMARY KEY (`userId`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `IButton` (
     `ibuttonId` INTEGER NOT NULL AUTO_INCREMENT,
     `number` VARCHAR(191) NOT NULL,
     `code` VARCHAR(191) NOT NULL,
-    `programmedField` INTEGER NOT NULL,
-    `comments` VARCHAR(191) NOT NULL,
-    `status` ENUM('ACTIVE', 'INACTIVE') NOT NULL DEFAULT 'ACTIVE',
+    `programmedField` VARCHAR(191) NOT NULL,
+    `comments` VARCHAR(191) NULL,
+    `ibuttonStatusId` INTEGER NOT NULL DEFAULT 1,
 
     PRIMARY KEY (`ibuttonId`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `IButtonStatus` (
+    `ibuttonStatusId` INTEGER NOT NULL AUTO_INCREMENT,
+    `description` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`ibuttonStatusId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -111,6 +133,9 @@ CREATE TABLE `VehicleTracker` (
 
     PRIMARY KEY (`vehicleTrackerId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `IButton` ADD CONSTRAINT `IButton_ibuttonStatusId_fkey` FOREIGN KEY (`ibuttonStatusId`) REFERENCES `IButtonStatus`(`ibuttonStatusId`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Driver` ADD CONSTRAINT `Driver_fleetId_fkey` FOREIGN KEY (`fleetId`) REFERENCES `Fleet`(`fleetId`) ON DELETE RESTRICT ON UPDATE CASCADE;
