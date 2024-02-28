@@ -9,7 +9,6 @@ import {
   TableHead,
   TableBody,
   TableCell,
-  TableFooter,
 } from "@/components/ui/table";
 import {
   Car,
@@ -111,7 +110,7 @@ export default function FleetTable() {
                         )}
                       </TableCell>
                       <TableCell className="flex gap-4 text-2xl">
-                        <Link href={`/veiculos?frota=${fleet.fleetId}`}>
+                        <Link href={`/veiculos?query=${fleet.fleetId}`}>
                           <Car />
                         </Link>
                         <Link href={`/frotas/atualizar?id=${fleet.fleetId}`}>

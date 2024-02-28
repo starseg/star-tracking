@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { IButton } from "@prisma/client";
+import { Tracker } from "@prisma/client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,6 +11,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import {
+  Car,
   FilePlus,
   PencilLine,
   Person,
@@ -21,16 +22,9 @@ import Swal from "sweetalert2";
 import { useSearchParams } from "next/navigation";
 import { SkeletonTable } from "@/components/skeletons/skeleton-table";
 
-interface IButtonProps extends IButton {
-  ibuttonStatus: {
-    ibuttonStatusId: number;
-    description: string;
-  };
-}
-
-export default function IButtonTable() {
+export default function TrackerTable() {
   // busca das frotas
-  const [IButtons, setIButtons] = useState<IButtonProps[]>([]);
+  const [trackers, setTrackers] = useState<Tracker[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const searchParams = useSearchParams();
@@ -39,10 +33,10 @@ export default function IButtonTable() {
   const fetch = async () => {
     try {
       let path;
-      if (!params.get("query")) path = "ibutton";
-      else path = `ibutton?query=${params.get("query")}`;
+      if (!params.get("query")) path = "tracker";
+      else path = `tracker?query=${params.get("query")}`;
       const response = await api.get(path);
-      setIButtons(response.data);
+      setTrackers(response.data);
       setIsLoading(false);
     } catch (error) {
       console.error("Erro ao obter dados:", error);
@@ -52,9 +46,9 @@ export default function IButtonTable() {
     fetch();
   }, [searchParams]);
   // deletar frota
-  const deleteIButton = async (id: number) => {
+  const deleteTracker = async (id: number) => {
     Swal.fire({
-      title: "Excluir IButton?",
+      title: "Excluir rastreador?",
       text: "Essa ação não poderá ser revertida!",
       icon: "warning",
       showCancelButton: true,
@@ -65,11 +59,11 @@ export default function IButtonTable() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await api.delete(`ibutton/${id}`);
+          await api.delete(`tracker/${id}`);
           fetch();
           Swal.fire({
             title: "Excluído!",
-            text: "Esse IButton acabou de ser apagado.",
+            text: "Esse rastreador acabou de ser apagado.",
             icon: "success",
           });
         } catch (error) {
@@ -90,38 +84,48 @@ export default function IButtonTable() {
               <TableRow>
                 <TableHead>ID</TableHead>
                 <TableHead>Número</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Código</TableHead>
-                <TableHead>Campo prog.</TableHead>
+                <TableHead>Modelo</TableHead>
+                <TableHead>Operadora</TableHead>
+                <TableHead>ICCID</TableHead>
+                <TableHead>Saída</TableHead>
                 <TableHead>Observação</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead>Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {IButtons.length > 0 ? (
-                IButtons.map((IButton) => {
+              {trackers.length > 0 ? (
+                trackers.map((tracker) => {
                   return (
-                    <TableRow key={IButton.ibuttonId}>
-                      <TableCell>{IButton.ibuttonId}</TableCell>
-                      <TableCell>{IButton.number}</TableCell>
-                      <TableCell>{IButton.ibuttonStatus.description}</TableCell>
-                      <TableCell>{IButton.code}</TableCell>
-                      <TableCell>{IButton.programmedField}</TableCell>
+                    <TableRow key={tracker.trackerId}>
+                      <TableCell>{tracker.trackerId}</TableCell>
+                      <TableCell>{tracker.number}</TableCell>
+                      <TableCell>{tracker.model}</TableCell>
+                      <TableCell>{tracker.chipOperator}</TableCell>
+                      <TableCell>{tracker.iccid}</TableCell>
+                      <TableCell>{tracker.output}</TableCell>
                       <TableCell>
-                        {IButton.comments ? IButton.comments : "Nenhuma"}
+                        {tracker.comments ? tracker.comments : "Nenhuma"}
+                      </TableCell>
+                      <TableCell>
+                        {tracker.status === "ACTIVE" ? (
+                          <p className="text-green-400">ATIVO</p>
+                        ) : (
+                          <p className="text-red-400">INATIVO</p>
+                        )}
                       </TableCell>
                       <TableCell className="flex gap-4 text-2xl">
-                        <Link href={`/motoristas?query=${IButton.ibuttonId}`}>
-                          <Person />
+                        <Link href={`/veiculos?query=${tracker.trackerId}`}>
+                          <Car />
                         </Link>
                         <Link
-                          href={`/ibuttons/atualizar?id=${IButton.ibuttonId}`}
+                          href={`/rastreadores/atualizar?id=${tracker.trackerId}`}
                         >
                           <PencilLine />
                         </Link>
                         <button
                           title="Excluir"
-                          onClick={() => deleteIButton(IButton.ibuttonId)}
+                          onClick={() => deleteTracker(tracker.trackerId)}
                         >
                           <Trash />
                         </button>
@@ -131,7 +135,7 @@ export default function IButtonTable() {
                 })
               ) : (
                 <TableRow>
-                  <TableCell colSpan={7} className="h-24 text-center">
+                  <TableCell colSpan={9} className="h-24 text-center">
                     Nenhum resultado encontrado.
                   </TableCell>
                 </TableRow>
@@ -139,13 +143,13 @@ export default function IButtonTable() {
             </TableBody>
           </Table>
           <div className="mt-8 flex justify-between">
-            <Link href="ibuttons/registro">
+            <Link href="rastreadores/registro">
               <Button className="flex gap-2 font-semibold">
                 <FilePlus size={24} /> Registrar novo
               </Button>
             </Link>
             <div className="py-2 px-6 rounded-md bg-muted">
-              Total: {IButtons.length}
+              Total: {trackers.length}
             </div>
           </div>
         </div>
