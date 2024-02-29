@@ -111,7 +111,9 @@ export default function IButtonTable() {
                         {IButton.comments ? IButton.comments : "Nenhuma"}
                       </TableCell>
                       <TableCell className="flex gap-4 text-2xl">
-                        <Link href={`/motoristas?query=${IButton.ibuttonId}`}>
+                        <Link
+                          href={`/motoristas-ibuttons?query=${IButton.code}`}
+                        >
                           <Person />
                         </Link>
                         <Link
