@@ -28,8 +28,8 @@ export async function GET(request: NextRequest) {
   let ibuttons;
   if (!query) {
     ibuttons = await prisma.iButton.findMany({
-      include: { ibuttonStatus: true },
-      orderBy: [{ ibuttonStatusId: "asc" }, { ibuttonId: "asc" }],
+      include: { deviceStatus: true },
+      orderBy: [{ deviceStatusId: "asc" }, { ibuttonId: "asc" }],
     });
   } else {
     ibuttons = await prisma.iButton.findMany({
@@ -39,10 +39,11 @@ export async function GET(request: NextRequest) {
           { code: { contains: query as string } },
           { programmedField: { contains: query as string } },
           { comments: { contains: query as string } },
+          { deviceStatus: { description: { contains: query as string } } },
         ],
       },
-      include: { ibuttonStatus: true },
-      orderBy: [{ ibuttonStatusId: "asc" }, { ibuttonId: "asc" }],
+      include: { deviceStatus: true },
+      orderBy: [{ deviceStatusId: "asc" }, { ibuttonId: "asc" }],
     });
   }
   return NextResponse.json(ibuttons);

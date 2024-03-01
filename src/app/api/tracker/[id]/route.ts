@@ -53,7 +53,7 @@ export async function PUT(
           chipOperator: data.chipOperator,
           iccid: data.iccid,
           output: data.output,
-          status: data.status,
+          deviceStatusId: Number(data.deviceStatusId),
           comments: data.comments,
         },
       });

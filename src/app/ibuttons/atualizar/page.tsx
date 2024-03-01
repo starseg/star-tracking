@@ -3,7 +3,7 @@ import Loading from "@/components/loading";
 import { Menu } from "@/components/menu";
 import api from "@/lib/axios";
 import IButtonUpdateForm from "@/modules/ibuttons/ibutton-update-form";
-import { IButton, IButtonStatus } from "@prisma/client";
+import { IButton, DeviceStatus } from "@prisma/client";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -12,14 +12,12 @@ interface Values {
   code: string;
   programmedField: string;
   comments: string;
-  ibuttonStatusId: number;
+  deviceStatusId: number;
 }
 
 export default function UpdateIButton() {
   const [ibutton, setIButton] = useState<IButton | null>(null);
-  const [ibuttonStatus, setIButtonStatus] = useState<IButtonStatus[] | null>(
-    null
-  );
+  const [deviceStatus, setDeviceStatus] = useState<DeviceStatus[] | null>(null);
   const [values, setValues] = useState<Values>();
 
   const searchParams = useSearchParams();
@@ -35,8 +33,8 @@ export default function UpdateIButton() {
   };
   const status = async () => {
     try {
-      const response = await api.get("ibutton/status");
-      setIButtonStatus(response.data);
+      const response = await api.get("deviceStatus");
+      setDeviceStatus(response.data);
     } catch (error) {
       console.error("Erro ao obter dados:", error);
     }
@@ -54,7 +52,7 @@ export default function UpdateIButton() {
         code: ibutton?.code || "",
         programmedField: ibutton?.programmedField || "",
         comments: ibutton?.comments || "",
-        ibuttonStatusId: ibutton?.ibuttonStatusId || 1,
+        deviceStatusId: ibutton?.deviceStatusId || 1,
       });
     }
   }, [ibutton]);
@@ -64,11 +62,11 @@ export default function UpdateIButton() {
       <Menu />
       <section className="flex flex-col justify-center items-center mb-12">
         <h1 className="text-4xl mt-2 mb-4">Atualizar I Button</h1>
-        {values && ibuttonStatus ? (
+        {values && deviceStatus ? (
           <IButtonUpdateForm
             preloadedValues={values}
             id={id}
-            status={ibuttonStatus}
+            status={deviceStatus}
           />
         ) : (
           <Loading />

@@ -22,8 +22,8 @@ import { useSearchParams } from "next/navigation";
 import { SkeletonTable } from "@/components/skeletons/skeleton-table";
 
 interface IButtonProps extends IButton {
-  ibuttonStatus: {
-    ibuttonStatusId: number;
+  deviceStatus: {
+    deviceStatusId: number;
     description: string;
   };
 }
@@ -84,62 +84,66 @@ export default function IButtonTable() {
       {isLoading ? (
         <SkeletonTable />
       ) : (
-        <div>
-          <Table className="max-h-[60vh] overflow-x-auto border border-stone-800">
-            <TableHeader className="bg-stone-800 font-semibold">
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Número</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Código</TableHead>
-                <TableHead>Campo prog.</TableHead>
-                <TableHead>Observação</TableHead>
-                <TableHead>Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {IButtons.length > 0 ? (
-                IButtons.map((IButton) => {
-                  return (
-                    <TableRow key={IButton.ibuttonId}>
-                      <TableCell>{IButton.ibuttonId}</TableCell>
-                      <TableCell>{IButton.number}</TableCell>
-                      <TableCell>{IButton.ibuttonStatus.description}</TableCell>
-                      <TableCell>{IButton.code}</TableCell>
-                      <TableCell>{IButton.programmedField}</TableCell>
-                      <TableCell>
-                        {IButton.comments ? IButton.comments : "Nenhuma"}
-                      </TableCell>
-                      <TableCell className="flex gap-4 text-2xl">
-                        <Link
-                          href={`/motoristas-ibuttons?query=${IButton.code}`}
-                        >
-                          <Person />
-                        </Link>
-                        <Link
-                          href={`/ibuttons/atualizar?id=${IButton.ibuttonId}`}
-                        >
-                          <PencilLine />
-                        </Link>
-                        <button
-                          title="Excluir"
-                          onClick={() => deleteIButton(IButton.ibuttonId)}
-                        >
-                          <Trash />
-                        </button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              ) : (
+        <>
+          <div className="max-h-[60vh] overflow-x-auto">
+            <Table className="border border-stone-800">
+              <TableHeader className="bg-stone-800 font-semibold">
                 <TableRow>
-                  <TableCell colSpan={7} className="h-24 text-center">
-                    Nenhum resultado encontrado.
-                  </TableCell>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Número</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Código</TableHead>
+                  <TableHead>Campo prog.</TableHead>
+                  <TableHead>Observação</TableHead>
+                  <TableHead>Ações</TableHead>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {IButtons.length > 0 ? (
+                  IButtons.map((IButton) => {
+                    return (
+                      <TableRow key={IButton.ibuttonId}>
+                        <TableCell>{IButton.ibuttonId}</TableCell>
+                        <TableCell>{IButton.number}</TableCell>
+                        <TableCell>
+                          {IButton.deviceStatus.description}
+                        </TableCell>
+                        <TableCell>{IButton.code}</TableCell>
+                        <TableCell>{IButton.programmedField}</TableCell>
+                        <TableCell>
+                          {IButton.comments ? IButton.comments : "Nenhuma"}
+                        </TableCell>
+                        <TableCell className="flex gap-4 text-2xl">
+                          <Link
+                            href={`/motoristas-ibuttons?query=${IButton.code}`}
+                          >
+                            <Person />
+                          </Link>
+                          <Link
+                            href={`/ibuttons/atualizar?id=${IButton.ibuttonId}`}
+                          >
+                            <PencilLine />
+                          </Link>
+                          <button
+                            title="Excluir"
+                            onClick={() => deleteIButton(IButton.ibuttonId)}
+                          >
+                            <Trash />
+                          </button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={7} className="h-24 text-center">
+                      Nenhum resultado encontrado.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
           <div className="mt-8 flex justify-between">
             <Link href="ibuttons/registro">
               <Button className="flex gap-2 font-semibold">
@@ -150,7 +154,7 @@ export default function IButtonTable() {
               Total: {IButtons.length}
             </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

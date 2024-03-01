@@ -52,7 +52,7 @@ export async function PUT(
           code: data.code,
           programmedField: data.programmedField,
           comments: data.comments,
-          ibuttonStatusId: Number(data.ibuttonStatusId),
+          deviceStatusId: Number(data.deviceStatusId),
         },
       });
       return NextResponse.json({ data }, { status: 200 });

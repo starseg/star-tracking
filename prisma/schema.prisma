@@ -20,6 +20,14 @@ model User {
   ComunicationDescription ComunicationDescription[]
 }
 
+model DeviceStatus {
+  deviceStatusId Int    @id @default(autoincrement())
+  description    String
+
+  ibutton IButton[]
+  tracker Tracker[]
+}
+
 model IButton {
   ibuttonId       Int     @id @default(autoincrement())
   number          String
@@ -27,17 +35,10 @@ model IButton {
   programmedField String
   comments        String?
 
-  ibuttonStatus   IButtonStatus @relation(fields: [ibuttonStatusId], references: [ibuttonStatusId])
-  ibuttonStatusId Int           @default(1)
+  deviceStatus   DeviceStatus @relation(fields: [deviceStatusId], references: [deviceStatusId])
+  deviceStatusId Int          @default(1)
 
   driverIButton DriverIButton[]
-}
-
-model IButtonStatus {
-  ibuttonStatusId Int    @id @default(autoincrement())
-  description     String
-
-  ibutton IButton[]
 }
 
 model Tracker {
@@ -48,7 +49,9 @@ model Tracker {
   iccid        String
   output       String
   comments     String
-  status       Status @default(ACTIVE)
+
+  deviceStatus   DeviceStatus @relation(fields: [deviceStatusId], references: [deviceStatusId])
+  deviceStatusId Int          @default(1)
 
   vehicleTracker VehicleTracker[]
 }

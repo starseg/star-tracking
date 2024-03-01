@@ -22,9 +22,16 @@ import Swal from "sweetalert2";
 import { useSearchParams } from "next/navigation";
 import { SkeletonTable } from "@/components/skeletons/skeleton-table";
 
+interface TrackerProps extends Tracker {
+  deviceStatus: {
+    deviceStatusId: number;
+    description: string;
+  };
+}
+
 export default function TrackerTable() {
   // busca das frotas
-  const [trackers, setTrackers] = useState<Tracker[]>([]);
+  const [trackers, setTrackers] = useState<TrackerProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const searchParams = useSearchParams();
@@ -78,70 +85,68 @@ export default function TrackerTable() {
       {isLoading ? (
         <SkeletonTable />
       ) : (
-        <div>
-          <Table className="max-h-[60vh] overflow-x-auto border border-stone-800">
-            <TableHeader className="bg-stone-800 font-semibold">
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Número</TableHead>
-                <TableHead>Modelo</TableHead>
-                <TableHead>Operadora</TableHead>
-                <TableHead>ICCID</TableHead>
-                <TableHead>Saída</TableHead>
-                <TableHead>Observação</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {trackers.length > 0 ? (
-                trackers.map((tracker) => {
-                  return (
-                    <TableRow key={tracker.trackerId}>
-                      <TableCell>{tracker.trackerId}</TableCell>
-                      <TableCell>{tracker.number}</TableCell>
-                      <TableCell>{tracker.model}</TableCell>
-                      <TableCell>{tracker.chipOperator}</TableCell>
-                      <TableCell>{tracker.iccid}</TableCell>
-                      <TableCell>{tracker.output}</TableCell>
-                      <TableCell>
-                        {tracker.comments ? tracker.comments : "Nenhuma"}
-                      </TableCell>
-                      <TableCell>
-                        {tracker.status === "ACTIVE" ? (
-                          <p className="text-green-400">ATIVO</p>
-                        ) : (
-                          <p className="text-red-400">INATIVO</p>
-                        )}
-                      </TableCell>
-                      <TableCell className="flex gap-4 text-2xl">
-                        <Link href={`/veiculos?query=${tracker.trackerId}`}>
-                          <Car />
-                        </Link>
-                        <Link
-                          href={`/rastreadores/atualizar?id=${tracker.trackerId}`}
-                        >
-                          <PencilLine />
-                        </Link>
-                        <button
-                          title="Excluir"
-                          onClick={() => deleteTracker(tracker.trackerId)}
-                        >
-                          <Trash />
-                        </button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              ) : (
+        <>
+          <div className="max-h-[60vh] overflow-x-auto">
+            <Table className="border border-stone-800">
+              <TableHeader className="bg-stone-800 font-semibold">
                 <TableRow>
-                  <TableCell colSpan={9} className="h-24 text-center">
-                    Nenhum resultado encontrado.
-                  </TableCell>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Número</TableHead>
+                  <TableHead>Modelo</TableHead>
+                  <TableHead>Operadora</TableHead>
+                  <TableHead>ICCID</TableHead>
+                  <TableHead>Saída</TableHead>
+                  <TableHead>Observação</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Ações</TableHead>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {trackers.length > 0 ? (
+                  trackers.map((tracker) => {
+                    return (
+                      <TableRow key={tracker.trackerId}>
+                        <TableCell>{tracker.trackerId}</TableCell>
+                        <TableCell>{tracker.number}</TableCell>
+                        <TableCell>{tracker.model}</TableCell>
+                        <TableCell>{tracker.chipOperator}</TableCell>
+                        <TableCell>{tracker.iccid}</TableCell>
+                        <TableCell>{tracker.output}</TableCell>
+                        <TableCell>
+                          {tracker.comments ? tracker.comments : "Nenhuma"}
+                        </TableCell>
+                        <TableCell>
+                          {tracker.deviceStatus.description}
+                        </TableCell>
+                        <TableCell className="flex gap-4 text-2xl">
+                          <Link href={`/veiculos?query=${tracker.trackerId}`}>
+                            <Car />
+                          </Link>
+                          <Link
+                            href={`/rastreadores/atualizar?id=${tracker.trackerId}`}
+                          >
+                            <PencilLine />
+                          </Link>
+                          <button
+                            title="Excluir"
+                            onClick={() => deleteTracker(tracker.trackerId)}
+                          >
+                            <Trash />
+                          </button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={9} className="h-24 text-center">
+                      Nenhum resultado encontrado.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
           <div className="mt-8 flex justify-between">
             <Link href="rastreadores/registro">
               <Button className="flex gap-2 font-semibold">
@@ -152,7 +157,7 @@ export default function TrackerTable() {
               Total: {trackers.length}
             </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

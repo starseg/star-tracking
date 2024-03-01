@@ -35,6 +35,7 @@ export default function VehiclerTable() {
   const [vehicles, setVehicles] = useState<VehicleData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [active, setActive] = useState(false);
+  let count = 0;
 
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
@@ -81,7 +82,6 @@ export default function VehiclerTable() {
       }
     });
   };
-  let count = 0;
 
   return (
     <div>

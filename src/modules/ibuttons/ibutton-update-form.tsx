@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import api from "@/lib/axios";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { IButtonStatus } from "@prisma/client";
+import { DeviceStatus } from "@prisma/client";
 import {
   Popover,
   PopoverContent,
@@ -36,7 +36,7 @@ const FormSchema = z.object({
   code: z.string(),
   programmedField: z.string(),
   comments: z.string(),
-  ibuttonStatusId: z.number(),
+  deviceStatusId: z.number(),
 });
 
 interface Values {
@@ -44,7 +44,7 @@ interface Values {
   code: string;
   programmedField: string;
   comments: string;
-  ibuttonStatusId: number;
+  deviceStatusId: number;
 }
 
 export default function IButtonUpdateForm({
@@ -54,7 +54,7 @@ export default function IButtonUpdateForm({
 }: {
   preloadedValues: Values;
   id: number;
-  status: IButtonStatus[];
+  status: DeviceStatus[];
 }) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -137,7 +137,7 @@ export default function IButtonUpdateForm({
         />
         <FormField
           control={form.control}
-          name="ibuttonStatusId"
+          name="deviceStatusId"
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Status do dispositivo</FormLabel>
@@ -154,7 +154,7 @@ export default function IButtonUpdateForm({
                     >
                       {field.value
                         ? status.find(
-                            (item) => item.ibuttonStatusId === field.value
+                            (item) => item.deviceStatusId === field.value
                           )?.description
                         : "Selecione o status"}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -169,18 +169,18 @@ export default function IButtonUpdateForm({
                       {status.map((item) => (
                         <CommandItem
                           value={item.description}
-                          key={item.ibuttonStatusId}
+                          key={item.deviceStatusId}
                           onSelect={() => {
                             form.setValue(
-                              "ibuttonStatusId",
-                              item.ibuttonStatusId
+                              "deviceStatusId",
+                              item.deviceStatusId
                             );
                           }}
                         >
                           <Check
                             className={cn(
                               "mr-2 h-4 w-4",
-                              item.ibuttonStatusId === field.value
+                              item.deviceStatusId === field.value
                                 ? "opacity-100"
                                 : "opacity-0"
                             )}

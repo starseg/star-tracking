@@ -30,7 +30,8 @@ export async function GET(request: NextRequest) {
   let trackers;
   if (!query) {
     trackers = await prisma.tracker.findMany({
-      orderBy: [{ status: "asc" }, { trackerId: "asc" }],
+      include: { deviceStatus: true },
+      orderBy: [{ deviceStatusId: "asc" }, { trackerId: "asc" }],
     });
   } else {
     trackers = await prisma.tracker.findMany({
@@ -42,9 +43,11 @@ export async function GET(request: NextRequest) {
           { iccid: { contains: query as string } },
           { output: { contains: query as string } },
           { comments: { contains: query as string } },
+          { deviceStatus: { description: { contains: query as string } } },
         ],
       },
-      orderBy: [{ status: "asc" }, { trackerId: "asc" }],
+      include: { deviceStatus: true },
+      orderBy: [{ deviceStatusId: "asc" }, { trackerId: "asc" }],
     });
   }
   return NextResponse.json(trackers);

@@ -78,63 +78,65 @@ export default function FleetTable() {
       {isLoading ? (
         <SkeletonTable />
       ) : (
-        <div>
-          <Table className="max-h-[60vh] overflow-x-auto border border-stone-800">
-            <TableHeader className="bg-stone-800 font-semibold">
-              <TableRow>
-                <TableHead>Nome</TableHead>
-                <TableHead>Responsável</TableHead>
-                <TableHead>Telefone</TableHead>
-                <TableHead>E-mail</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {fleets.length > 0 ? (
-                fleets.map((fleet) => {
-                  return (
-                    <TableRow key={fleet.fleetId}>
-                      <TableCell className="flex items-center gap-2">
-                        <ColorItem color={fleet.color} />
-                        {fleet.name}
-                      </TableCell>
-                      <TableCell>{fleet.responsible}</TableCell>
-                      <TableCell>{fleet.telephone}</TableCell>
-                      <TableCell>{fleet.email}</TableCell>
-                      <TableCell>
-                        {fleet.status === "ACTIVE" ? (
-                          <p className="text-green-400">ATIVA</p>
-                        ) : (
-                          <p className="text-red-400">INATIVA</p>
-                        )}
-                      </TableCell>
-                      <TableCell className="flex gap-4 text-2xl">
-                        <Link href={`/veiculos?query=${fleet.fleetId}`}>
-                          <Car />
-                        </Link>
-                        <Link href={`/frotas/atualizar?id=${fleet.fleetId}`}>
-                          <PencilLine />
-                        </Link>
-                        <button
-                          title="Excluir"
-                          onClick={() => deleteFleet(fleet.fleetId)}
-                        >
-                          <Trash />
-                        </button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              ) : (
+        <>
+          <div className="max-h-[60vh] overflow-x-auto">
+            <Table className="border border-stone-800">
+              <TableHeader className="bg-stone-800 font-semibold">
                 <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center">
-                    Nenhum resultado encontrado.
-                  </TableCell>
+                  <TableHead>Nome</TableHead>
+                  <TableHead>Responsável</TableHead>
+                  <TableHead>Telefone</TableHead>
+                  <TableHead>E-mail</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Ações</TableHead>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {fleets.length > 0 ? (
+                  fleets.map((fleet) => {
+                    return (
+                      <TableRow key={fleet.fleetId}>
+                        <TableCell className="flex items-center gap-2">
+                          <ColorItem color={fleet.color} />
+                          {fleet.name}
+                        </TableCell>
+                        <TableCell>{fleet.responsible}</TableCell>
+                        <TableCell>{fleet.telephone}</TableCell>
+                        <TableCell>{fleet.email}</TableCell>
+                        <TableCell>
+                          {fleet.status === "ACTIVE" ? (
+                            <p className="text-green-400">ATIVA</p>
+                          ) : (
+                            <p className="text-red-400">INATIVA</p>
+                          )}
+                        </TableCell>
+                        <TableCell className="flex gap-4 text-2xl">
+                          <Link href={`/veiculos?query=${fleet.fleetId}`}>
+                            <Car />
+                          </Link>
+                          <Link href={`/frotas/atualizar?id=${fleet.fleetId}`}>
+                            <PencilLine />
+                          </Link>
+                          <button
+                            title="Excluir"
+                            onClick={() => deleteFleet(fleet.fleetId)}
+                          >
+                            <Trash />
+                          </button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={6} className="h-24 text-center">
+                      Nenhum resultado encontrado.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
           <div className="mt-8 flex justify-between">
             <Link href="frotas/registro">
               <Button className="flex gap-2 font-semibold">
@@ -145,7 +147,7 @@ export default function FleetTable() {
               Total: {fleets.length}
             </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

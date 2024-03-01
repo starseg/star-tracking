@@ -21,6 +21,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface DriverData extends Driver {
   fleet: {
@@ -33,6 +34,8 @@ export default function DriverTable() {
   // busca das frotas
   const [drivers, setDrivers] = useState<DriverData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [active, setActive] = useState(false);
+  let count = 0;
 
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
@@ -85,94 +88,110 @@ export default function DriverTable() {
       {isLoading ? (
         <SkeletonTable />
       ) : (
-        <div>
-          <Table className="max-h-[60vh] overflow-x-auto border border-stone-800">
-            <TableHeader className="bg-stone-800 font-semibold">
-              <TableRow>
-                <TableHead>Frota</TableHead>
-                <TableHead>Nome</TableHead>
-                <TableHead>CPF</TableHead>
-                <TableHead>CNH</TableHead>
-                <TableHead>Observação</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {drivers.length > 0 ? (
-                drivers.map((driver) => {
-                  return (
-                    <TableRow key={driver.fleetId}>
-                      <TableCell
-                        className="font-bold "
-                        style={{ color: driver.fleet.color }}
-                      >
-                        {driver.fleet.name}
-                      </TableCell>
-                      <TableCell>{driver.name}</TableCell>
-                      <TableCell>{driver.cpf}</TableCell>
-                      <TableCell>{driver.cnh}</TableCell>
-                      <TableCell>
-                        {driver.comments ? (
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <button className="max-w-[15ch] text-ellipsis overflow-hidden whitespace-nowrap">
-                                  {driver.comments}
-                                </button>
-                              </TooltipTrigger>
-                              <TooltipContent className="max-w-[300px] border-primary bg-stone-800 p-4 break-words">
-                                <p>{driver.comments}</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        ) : (
-                          "Nenhuma"
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {driver.status === "ACTIVE" ? (
-                          <p className="text-green-400">ATIVO</p>
-                        ) : (
-                          <p className="text-red-400">INATIVO</p>
-                        )}
-                      </TableCell>
-                      <TableCell className="flex gap-4 text-2xl">
-                        <Link
-                          href={`/motoristas/atualizar?id=${driver.driverId}`}
-                        >
-                          <PencilLine />
-                        </Link>
-                        <button
-                          title="Excluir"
-                          onClick={() => deleteDriver(driver.driverId)}
-                        >
-                          <Trash />
-                        </button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              ) : (
+        <>
+          <div className="max-h-[60vh] overflow-x-auto">
+            <Table className="border border-stone-800">
+              <TableHeader className="bg-stone-800 font-semibold">
                 <TableRow>
-                  <TableCell colSpan={7} className="h-24 text-center">
-                    Nenhum resultado encontrado.
-                  </TableCell>
+                  <TableHead>Frota</TableHead>
+                  <TableHead>Nome</TableHead>
+                  <TableHead>CPF</TableHead>
+                  <TableHead>CNH</TableHead>
+                  <TableHead>Observação</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Ações</TableHead>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-          <div className="mt-8 flex justify-between">
-            <Link href="motoristas/registro">
-              <Button className="flex gap-2 font-semibold">
-                <FilePlus size={24} /> Registrar novo
-              </Button>
-            </Link>
-            <div className="py-2 px-6 rounded-md bg-muted">
-              Total: {drivers.length}
-            </div>
+              </TableHeader>
+              <TableBody>
+                {drivers.length > 0 ? (
+                  drivers.map((driver) => {
+                    if (active && driver.status === "INACTIVE") return;
+                    count++;
+                    return (
+                      <TableRow key={driver.fleetId}>
+                        <TableCell
+                          className="font-bold "
+                          style={{ color: driver.fleet.color }}
+                        >
+                          {driver.fleet.name}
+                        </TableCell>
+                        <TableCell>{driver.name}</TableCell>
+                        <TableCell>{driver.cpf}</TableCell>
+                        <TableCell>{driver.cnh}</TableCell>
+                        <TableCell>
+                          {driver.comments ? (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <button className="max-w-[15ch] text-ellipsis overflow-hidden whitespace-nowrap">
+                                    {driver.comments}
+                                  </button>
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-[300px] border-primary bg-stone-800 p-4 break-words">
+                                  <p>{driver.comments}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          ) : (
+                            "Nenhuma"
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {driver.status === "ACTIVE" ? (
+                            <p className="text-green-400">ATIVO</p>
+                          ) : (
+                            <p className="text-red-400">INATIVO</p>
+                          )}
+                        </TableCell>
+                        <TableCell className="flex gap-4 text-2xl">
+                          <Link
+                            href={`/motoristas/atualizar?id=${driver.driverId}`}
+                          >
+                            <PencilLine />
+                          </Link>
+                          <button
+                            title="Excluir"
+                            onClick={() => deleteDriver(driver.driverId)}
+                          >
+                            <Trash />
+                          </button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={7} className="h-24 text-center">
+                      Nenhum resultado encontrado.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
           </div>
-        </div>
+          <div className="mt-8 flex justify-between">
+            <div className="flex gap-4">
+              <Link href="motoristas/registro">
+                <Button className="flex gap-2 font-semibold">
+                  <FilePlus size={24} /> Registrar novo
+                </Button>
+              </Link>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="statusFilter"
+                  onClick={() => setActive(!active)}
+                />
+                <label
+                  htmlFor="statusFilter"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Apenas ATIVOS
+                </label>
+              </div>
+            </div>
+            <div className="py-2 px-6 rounded-md bg-muted">Total: {count}</div>
+          </div>
+        </>
       )}
     </div>
   );
