@@ -46,7 +46,5 @@ export async function GET(request: NextRequest) {
       orderBy: [{ status: "asc" }, { name: "asc" }],
     });
   }
-  console.log(drivers);
-
   return NextResponse.json(drivers);
 }

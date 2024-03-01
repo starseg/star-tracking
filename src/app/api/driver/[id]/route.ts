@@ -1,4 +1,4 @@
-import { Driver, IButton, PrismaClient } from "@prisma/client";
+import { Driver, PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
