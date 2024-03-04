@@ -9,7 +9,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, List, SignOut } from "@phosphor-icons/react/dist/ssr";
+import {
+  ArrowLeft,
+  Cpu,
+  List,
+  RadioButton,
+  SignOut,
+  Truck,
+  UserCircle,
+  Users,
+  UsersThree,
+} from "@phosphor-icons/react/dist/ssr";
 import BackButton from "./back-button";
 
 export function Menu({ url = "" }: { url?: string }) {
@@ -39,6 +49,79 @@ export function Menu({ url = "" }: { url?: string }) {
         <DropdownMenuContent className="px-4">
           <DropdownMenuLabel>Menu</DropdownMenuLabel>
           <DropdownMenuSeparator />
+
+          <DropdownMenuItem>
+            <Link
+              href="/usuarios"
+              className="flex items-center justify-center gap-2"
+            >
+              <Users size={24} /> Usuários
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem>
+            <Link
+              href="/motoristas"
+              className="flex items-center justify-center gap-2"
+            >
+              <UserCircle size={24} /> Motoristas
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem>
+            <Link
+              href="/veiculos"
+              className="flex items-center justify-center gap-2"
+            >
+              <Truck size={24} /> Veículos
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem>
+            <Link
+              href="/ibuttons"
+              className="flex items-center justify-center gap-2"
+            >
+              <RadioButton size={24} /> I Buttons
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem>
+            <Link
+              href="/rastreadores"
+              className="flex items-center justify-center gap-2"
+            >
+              <Cpu size={24} /> Rastreadores
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem>
+            <Link
+              href="/frotas"
+              className="flex items-center justify-center gap-2"
+            >
+              <UsersThree size={24} /> Frotas
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem>
+            <Link
+              href="/motoristas-ibuttons"
+              className="flex items-center justify-center gap-2"
+            >
+              <UserCircle size={24} /> + <RadioButton size={24} />
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem>
+            <Link
+              href="/veiculos-rastreadores"
+              className="flex items-center justify-center gap-2"
+            >
+              <Truck size={24} /> + <Cpu size={24} />
+            </Link>
+          </DropdownMenuItem>
+
           <DropdownMenuItem>
             <Link
               href="/api/logout"

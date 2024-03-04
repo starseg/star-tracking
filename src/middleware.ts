@@ -25,8 +25,18 @@ export async function middleware(req: NextRequest) {
       // return NextResponse.next();
       return NextResponse.json({ message: "Não autorizado" }, { status: 401 });
     }
-
     return NextResponse.redirect(new URL("login", req.url));
   }
+  const isAdminRoute = pathname.startsWith("/usuarios");
+  if (isAdminRoute) {
+    const user = await AuthService.getPayload();
+    if (user) {
+      if (user.type === "ADMIN") {
+        return NextResponse.next();
+      }
+      return NextResponse.redirect(new URL("painel", req.url));
+    }
+  }
+
   return NextResponse.next();
 }

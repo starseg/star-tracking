@@ -41,6 +41,7 @@ function destroySession() {
 interface UserToken {
   sub: number;
   name: string;
+  type: string;
   exp: number;
 }
 async function getPayload() {
@@ -50,6 +51,7 @@ async function getPayload() {
     const user: UserToken = {
       sub: Number(payload.sub),
       name: payload.name as string,
+      type: payload.type as string,
       exp: payload.exp as number,
     };
     return user;

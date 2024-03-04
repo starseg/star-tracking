@@ -35,6 +35,7 @@ export async function POST(request: NextRequest) {
       await AuthService.createSessionToken({
         sub: user.userId,
         name: user.name,
+        type: user.type,
       });
       return Response.json({ status: 200 });
     })

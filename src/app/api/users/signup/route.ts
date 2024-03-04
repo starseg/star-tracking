@@ -1,14 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { NextRequest } from "next/server";
 
 const prisma = new PrismaClient();
-
-interface User {
-  name: string;
-  username: string;
-  password: string;
-}
 
 export async function POST(request: NextRequest) {
   return request
@@ -21,6 +15,7 @@ export async function POST(request: NextRequest) {
           name: data.name,
           username: data.username,
           password: hashedPassword,
+          type: data.type || "USER",
         },
       });
       return Response.json({ data }, { status: 201 });
