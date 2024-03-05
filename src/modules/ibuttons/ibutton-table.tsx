@@ -13,8 +13,9 @@ import {
 import {
   FilePlus,
   PencilLine,
-  Person,
+  RadioButton,
   Trash,
+  UserCircle,
 } from "@phosphor-icons/react/dist/ssr";
 import api from "@/lib/axios";
 import Swal from "sweetalert2";
@@ -91,10 +92,10 @@ export default function IButtonTable() {
                 <TableRow>
                   <TableHead>ID</TableHead>
                   <TableHead>Número</TableHead>
-                  <TableHead>Status</TableHead>
                   <TableHead>Código</TableHead>
                   <TableHead>Campo prog.</TableHead>
                   <TableHead>Observação</TableHead>
+                  <TableHead>Status</TableHead>
                   <TableHead>Ações</TableHead>
                 </TableRow>
               </TableHeader>
@@ -105,19 +106,19 @@ export default function IButtonTable() {
                       <TableRow key={IButton.ibuttonId}>
                         <TableCell>{IButton.ibuttonId}</TableCell>
                         <TableCell>{IButton.number}</TableCell>
-                        <TableCell>
-                          {IButton.deviceStatus.description}
-                        </TableCell>
                         <TableCell>{IButton.code}</TableCell>
                         <TableCell>{IButton.programmedField}</TableCell>
                         <TableCell>
                           {IButton.comments ? IButton.comments : "Nenhuma"}
                         </TableCell>
+                        <TableCell>
+                          {IButton.deviceStatus.description}
+                        </TableCell>
                         <TableCell className="flex gap-4 text-2xl">
                           <Link
                             href={`/motoristas-ibuttons?query=${IButton.code}`}
                           >
-                            <Person />
+                            <UserCircle />
                           </Link>
                           <Link
                             href={`/ibuttons/atualizar?id=${IButton.ibuttonId}`}
@@ -145,11 +146,18 @@ export default function IButtonTable() {
             </Table>
           </div>
           <div className="mt-8 flex justify-between">
-            <Link href="ibuttons/registro">
-              <Button className="flex gap-2 font-semibold">
-                <FilePlus size={24} /> Registrar novo
-              </Button>
-            </Link>
+            <div className="flex gap-4">
+              <Link href="ibuttons/registro">
+                <Button className="flex gap-2 font-semibold">
+                  <FilePlus size={24} /> Registrar novo
+                </Button>
+              </Link>
+              <Link href="motoristas-ibuttons">
+                <Button className="flex gap-2 font-semibold">
+                  <UserCircle size={24} /> + <RadioButton size={24} />
+                </Button>
+              </Link>
+            </div>
             <div className="py-2 px-6 rounded-md bg-muted">
               Total: {IButtons.length}
             </div>

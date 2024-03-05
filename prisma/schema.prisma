@@ -126,10 +126,11 @@ model ComunicationDescription {
 }
 
 model DriverIButton {
-  driverIButtonId Int      @id @default(autoincrement())
-  status          Status   @default(ACTIVE)
-  startDate       DateTime @default(now())
-  endDate         DateTime
+  driverIButtonId Int       @id @default(autoincrement())
+  status          Status    @default(ACTIVE)
+  startDate       DateTime  @default(now())
+  endDate         DateTime? @db.Timestamp(0)
+  comments        String
 
   driver   Driver @relation(fields: [driverId], references: [driverId])
   driverId Int
@@ -139,10 +140,11 @@ model DriverIButton {
 }
 
 model VehicleTracker {
-  vehicleTrackerId Int      @id @default(autoincrement())
-  status           Status   @default(ACTIVE)
-  startDate        DateTime @default(now())
-  endDate          DateTime
+  vehicleTrackerId Int       @id @default(autoincrement())
+  status           Status    @default(ACTIVE)
+  startDate        DateTime  @default(now())
+  endDate          DateTime? @db.Timestamp(0)
+  comments         String
 
   vehicle   Vehicle @relation(fields: [vehicleId], references: [vehicleId])
   vehicleId Int

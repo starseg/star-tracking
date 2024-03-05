@@ -11,10 +11,12 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import {
+  Cpu,
   FilePlus,
   MagnifyingGlass,
   PencilLine,
   Trash,
+  Truck,
 } from "@phosphor-icons/react/dist/ssr";
 import api from "@/lib/axios";
 import Swal from "sweetalert2";
@@ -170,6 +172,11 @@ export default function VehiclerTable() {
               </Link>
               <Link href="veiculos/problemas">
                 <Button className="flex gap-2 font-semibold">Problemas</Button>
+              </Link>
+              <Link href="veiculos-rastreadores">
+                <Button className="flex gap-2 font-semibold">
+                  <Truck size={24} /> + <Cpu size={24} />
+                </Button>
               </Link>
               <div className="flex items-center gap-2">
                 <Checkbox

@@ -12,10 +12,12 @@ import {
 } from "@/components/ui/table";
 import {
   Car,
+  Cpu,
   FilePlus,
   PencilLine,
   Person,
   Trash,
+  Truck,
 } from "@phosphor-icons/react/dist/ssr";
 import api from "@/lib/axios";
 import Swal from "sweetalert2";
@@ -119,7 +121,9 @@ export default function TrackerTable() {
                           {tracker.deviceStatus.description}
                         </TableCell>
                         <TableCell className="flex gap-4 text-2xl">
-                          <Link href={`/veiculos?query=${tracker.trackerId}`}>
+                          <Link
+                            href={`/veiculos-rastreadores?query=${tracker.number}`}
+                          >
                             <Car />
                           </Link>
                           <Link
@@ -148,11 +152,18 @@ export default function TrackerTable() {
             </Table>
           </div>
           <div className="mt-8 flex justify-between">
-            <Link href="rastreadores/registro">
-              <Button className="flex gap-2 font-semibold">
-                <FilePlus size={24} /> Registrar novo
-              </Button>
-            </Link>
+            <div className="flex gap-4">
+              <Link href="rastreadores/registro">
+                <Button className="flex gap-2 font-semibold">
+                  <FilePlus size={24} /> Registrar novo
+                </Button>
+              </Link>
+              <Link href="veiculos-rastreadores">
+                <Button className="flex gap-2 font-semibold">
+                  <Truck size={24} /> + <Cpu size={24} />
+                </Button>
+              </Link>
+            </div>
             <div className="py-2 px-6 rounded-md bg-muted">
               Total: {trackers.length}
             </div>
