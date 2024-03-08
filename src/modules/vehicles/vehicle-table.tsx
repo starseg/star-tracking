@@ -32,7 +32,7 @@ interface VehicleData extends Vehicle {
   };
 }
 
-export default function VehiclerTable() {
+export default function VehicleTable() {
   // busca das frotas
   const [vehicles, setVehicles] = useState<VehicleData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
