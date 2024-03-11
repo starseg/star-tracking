@@ -75,7 +75,6 @@ export default function DriverIButtonForm() {
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
-      console.log(data);
       const response = await api.post("driver-ibutton", data);
       if (response.status === 201) {
         const ibutton = await api.put(`ibutton/${data.ibuttonId}`, {

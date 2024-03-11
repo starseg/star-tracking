@@ -1,9 +1,7 @@
 import AuthService from "@/modules/auth/auth-service";
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { NextRequest } from "next/server";
-
-const prisma = new PrismaClient();
+import prisma from "@/app/api/db";
 
 interface User {
   username: string;

@@ -140,7 +140,6 @@ export default function ProblemCard({ problem, fetchData }: ProblemCardProps) {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          console.log("ID: " + id);
           await api.delete(`problem/description/${id}`);
           fetchData();
           Swal.fire({

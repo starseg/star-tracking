@@ -1,4 +1,3 @@
-"use client";
 import { Menu } from "@/components/menu";
 import Search from "@/components/search";
 import FleetTable from "@/modules/fleets/fleet-table";

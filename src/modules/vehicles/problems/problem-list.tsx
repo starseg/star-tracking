@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Problem } from "./services/interface";
 import ProblemCard from "./card";
+import { SkeletonCard } from "@/components/skeletons/skeleton-card";
 
 export default function ProblemList() {
   const searchParams = useSearchParams();
@@ -36,7 +37,7 @@ export default function ProblemList() {
     <>
       {isLoading ? (
         // criar skeleton
-        <p>carregando...</p>
+        <SkeletonCard />
       ) : (
         <div className="px-4">
           <div className="flex flex-col justify-end gap-2 md:justify-between  md:flex-row mb-4">

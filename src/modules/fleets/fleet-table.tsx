@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 import { Fleet } from "@prisma/client";
 import Link from "next/link";
@@ -111,7 +112,7 @@ export default function FleetTable() {
                           )}
                         </TableCell>
                         <TableCell className="flex gap-4 text-2xl">
-                          <Link href={`/veiculos?query=${fleet.fleetId}`}>
+                          <Link href={`/veiculos?query=${fleet.name}`}>
                             <Car />
                           </Link>
                           <Link href={`/frotas/atualizar?id=${fleet.fleetId}`}>

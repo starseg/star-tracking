@@ -1,8 +1,7 @@
 import { StringDateFormat } from "@/lib/utils";
-import { Vehicle, PrismaClient } from "@prisma/client";
+import { Vehicle } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
+import prisma from "@/app/api/db";
 
 export async function GET(
   request: Request,

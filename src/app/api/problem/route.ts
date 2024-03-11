@@ -1,9 +1,7 @@
 import { StringDateFormat } from "@/lib/utils";
 import AuthService from "@/modules/auth/auth-service";
-import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
+import prisma from "@/app/api/db";
 
 interface ProblemData {
   vehicleId: number;

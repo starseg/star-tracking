@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
+import prisma from "@/app/api/db";
 
 export async function DELETE(
   request: Request,
@@ -29,7 +27,6 @@ export async function PATCH(
   { params }: { params: { id: number } }
 ) {
   const id = Number(params.id);
-  console.log(id);
 
   return request
     .json()

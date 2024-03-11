@@ -1,7 +1,6 @@
-import { IButton, PrismaClient } from "@prisma/client";
+import { IButton } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
+import prisma from "@/app/api/db";
 
 export async function POST(request: NextRequest) {
   return request

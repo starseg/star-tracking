@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 import { User } from "@prisma/client";
 import Link from "next/link";

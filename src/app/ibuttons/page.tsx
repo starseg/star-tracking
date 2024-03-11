@@ -1,4 +1,3 @@
-"use client";
 import { Menu } from "@/components/menu";
 import Search from "@/components/search";
 import IButtonTable from "@/modules/ibuttons/ibutton-table";

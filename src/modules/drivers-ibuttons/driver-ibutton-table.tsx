@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 import { DriverIButton } from "@prisma/client";
 import Link from "next/link";

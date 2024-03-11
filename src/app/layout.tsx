@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Nunito } from "next/font/google";
+import { Suspense } from "react";
 
 const nunito = Nunito({
   weight: ["300", "400", "500", "600", "700"],
@@ -23,7 +24,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className={cn(nunito.className, "dark")}>{children}</body>
+      <body className={cn(nunito.className, "dark")}>
+        <Suspense>{children}</Suspense>
+      </body>
     </html>
   );
 }

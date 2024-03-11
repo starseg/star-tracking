@@ -76,8 +76,6 @@ export default function VehicleForm() {
   }, []);
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    // console.log(data);
-    console.log(StringDateFormat(data.installationDate));
     try {
       const response = await api.post("vehicle", data);
       if (response.status === 201) {

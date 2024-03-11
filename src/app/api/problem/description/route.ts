@@ -1,9 +1,8 @@
 import { StringDateFormat } from "@/lib/utils";
 import AuthService from "@/modules/auth/auth-service";
-import { ComunicationDescription, PrismaClient } from "@prisma/client";
+import { ComunicationDescription } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
+import prisma from "@/app/api/db";
 
 export async function POST(request: NextRequest) {
   const user = await AuthService.getPayload();

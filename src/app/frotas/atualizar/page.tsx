@@ -26,7 +26,6 @@ export default function UpdateFleet() {
   const fetch = async () => {
     try {
       const response = await api.get("fleet/" + id);
-      // console.log(response.data.fleet);
       setFleet(response.data.fleet);
     } catch (error) {
       console.error("Erro ao obter dados:", error);

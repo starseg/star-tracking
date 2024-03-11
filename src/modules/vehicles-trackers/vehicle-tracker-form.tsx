@@ -74,7 +74,6 @@ export default function VehicleTrackerForm() {
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
-      console.log(data);
       const response = await api.post("vehicle-tracker", data);
       if (response.status === 201) {
         const tracker = await api.put(`tracker/${data.trackerId}`, {

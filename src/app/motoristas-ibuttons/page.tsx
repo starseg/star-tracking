@@ -1,4 +1,3 @@
-"use client";
 import { Menu } from "@/components/menu";
 import Search from "@/components/search";
 import DriverIButtonTable from "@/modules/drivers-ibuttons/driver-ibutton-table";
