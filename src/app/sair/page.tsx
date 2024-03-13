@@ -15,7 +15,10 @@ export default function Sair() {
           className="max-w-[80%] hidden md:block"
         />
         <h1 className="text-xl">Sua conta foi desconectada.</h1>
-        <Link href="/api/logout">
+        <Link href="/api/logout" className="hidden">
+          OK
+        </Link>
+        <Link href="/login">
           <Button>Voltar para o login</Button>
         </Link>
       </div>
