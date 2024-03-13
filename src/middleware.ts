@@ -10,6 +10,7 @@ const publicRoutes = [
   "/logo.svg",
   "/login",
   "/api/users/login",
+  "/api/users/logout",
   "/api/users/signup",
 ];
 
