@@ -124,7 +124,7 @@ export function Menu({ url = "" }: { url?: string }) {
 
           <DropdownMenuItem>
             <Link
-              href="/sair"
+              href="/login"
               className="flex items-center justify-center gap-2"
             >
               <SignOut size={24} /> Sair

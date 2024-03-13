@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import AuthService from "./modules/auth/auth-service";
+import { cookies } from "next/headers";
+import api from "./lib/axios";
 
 export const config = {
   matcher: "/((?!_next/static|_next/image|favicon.ico).*)",
@@ -16,6 +18,12 @@ const publicRoutes = [
 
 export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
+
+  const sessionCookie = cookies().get("session");
+  if (pathname === "/login" && sessionCookie) {
+    return NextResponse.redirect(new URL("api/logout", req.url));
+  }
+
   if (publicRoutes.includes(pathname)) {
     return NextResponse.next();
   }
