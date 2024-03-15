@@ -18,18 +18,12 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const FormSchema = z.object({
   name: z.string(),
-  responsible: z.string(),
-  telephone: z.string(),
-  email: z.string(),
   color: z.string(),
   status: z.enum(["ACTIVE", "INACTIVE"]),
 });
 
 interface Values {
   name: string;
-  responsible: string;
-  telephone: string;
-  email: string;
   color: string;
   status: "ACTIVE" | "INACTIVE";
 }
@@ -78,55 +72,6 @@ export default function FleetUpdateForm({
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="responsible"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Responsável</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Digite o nome do responsável da frota"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="telephone"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Telefone</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Adicione um telefone ao responsável"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>E-mail</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Adicione um e-mail ao responsável"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
         <FormField
           control={form.control}
           name="color"

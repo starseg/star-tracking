@@ -48,9 +48,6 @@ export async function PUT(
         where: { fleetId: id },
         data: {
           name: data.name,
-          responsible: data.responsible,
-          telephone: data.telephone,
-          email: data.email,
           color: data.color,
           status: data.status,
         },

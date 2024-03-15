@@ -57,16 +57,32 @@ model Tracker {
 }
 
 model Fleet {
-  fleetId     Int    @id @default(autoincrement())
-  name        String
-  responsible String
-  telephone   String
-  email       String
-  color       String
-  status      Status @default(ACTIVE)
+  fleetId Int    @id @default(autoincrement())
+  name    String
+  color   String
+  status  Status @default(ACTIVE)
 
-  driver  Driver[]
-  vehicle Vehicle[]
+  driver       Driver[]
+  vehicle      Vehicle[]
+  fleetContact FleetContact[]
+  fleetEmail   FleetEmail[]
+}
+
+model FleetContact {
+  fleetContactId Int    @id @default(autoincrement())
+  name           String
+  telephone      String
+
+  fleet   Fleet @relation(fields: [fleetId], references: [fleetId], onDelete: Cascade)
+  fleetId Int
+}
+
+model FleetEmail {
+  fleetEmailId Int    @id @default(autoincrement())
+  email        String
+
+  fleet   Fleet @relation(fields: [fleetId], references: [fleetId], onDelete: Cascade)
+  fleetId Int
 }
 
 model Driver {

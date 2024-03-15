@@ -9,9 +9,6 @@ import { useEffect, useState } from "react";
 
 interface Values {
   name: string;
-  responsible: string;
-  telephone: string;
-  email: string;
   color: string;
   status: "ACTIVE" | "INACTIVE";
 }
@@ -40,9 +37,6 @@ export default function UpdateFleet() {
     if (fleet) {
       setValues({
         name: fleet?.name || "",
-        responsible: fleet?.responsible || "",
-        telephone: fleet?.telephone || "",
-        email: fleet?.email || "",
         color: fleet?.color || "",
         status: fleet?.status || "ACTIVE",
       });
