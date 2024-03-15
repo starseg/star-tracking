@@ -40,7 +40,7 @@ export default function UpdateVehicle() {
     <>
       <Menu />
       <section className="flex flex-col justify-center items-center mb-12">
-        <h1 className="text-4xl mt-2 mb-4">Atualizar motorista</h1>
+        <h1 className="text-4xl mt-2 mb-4">Atualizar veículo</h1>
         {vehicle && fleets ? (
           <VehicleUpdateForm
             preloadedValues={vehicle}

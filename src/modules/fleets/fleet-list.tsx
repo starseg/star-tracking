@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import FleetCard from "./card";
 import { FleetProps } from "./services/interface";
 import { ToastContainer } from "react-toastify";
+import Loading from "@/components/loading";
 
 export default function FleetList() {
   const searchParams = useSearchParams();
@@ -37,7 +38,7 @@ export default function FleetList() {
   return (
     <>
       {isLoading ? (
-        <p>carregando...</p>
+        <Loading />
       ) : (
         <div className="px-4">
           <div className="flex flex-col justify-end gap-2 md:justify-between  md:flex-row mb-4">

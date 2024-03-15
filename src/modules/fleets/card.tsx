@@ -144,13 +144,11 @@ export default function FleetCard({ fleet, fetchData }: FleetCardProps) {
           <p className="font-semibold">{fleet.name}</p>
         </div>
         <div className="flex flex-col items-end gap-2">
-          <p>
-            {fleet.status === "ACTIVE" ? (
-              <p className="text-green-400 font-semibold">Ativa</p>
-            ) : (
-              <p className="text-red-400 font-semibold">Inativa</p>
-            )}
-          </p>
+          {fleet.status === "ACTIVE" ? (
+            <p className="text-green-400 font-semibold">Ativa</p>
+          ) : (
+            <p className="text-red-400 font-semibold">Inativa</p>
+          )}
           <div className="flex gap-2 items-center text-2xl mb-2">
             <Link href={`/veiculos?query=${fleet.name}`}>
               <Car />

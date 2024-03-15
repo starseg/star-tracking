@@ -61,7 +61,7 @@ export default function VehicleUpdateForm({
     code: preloadedValues.code,
     renavam: preloadedValues.renavam,
     chassis: preloadedValues.chassis,
-    year: preloadedValues.chassis,
+    year: preloadedValues.year,
     installationDate: englishDateFormat(preloadedValues.installationDate),
     comments: preloadedValues.comments,
     status: preloadedValues.status,
