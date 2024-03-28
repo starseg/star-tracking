@@ -61,7 +61,7 @@ export default function DriverIButtonForm() {
   const [ibuttons, setIButtons] = useState<IButton[]>([]);
   const fetchIButtons = async () => {
     try {
-      const response = await api.get("ibutton/available");
+      const response = await api.get("ibutton");
       setIButtons(response.data);
     } catch (error) {
       console.error("Erro ao obter dados:", error);
@@ -201,7 +201,15 @@ export default function DriverIButtonForm() {
                                 : "opacity-0"
                             )}
                           />
-                          {item.number} - {item.code}
+                          {item.deviceStatusId === 1 ? (
+                            <p>
+                              {item.number} - {item.code}
+                            </p>
+                          ) : (
+                            <p className="text-red-400 font-semibold">
+                              {item.number} - {item.code}
+                            </p>
+                          )}
                         </CommandItem>
                       ))}
                     </CommandGroup>

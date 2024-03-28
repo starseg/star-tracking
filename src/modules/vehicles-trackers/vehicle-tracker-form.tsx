@@ -60,7 +60,7 @@ export default function VehicleTrackerForm() {
   const [trackers, setTrackers] = useState<Tracker[]>([]);
   const fetchTrackers = async () => {
     try {
-      const response = await api.get("tracker/available");
+      const response = await api.get("tracker");
       setTrackers(response.data);
     } catch (error) {
       console.error("Erro ao obter dados:", error);
@@ -201,7 +201,15 @@ export default function VehicleTrackerForm() {
                                 : "opacity-0"
                             )}
                           />
-                          {item.number} - {item.iccid}
+                          {item.deviceStatusId === 1 ? (
+                            <p>
+                              {item.number} - {item.iccid}
+                            </p>
+                          ) : (
+                            <p className="text-red-400 font-semibold">
+                              {item.number} - {item.iccid}
+                            </p>
+                          )}
                         </CommandItem>
                       ))}
                     </CommandGroup>

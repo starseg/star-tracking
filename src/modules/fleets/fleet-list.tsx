@@ -55,7 +55,7 @@ export default function FleetList() {
             <Search placeholder="Buscar..." pagination={false} />
           </div>
           <ToastContainer />
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-4  max-h-[60vh] overflow-x-auto">
             {fleets.map((fleet) => {
               return (
                 <div
