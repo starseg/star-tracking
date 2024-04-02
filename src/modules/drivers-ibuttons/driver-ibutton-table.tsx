@@ -12,6 +12,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import {
+  FilePdf,
   FilePlus,
   PencilLine,
   RadioButton,
@@ -30,6 +31,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Checkbox } from "@/components/ui/checkbox";
 import { dateFormat } from "@/lib/utils";
+import { driversIButtonsReport } from "@/lib/generate-pdf";
 
 interface DriverIButtonData extends DriverIButton {
   driver: {
@@ -197,6 +199,12 @@ export default function DriverIButtonTable() {
                   <RadioButton size={24} /> I Buttons
                 </Button>
               </Link>
+              <Button
+                className="flex gap-2 font-semibold"
+                onClick={() => driversIButtonsReport(driversIButtons)}
+              >
+                <FilePdf size={24} /> Relatório
+              </Button>
               <div className="flex items-center gap-2">
                 <Checkbox
                   id="statusFilter"

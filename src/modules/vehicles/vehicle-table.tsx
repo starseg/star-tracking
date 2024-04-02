@@ -13,7 +13,9 @@ import {
 } from "@/components/ui/table";
 import {
   Cpu,
+  FilePdf,
   FilePlus,
+  LinkBreak,
   MagnifyingGlass,
   PencilLine,
   Trash,
@@ -25,6 +27,7 @@ import { useSearchParams } from "next/navigation";
 import { SkeletonTable } from "@/components/skeletons/skeleton-table";
 import { dateFormat } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
+import { vehicleReport } from "@/lib/generate-pdf";
 
 interface VehicleData extends Vehicle {
   fleet: {
@@ -172,8 +175,17 @@ export default function VehicleTable() {
                 </Button>
               </Link>
               <Link href="veiculos/problemas">
-                <Button className="flex gap-2 font-semibold">Problemas</Button>
+                <Button className="flex gap-2 font-semibold">
+                  <LinkBreak size={24} />
+                  Problemas
+                </Button>
               </Link>
+              <Button
+                className="flex gap-2 font-semibold"
+                onClick={() => vehicleReport(vehicles)}
+              >
+                <FilePdf size={24} /> Relatório
+              </Button>
               <Link href="veiculos-rastreadores">
                 <Button className="flex gap-2 font-semibold">
                   <Truck size={24} /> + <Cpu size={24} />
@@ -186,7 +198,7 @@ export default function VehicleTable() {
                 />
                 <label
                   htmlFor="statusFilter"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  className="text-sm font-medium leading-none"
                 >
                   Apenas ATIVOS
                 </label>
