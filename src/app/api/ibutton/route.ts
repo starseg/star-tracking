@@ -12,6 +12,8 @@ export async function POST(request: NextRequest) {
           comments: data.comments,
           code: data.code,
           programmedField: data.programmedField,
+          url1: data.url1,
+          url2: data.url2,
         },
       });
       return NextResponse.json({ data }, { status: 201 });

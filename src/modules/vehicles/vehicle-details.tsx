@@ -1,7 +1,10 @@
 import DetailsItem from "@/components/details-item";
+import { Button } from "@/components/ui/button";
 import api from "@/lib/axios";
 import { dateFormat } from "@/lib/utils";
+import { DownloadSimple } from "@phosphor-icons/react/dist/ssr";
 import { Vehicle } from "@prisma/client";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -41,6 +44,17 @@ export default function VehicleDetails() {
           label="Status"
           value={vehicle?.status === "INACTIVE" ? "Inativo" : "Ativo"}
         />
+        {vehicle?.url ? (
+          <Button variant={"outline"}>
+            <Link href={vehicle.url} target="_blank" className="flex gap-4">
+              Anexos <DownloadSimple size={24} />
+            </Link>
+          </Button>
+        ) : (
+          <Button variant={"outline"} disabled>
+            Sem anexos
+          </Button>
+        )}
       </div>
       <div className="w-1/2 space-y-2">
         <DetailsItem label="Renavam" value={vehicle?.renavam} />

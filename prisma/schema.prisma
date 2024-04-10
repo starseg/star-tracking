@@ -33,7 +33,9 @@ model IButton {
   number          String
   code            String
   programmedField String
-  comments        String?
+  comments        String? @db.VarChar(500)
+  url1            String?
+  url2            String?
 
   deviceStatus   DeviceStatus @relation(fields: [deviceStatusId], references: [deviceStatusId])
   deviceStatusId Int          @default(1)
@@ -42,13 +44,13 @@ model IButton {
 }
 
 model Tracker {
-  trackerId    Int    @id @default(autoincrement())
+  trackerId    Int     @id @default(autoincrement())
   number       String
   model        String
   chipOperator String
   iccid        String
   output       String
-  comments     String
+  comments     String? @db.VarChar(500)
 
   deviceStatus   DeviceStatus @relation(fields: [deviceStatusId], references: [deviceStatusId])
   deviceStatusId Int          @default(1)
@@ -86,12 +88,12 @@ model FleetEmail {
 }
 
 model Driver {
-  driverId Int    @id @default(autoincrement())
+  driverId Int     @id @default(autoincrement())
   name     String
-  cpf      String @unique
+  cpf      String  @unique
   cnh      String
-  comments String
-  status   Status @default(ACTIVE)
+  comments String? @db.VarChar(500)
+  status   Status  @default(ACTIVE)
 
   fleet   Fleet @relation(fields: [fleetId], references: [fleetId])
   fleetId Int
@@ -108,7 +110,8 @@ model Vehicle {
   chassis          String
   year             String
   installationDate DateTime
-  comments         String
+  comments         String?  @db.VarChar(500)
+  url              String?
   status           Status   @default(ACTIVE)
 
   fleet   Fleet @relation(fields: [fleetId], references: [fleetId])
@@ -132,7 +135,7 @@ model ComunicationProblem {
 model ComunicationDescription {
   comunicationDescriptionId Int      @id @default(autoincrement())
   date                      DateTime
-  description               String
+  description               String   @db.VarChar(500)
 
   user   User @relation(fields: [userId], references: [userId])
   userId Int

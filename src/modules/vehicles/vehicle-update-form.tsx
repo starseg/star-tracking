@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -31,6 +32,7 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 import { cn, englishDateFormat } from "@/lib/utils";
+import { handleFileUpload } from "@/lib/firebase-upload";
 
 const FormSchema = z.object({
   fleetId: z.number(),
@@ -43,16 +45,33 @@ const FormSchema = z.object({
   installationDate: z.string(),
   comments: z.string(),
   status: z.enum(["ACTIVE", "INACTIVE"]),
+  url: z.instanceof(File),
 });
+
+interface Values {
+  fleetId: number;
+  model: string;
+  licensePlate: string;
+  code: string;
+  renavam: string;
+  chassis: string;
+  year: string;
+  installationDate: Date;
+  comments: string;
+  status: "ACTIVE" | "INACTIVE";
+  url: File;
+}
 
 export default function VehicleUpdateForm({
   preloadedValues,
   id,
   fleets,
+  vehicle,
 }: {
-  preloadedValues: Vehicle;
+  preloadedValues: Values;
   id: number;
   fleets: Fleet[];
+  vehicle: Vehicle;
 }) {
   const data = {
     fleetId: preloadedValues.fleetId,
@@ -65,6 +84,7 @@ export default function VehicleUpdateForm({
     installationDate: englishDateFormat(preloadedValues.installationDate),
     comments: preloadedValues.comments,
     status: preloadedValues.status,
+    url: preloadedValues.url,
   };
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -73,8 +93,32 @@ export default function VehicleUpdateForm({
   const router = useRouter();
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    // upload anexo
+    const timestamp = new Date().toISOString();
+    let file;
+    if (data.url instanceof File && data.url.size > 0) {
+      const fileExtension = data.url.name.split(".").pop();
+      file = await handleFileUpload(
+        data.url,
+        `star-tracking/vehicles/foto-${timestamp}.${fileExtension}`
+      );
+    } else if (vehicle?.url) file = vehicle.url;
+    else file = "";
     try {
-      const response = await api.put(`vehicle/${id}`, data);
+      const info = {
+        url: file,
+        fleetId: data.fleetId,
+        model: data.model,
+        licensePlate: data.licensePlate,
+        code: data.code,
+        renavam: data.renavam,
+        chassis: data.chassis,
+        year: data.year,
+        installationDate: data.installationDate,
+        comments: data.comments,
+        status: data.status,
+      };
+      const response = await api.put(`vehicle/${id}`, info);
       if (response.status === 200) {
         router.push("/veiculos");
       }
@@ -115,7 +159,7 @@ export default function VehicleUpdateForm({
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="p-0">
+                <PopoverContent className="p-0 max-h-[60vh] overflow-x-auto">
                   <Command className="w-full">
                     <CommandInput placeholder="Buscar frota..." />
                     <CommandEmpty>Nenhum item encontrado.</CommandEmpty>
@@ -243,6 +287,27 @@ export default function VehicleUpdateForm({
               <FormControl>
                 <Input type="date" placeholder="Digite o ano" {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="url"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Anexo</FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  onChange={(e) =>
+                    field.onChange(e.target.files ? e.target.files[0] : null)
+                  }
+                />
+              </FormControl>
+              <FormDescription>
+                Não preencha esse campo se quiser manter o arquivo anterior
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}

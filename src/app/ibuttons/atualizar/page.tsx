@@ -13,6 +13,8 @@ interface Values {
   programmedField: string;
   comments: string;
   deviceStatusId: number;
+  url1: File;
+  url2: File;
 }
 
 export default function UpdateIButton() {
@@ -53,6 +55,8 @@ export default function UpdateIButton() {
         programmedField: ibutton?.programmedField || "",
         comments: ibutton?.comments || "",
         deviceStatusId: ibutton?.deviceStatusId || 1,
+        url1: new File([], ""),
+        url2: new File([], ""),
       });
     }
   }, [ibutton]);
@@ -62,11 +66,12 @@ export default function UpdateIButton() {
       <Menu />
       <section className="flex flex-col justify-center items-center mb-12">
         <h1 className="text-4xl mt-2 mb-4">Atualizar I Button</h1>
-        {values && deviceStatus ? (
+        {ibutton && values && deviceStatus ? (
           <IButtonUpdateForm
             preloadedValues={values}
             id={id}
             status={deviceStatus}
+            ibutton={ibutton}
           />
         ) : (
           <Loading />

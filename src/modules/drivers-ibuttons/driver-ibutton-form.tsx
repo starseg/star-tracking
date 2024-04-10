@@ -121,7 +121,7 @@ export default function DriverIButtonForm() {
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="p-0">
+                <PopoverContent className="p-0 max-h-[60vh] overflow-x-auto">
                   <Command className="w-full">
                     <CommandInput placeholder="Buscar motorista..." />
                     <CommandEmpty>Nenhum item encontrado.</CommandEmpty>
@@ -180,7 +180,7 @@ export default function DriverIButtonForm() {
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="p-0">
+                <PopoverContent className="p-0 max-h-[60vh] overflow-x-auto">
                   <Command className="w-full">
                     <CommandInput placeholder="Buscar IButton..." />
                     <CommandEmpty>Nenhum item encontrado.</CommandEmpty>

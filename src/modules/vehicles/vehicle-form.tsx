@@ -31,6 +31,7 @@ import { StringDateFormat, cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { Fleet } from "@prisma/client";
 import { Textarea } from "@/components/ui/textarea";
+import { handleFileUpload } from "@/lib/firebase-upload";
 
 const FormSchema = z.object({
   fleetId: z.number(),
@@ -42,9 +43,11 @@ const FormSchema = z.object({
   year: z.string(),
   installationDate: z.string(),
   comments: z.string(),
+  url: z.instanceof(File),
 });
 
 export default function VehicleForm() {
+  const [isSending, setIsSendind] = useState(false);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -57,6 +60,7 @@ export default function VehicleForm() {
       year: "",
       installationDate: "",
       comments: "",
+      url: new File([], ""),
     },
   });
   const router = useRouter();
@@ -76,14 +80,39 @@ export default function VehicleForm() {
   }, []);
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    setIsSendind(true);
+    const timestamp = new Date().toISOString();
+    // upload do arquivo
+    let file;
+    if (data.url instanceof File && data.url.size > 0) {
+      const fileExtension = data.url.name.split(".").pop();
+      file = await handleFileUpload(
+        data.url,
+        `star-tracking/vehicles/foto-${timestamp}.${fileExtension}`
+      );
+    } else file = "";
     try {
-      const response = await api.post("vehicle", data);
+      const info = {
+        url: file,
+        fleetId: data.fleetId,
+        model: data.model,
+        licensePlate: data.licensePlate,
+        code: data.code,
+        renavam: data.renavam,
+        chassis: data.chassis,
+        year: data.year,
+        installationDate: data.installationDate,
+        comments: data.comments,
+      };
+      const response = await api.post("vehicle", info);
       if (response.status === 201) {
         router.push("/veiculos");
       }
     } catch (error) {
       console.error("Erro ao enviar dados para a API:", error);
       throw error;
+    } finally {
+      setIsSendind(false);
     }
   };
 
@@ -118,7 +147,7 @@ export default function VehicleForm() {
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="p-0">
+                <PopoverContent className="p-0 max-h-[60vh] overflow-x-auto">
                   <Command className="w-full">
                     <CommandInput placeholder="Buscar frota..." />
                     <CommandEmpty>Nenhum item encontrado.</CommandEmpty>
@@ -249,6 +278,24 @@ export default function VehicleForm() {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="url"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Anexo (opcional)</FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  onChange={(e) =>
+                    field.onChange(e.target.files ? e.target.files[0] : null)
+                  }
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <FormField
           control={form.control}
@@ -266,8 +313,8 @@ export default function VehicleForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full text-lg">
-          Registrar
+        <Button type="submit" className="w-full text-lg" disabled={isSending}>
+          {isSending ? "Registrando..." : "Registrar"}
         </Button>
       </form>
     </Form>

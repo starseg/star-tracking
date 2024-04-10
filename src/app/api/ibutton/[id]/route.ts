@@ -9,6 +9,7 @@ export async function GET(
   const id = Number(params.id);
   const ibutton = await prisma.iButton.findFirst({
     where: { ibuttonId: id },
+    include: { deviceStatus: true },
   });
   if (ibutton) {
     return NextResponse.json({ ibutton }, { status: 200 });
@@ -52,6 +53,8 @@ export async function PUT(
           programmedField: data.programmedField,
           comments: data.comments,
           deviceStatusId: Number(data.deviceStatusId),
+          url1: data.url1,
+          url2: data.url2,
         },
       });
       return NextResponse.json({ data }, { status: 200 });

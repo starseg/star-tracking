@@ -7,8 +7,23 @@ import { Vehicle, Fleet } from "@prisma/client";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
+interface Values {
+  fleetId: number;
+  model: string;
+  licensePlate: string;
+  code: string;
+  renavam: string;
+  chassis: string;
+  year: string;
+  installationDate: Date;
+  comments: string;
+  status: "ACTIVE" | "INACTIVE";
+  url: File;
+}
+
 export default function UpdateVehicle() {
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
+  const [values, setValues] = useState<Values>();
 
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
@@ -36,16 +51,35 @@ export default function UpdateVehicle() {
     fetchFleets();
   }, []);
 
+  useEffect(() => {
+    if (vehicle) {
+      setValues({
+        fleetId: vehicle?.fleetId || 0,
+        model: vehicle?.model || "",
+        licensePlate: vehicle?.licensePlate || "",
+        code: vehicle?.code || "",
+        renavam: vehicle?.renavam || "",
+        chassis: vehicle?.chassis || "",
+        year: vehicle?.year || "",
+        installationDate: vehicle?.installationDate || "",
+        comments: vehicle?.comments || "",
+        url: new File([], ""),
+        status: vehicle?.status || "ACTIVE",
+      });
+    }
+  }, [vehicle]);
+
   return (
     <>
       <Menu />
       <section className="flex flex-col justify-center items-center mb-12">
         <h1 className="text-4xl mt-2 mb-4">Atualizar veículo</h1>
-        {vehicle && fleets ? (
+        {values && vehicle && fleets ? (
           <VehicleUpdateForm
-            preloadedValues={vehicle}
+            preloadedValues={values}
             id={id}
             fleets={fleets}
+            vehicle={vehicle}
           />
         ) : (
           <Loading />

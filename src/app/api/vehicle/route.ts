@@ -18,6 +18,7 @@ export async function POST(request: NextRequest) {
           installationDate: StringDateFormat(data.installationDate),
           comments: data.comments,
           fleetId: data.fleetId,
+          url: data.url,
         },
       });
       return NextResponse.json({ data }, { status: 201 });

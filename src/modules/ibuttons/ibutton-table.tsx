@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import {
   FilePlus,
+  MagnifyingGlass,
   PencilLine,
   RadioButton,
   Trash,
@@ -31,7 +32,6 @@ interface IButtonProps extends IButton {
 }
 
 export default function IButtonTable() {
-  // busca das frotas
   const [IButtons, setIButtons] = useState<IButtonProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -53,7 +53,7 @@ export default function IButtonTable() {
   useEffect(() => {
     fetch();
   }, [searchParams]);
-  // deletar frota
+
   const deleteIButton = async (id: number) => {
     Swal.fire({
       title: "Excluir IButton?",
@@ -116,6 +116,11 @@ export default function IButtonTable() {
                           {IButton.deviceStatus.description}
                         </TableCell>
                         <TableCell className="flex gap-4 text-2xl">
+                          <Link
+                            href={`/ibuttons/detalhes?id=${IButton.ibuttonId}`}
+                          >
+                            <MagnifyingGlass />
+                          </Link>
                           <Link
                             href={`/motoristas-ibuttons?query=${IButton.code}`}
                           >

@@ -1,6 +1,6 @@
 interface DetailsItemProps {
   label: string;
-  value: string | undefined;
+  value: string | undefined | null;
   fallback?: string;
 }
 export default function DetailsItem({

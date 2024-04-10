@@ -66,6 +66,7 @@ export async function PUT(
           comments: data.comments,
           fleetId: data.fleetId,
           status: data.status,
+          url: data.url,
         },
       });
       return NextResponse.json({ data }, { status: 200 });
