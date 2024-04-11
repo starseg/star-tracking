@@ -1,5 +1,5 @@
 "use client";
-import { Driver, Fleet } from "@prisma/client";
+import { Fleet } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -31,6 +31,8 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
+import { DriverValues } from "./services/interface";
+import { useState } from "react";
 
 const FormSchema = z.object({
   name: z.string(),
@@ -46,10 +48,11 @@ export default function DriverUpdateForm({
   id,
   fleets,
 }: {
-  preloadedValues: Driver;
+  preloadedValues: DriverValues;
   id: number;
   fleets: Fleet[];
 }) {
+  const [isSending, setIsSendind] = useState(false);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: preloadedValues,
@@ -57,6 +60,7 @@ export default function DriverUpdateForm({
   const router = useRouter();
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    setIsSendind(true);
     try {
       const response = await api.put(`driver/${id}`, data);
       if (response.status === 200) {
@@ -65,6 +69,8 @@ export default function DriverUpdateForm({
     } catch (error) {
       console.error("Erro ao enviar dados para a API:", error);
       throw error;
+    } finally {
+      setIsSendind(false);
     }
   };
 
@@ -223,8 +229,8 @@ export default function DriverUpdateForm({
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full text-lg">
-          Atualizar
+        <Button type="submit" className="w-full text-lg" disabled={isSending}>
+          {isSending ? "Atualizando..." : "Atualizar"}
         </Button>
       </form>
     </Form>

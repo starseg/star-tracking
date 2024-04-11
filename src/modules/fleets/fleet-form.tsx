@@ -14,6 +14,7 @@ import {
 import { useRouter } from "next/navigation";
 import api from "@/lib/axios";
 import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 const FormSchema = z.object({
   name: z.string(),
@@ -24,6 +25,7 @@ const FormSchema = z.object({
 });
 
 export default function FleetForm() {
+  const [isSending, setIsSendind] = useState(false);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -36,6 +38,7 @@ export default function FleetForm() {
   });
   const router = useRouter();
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    setIsSendind(true);
     try {
       const response = await api.post("fleet", data);
       if (response.status === 201) {
@@ -44,6 +47,8 @@ export default function FleetForm() {
     } catch (error) {
       console.error("Erro ao enviar dados para a API:", error);
       throw error;
+    } finally {
+      setIsSendind(false);
     }
   };
 
@@ -128,8 +133,8 @@ export default function FleetForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full text-lg">
-          Registrar
+        <Button type="submit" className="w-full text-lg" disabled={isSending}>
+          {isSending ? "Registrando..." : "Registrar"}
         </Button>
       </form>
     </Form>

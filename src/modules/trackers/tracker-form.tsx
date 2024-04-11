@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import api from "@/lib/axios";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
 
 const FormSchema = z.object({
   number: z.string(),
@@ -26,6 +27,7 @@ const FormSchema = z.object({
 });
 
 export default function TrackerForm() {
+  const [isSending, setIsSendind] = useState(false);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -39,6 +41,7 @@ export default function TrackerForm() {
   });
   const router = useRouter();
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    setIsSendind(true);
     try {
       const response = await api.post("tracker", data);
       if (response.status === 201) {
@@ -47,6 +50,8 @@ export default function TrackerForm() {
     } catch (error) {
       console.error("Erro ao enviar dados para a API:", error);
       throw error;
+    } finally {
+      setIsSendind(false);
     }
   };
 
@@ -137,8 +142,8 @@ export default function TrackerForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full text-lg">
-          Registrar
+        <Button type="submit" className="w-full text-lg" disabled={isSending}>
+          {isSending ? "Registrando..." : "Registrar"}
         </Button>
       </form>
     </Form>

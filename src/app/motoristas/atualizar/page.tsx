@@ -3,12 +3,13 @@ import Loading from "@/components/loading";
 import { Menu } from "@/components/menu";
 import api from "@/lib/axios";
 import DriverUpdateForm from "@/modules/drivers/driver-update-form";
-import { Driver, Fleet } from "@prisma/client";
+import { DriverValues } from "@/modules/drivers/services/interface";
+import { Fleet } from "@prisma/client";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function UpdateDriver() {
-  const [driver, setDriver] = useState<Driver | null>(null);
+  const [driver, setDriver] = useState<DriverValues | null>(null);
 
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);

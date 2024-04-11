@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/command";
 import { cn, englishDateFormat } from "@/lib/utils";
 import { handleFileUpload } from "@/lib/firebase-upload";
+import { useState } from "react";
 
 const FormSchema = z.object({
   fleetId: z.number(),
@@ -86,6 +87,7 @@ export default function VehicleUpdateForm({
     status: preloadedValues.status,
     url: preloadedValues.url,
   };
+  const [isSending, setIsSendind] = useState(false);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: data,
@@ -93,6 +95,7 @@ export default function VehicleUpdateForm({
   const router = useRouter();
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    setIsSendind(true);
     // upload anexo
     const timestamp = new Date().toISOString();
     let file;
@@ -125,6 +128,8 @@ export default function VehicleUpdateForm({
     } catch (error) {
       console.error("Erro ao enviar dados para a API:", error);
       throw error;
+    } finally {
+      setIsSendind(false);
     }
   };
 
@@ -358,8 +363,8 @@ export default function VehicleUpdateForm({
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full text-lg">
-          Atualizar
+        <Button type="submit" className="w-full text-lg" disabled={isSending}>
+          {isSending ? "Atualizando..." : "Atualizar"}
         </Button>
       </form>
     </Form>

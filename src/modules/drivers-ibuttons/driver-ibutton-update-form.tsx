@@ -34,6 +34,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Calendar } from "@/components/ui/calendar";
+import { useState } from "react";
 
 const FormSchema = z.object({
   driverId: z.number(),
@@ -55,6 +56,7 @@ export default function DriverIButtonUpdateForm({
   drivers: Driver[];
   ibuttons: IButton[];
 }) {
+  const [isSending, setIsSendind] = useState(false);
   const values = {
     driverId: preloadedValues.driverId,
     ibuttonId: preloadedValues.ibuttonId,
@@ -71,6 +73,7 @@ export default function DriverIButtonUpdateForm({
   const router = useRouter();
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    setIsSendind(true);
     if (data.status === "INACTIVE" && data.endDate === undefined) {
       data.endDate = new Date();
     }
@@ -90,6 +93,8 @@ export default function DriverIButtonUpdateForm({
     } catch (error) {
       console.error("Erro ao enviar dados para a API:", error);
       throw error;
+    } finally {
+      setIsSendind(false);
     }
   };
 
@@ -346,8 +351,8 @@ export default function DriverIButtonUpdateForm({
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full text-lg">
-          Atualizar
+        <Button type="submit" className="w-full text-lg" disabled={isSending}>
+          {isSending ? "Atualizando..." : "Atualizar"}
         </Button>
       </form>
     </Form>

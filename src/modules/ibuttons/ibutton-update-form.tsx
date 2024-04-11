@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { handleFileUpload } from "@/lib/firebase-upload";
+import { useState } from "react";
 
 const FormSchema = z.object({
   number: z.string(),
@@ -62,6 +63,7 @@ export default function IButtonUpdateForm({
   status: DeviceStatus[];
   ibutton: IButton;
 }) {
+  const [isSending, setIsSendind] = useState(false);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: preloadedValues,
@@ -69,6 +71,7 @@ export default function IButtonUpdateForm({
   const router = useRouter();
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    setIsSendind(true);
     const timestamp = new Date().toISOString();
     // upload imagem 1
     let file1;
@@ -106,6 +109,8 @@ export default function IButtonUpdateForm({
     } catch (error) {
       console.error("Erro ao enviar dados para a API:", error);
       throw error;
+    } finally {
+      setIsSendind(false);
     }
   };
 
@@ -275,8 +280,8 @@ export default function IButtonUpdateForm({
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full text-lg">
-          Atualizar
+        <Button type="submit" className="w-full text-lg" disabled={isSending}>
+          {isSending ? "Atualizando..." : "Atualizar"}
         </Button>
       </form>
     </Form>

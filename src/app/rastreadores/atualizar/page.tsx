@@ -2,13 +2,14 @@
 import Loading from "@/components/loading";
 import { Menu } from "@/components/menu";
 import api from "@/lib/axios";
+import { TrackerValues } from "@/modules/trackers/services/interface";
 import TrackerUpdateForm from "@/modules/trackers/tracker-update-form";
-import { DeviceStatus, Tracker } from "@prisma/client";
+import { DeviceStatus } from "@prisma/client";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function UpdateTracker() {
-  const [tracker, setTracker] = useState<Tracker | null>(null);
+  const [tracker, setTracker] = useState<TrackerValues | null>(null);
   const [deviceStatus, setDeviceStatus] = useState<DeviceStatus[] | null>(null);
 
   const searchParams = useSearchParams();

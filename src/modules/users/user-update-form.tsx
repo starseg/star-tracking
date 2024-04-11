@@ -15,23 +15,9 @@ import {
 import { useRouter } from "next/navigation";
 import api from "@/lib/axios";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Check, ChevronsUpDown } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import { cn } from "@/lib/utils";
 import { InputPassword } from "../auth/components/input-password";
+import { useState } from "react";
 
 const FormSchema = z.object({
   name: z.string().min(5, {
@@ -54,6 +40,7 @@ export default function UserUpdateForm({
   preloadedValues: User;
   id: number;
 }) {
+  const [isSending, setIsSendind] = useState(false);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: preloadedValues,
@@ -61,6 +48,7 @@ export default function UserUpdateForm({
   const router = useRouter();
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    setIsSendind(true);
     try {
       const response = await api.put(`users/${id}`, data);
       if (response.status === 200) {
@@ -69,6 +57,8 @@ export default function UserUpdateForm({
     } catch (error) {
       console.error("Erro ao enviar dados para a API:", error);
       throw error;
+    } finally {
+      setIsSendind(false);
     }
   };
 
@@ -180,8 +170,8 @@ export default function UserUpdateForm({
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full text-lg">
-          Atualizar
+        <Button type="submit" className="w-full text-lg" disabled={isSending}>
+          {isSending ? "Atualizando..." : "Atualizar"}
         </Button>
       </form>
     </Form>

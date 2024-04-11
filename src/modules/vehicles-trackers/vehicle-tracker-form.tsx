@@ -38,6 +38,7 @@ const FormSchema = z.object({
 });
 
 export default function VehicleTrackerForm() {
+  const [isSending, setIsSendind] = useState(false);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -73,6 +74,7 @@ export default function VehicleTrackerForm() {
   }, []);
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    setIsSendind(true);
     try {
       const response = await api.post("vehicle-tracker", data);
       if (response.status === 201) {
@@ -86,6 +88,8 @@ export default function VehicleTrackerForm() {
     } catch (error) {
       console.error("Erro ao enviar dados para a API:", error);
       throw error;
+    } finally {
+      setIsSendind(false);
     }
   };
 
@@ -237,8 +241,8 @@ export default function VehicleTrackerForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full text-lg">
-          Registrar
+        <Button type="submit" className="w-full text-lg" disabled={isSending}>
+          {isSending ? "Registrando..." : "Registrar"}
         </Button>
       </form>
     </Form>
