@@ -96,7 +96,7 @@ export default function DriverTable() {
         <SkeletonTable />
       ) : (
         <>
-          <div className="max-h-[60vh] overflow-x-auto">
+          <div className="max-h-[60vh] overflow-y-auto">
             <Table className="border border-stone-800">
               <TableHeader className="bg-stone-800 font-semibold">
                 <TableRow>
