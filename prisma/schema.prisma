@@ -90,7 +90,7 @@ model FleetEmail {
 model Driver {
   driverId Int     @id @default(autoincrement())
   name     String
-  cpf      String  @unique
+  cpf      String
   cnh      String
   comments String? @db.VarChar(500)
   status   Status  @default(ACTIVE)
@@ -104,7 +104,7 @@ model Driver {
 model Vehicle {
   vehicleId        Int      @id @default(autoincrement())
   model            String
-  licensePlate     String   @unique
+  licensePlate     String
   code             String
   renavam          String
   chassis          String
