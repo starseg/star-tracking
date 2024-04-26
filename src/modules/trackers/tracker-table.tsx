@@ -24,6 +24,12 @@ import api from "@/lib/axios";
 import Swal from "sweetalert2";
 import { useSearchParams } from "next/navigation";
 import { SkeletonTable } from "@/components/skeletons/skeleton-table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface TrackerProps extends Tracker {
   deviceStatus: {
@@ -111,9 +117,35 @@ export default function TrackerTable() {
                       <TableRow key={tracker.trackerId}>
                         <TableCell>{tracker.trackerId}</TableCell>
                         <TableCell>{tracker.number}</TableCell>
-                        <TableCell>{tracker.model}</TableCell>
+                        <TableCell>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <button className="max-w-[12ch] text-ellipsis overflow-hidden whitespace-nowrap">
+                                  {tracker.model}
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-[300px] border-primary bg-stone-800 p-4 break-words">
+                                <p>{tracker.model}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </TableCell>
                         <TableCell>{tracker.chipOperator}</TableCell>
-                        <TableCell>{tracker.iccid}</TableCell>
+                        <TableCell>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <button className="max-w-[12ch] text-ellipsis overflow-hidden whitespace-nowrap">
+                                  {tracker.iccid}
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-[300px] border-primary bg-stone-800 p-4 break-words">
+                                <p>{tracker.iccid}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </TableCell>
                         <TableCell>{tracker.output}</TableCell>
                         <TableCell>
                           {tracker.comments ? tracker.comments : "Nenhuma"}

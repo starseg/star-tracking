@@ -28,6 +28,12 @@ import { SkeletonTable } from "@/components/skeletons/skeleton-table";
 import { dateFormat } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { vehicleReport } from "@/lib/generate-pdf";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface VehicleData extends Vehicle {
   fleet: {
@@ -97,7 +103,7 @@ export default function VehicleTable() {
         <>
           <div className="max-h-[60vh] overflow-y-auto">
             <Table className="border border-stone-800">
-              <TableHeader className="bg-stone-800 font-semibold">
+              <TableHeader className="sticky top-0 bg-stone-800 font-semibold">
                 <TableRow>
                   <TableHead>Frota</TableHead>
                   <TableHead>Placa</TableHead>
@@ -120,11 +126,35 @@ export default function VehicleTable() {
                           className="font-bold"
                           style={{ color: vehicle.fleet.color }}
                         >
-                          {vehicle.fleet.name}
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <button className="max-w-[18ch] text-ellipsis overflow-hidden whitespace-nowrap">
+                                  {vehicle.fleet.name}
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-[300px] border-primary bg-stone-800 p-4 break-words">
+                                <p>{vehicle.fleet.name}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </TableCell>
                         <TableCell>{vehicle.licensePlate}</TableCell>
                         <TableCell>{vehicle.code}</TableCell>
-                        <TableCell>{vehicle.model}</TableCell>
+                        <TableCell>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <button className="max-w-[15ch] text-ellipsis overflow-hidden whitespace-nowrap">
+                                  {vehicle.model}
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-[300px] border-primary bg-stone-800 p-4 break-words">
+                                <p>{vehicle.model}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </TableCell>
                         <TableCell>{vehicle.year}</TableCell>
                         <TableCell>
                           {dateFormat(vehicle.installationDate)}
