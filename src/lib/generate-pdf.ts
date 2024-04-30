@@ -1,4 +1,4 @@
-import { DriverIButton, Vehicle } from "@prisma/client";
+import { DriverIButton, Vehicle, Driver } from "@prisma/client";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { dateFormat } from "./utils";
@@ -16,6 +16,12 @@ interface DriverIButtonProps extends DriverIButton {
   ibutton: {
     number: string;
     code: string;
+  };
+}
+
+interface DriverProps extends Driver {
+  fleet: {
+    name: string;
   };
 }
 
@@ -81,7 +87,7 @@ export const vehicleReport = (data: VehicleProps[]) => {
 export const driversIButtonsReport = (data: DriverIButtonProps[]) => {
   const doc = new jsPDF({ orientation: "landscape" });
 
-  doc.text(`Relatório de veículos monitorados - STAR SEG`, 15, 10);
+  doc.text(`Relatório de motoristas + IButtons - STAR SEG`, 15, 10);
 
   const headers = [
     "IButton",
@@ -97,7 +103,7 @@ export const driversIButtonsReport = (data: DriverIButtonProps[]) => {
       ibutton,
       row.driver.name,
       dateFormat(row.startDate),
-      row.comments,
+      row.comments ? row.comments : "Nenhuma",
       row.status === "ACTIVE" ? "Ativo" : "Inativo",
     ];
   });
@@ -130,4 +136,52 @@ export const driversIButtonsReport = (data: DriverIButtonProps[]) => {
   // doc.table(10, 30, tableRows, headers, { autoSize: true });
 
   doc.save(`Relatório_Motoristas-IButtons_-_Star_Seg.pdf`);
+};
+
+export const driversReport = (data: DriverProps[]) => {
+  const doc = new jsPDF({ orientation: "landscape" });
+
+  doc.text(`Relatório de motoristas - STAR SEG`, 15, 10);
+
+  const headers = ["Frota", "Nome", "CPF", "CNH", "Observação", "Status"];
+
+  const tableData = data.map((row) => {
+    return [
+      row.fleet.name,
+      row.name,
+      row.cpf,
+      row.cnh,
+      row.comments ? row.comments : "Nenhuma",
+      row.status === "ACTIVE" ? "Ativo" : "Inativo",
+    ];
+  });
+
+  // Transforme os dados em objetos
+  const tableRows = tableData.map((row) => {
+    const obj: { [key: string]: string } = {};
+    headers.forEach((header, index) => {
+      obj[header] = row[index];
+    });
+    return obj;
+  });
+
+  doc.setFontSize(12);
+
+  const columnWidths = [40, 40, 30, 30, 40, 30];
+  autoTable(doc, {
+    body: tableRows,
+    columns: headers.map((header, index) => ({
+      header,
+      dataKey: header,
+      width: columnWidths[index],
+    })),
+    margin: { top: 25 },
+    startY: 25,
+    theme: "striped", // Pode ajustar conforme preferir
+  });
+
+  // Insira a tabela no documento PDF
+  // doc.table(10, 30, tableRows, headers, { autoSize: true });
+
+  doc.save(`Relatório_Motoristas_-_Star_Seg.pdf`);
 };
