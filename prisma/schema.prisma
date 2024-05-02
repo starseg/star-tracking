@@ -33,7 +33,7 @@ model IButton {
   number          String
   code            String
   programmedField String
-  comments        String? @db.VarChar(500)
+  comments        String? @db.VarChar(2000)
   url1            String?
   url2            String?
 
@@ -50,7 +50,7 @@ model Tracker {
   chipOperator String
   iccid        String
   output       String
-  comments     String? @db.VarChar(500)
+  comments     String? @db.VarChar(2000)
 
   deviceStatus   DeviceStatus @relation(fields: [deviceStatusId], references: [deviceStatusId])
   deviceStatusId Int          @default(1)
@@ -92,7 +92,7 @@ model Driver {
   name     String
   cpf      String
   cnh      String
-  comments String? @db.VarChar(500)
+  comments String? @db.VarChar(2000)
   status   Status  @default(ACTIVE)
 
   fleet   Fleet @relation(fields: [fleetId], references: [fleetId])
@@ -110,7 +110,7 @@ model Vehicle {
   chassis          String
   year             String
   installationDate DateTime
-  comments         String?  @db.VarChar(500)
+  comments         String?  @db.VarChar(2000)
   url              String?
   status           Status   @default(ACTIVE)
 
@@ -135,7 +135,7 @@ model ComunicationProblem {
 model ComunicationDescription {
   comunicationDescriptionId Int      @id @default(autoincrement())
   date                      DateTime
-  description               String   @db.VarChar(500)
+  description               String   @db.VarChar(2000)
 
   user   User @relation(fields: [userId], references: [userId])
   userId Int
@@ -149,7 +149,7 @@ model DriverIButton {
   status          Status    @default(ACTIVE)
   startDate       DateTime  @default(now())
   endDate         DateTime? @db.Timestamp(0)
-  comments        String
+  comments        String    @db.VarChar(2000)
 
   driver   Driver @relation(fields: [driverId], references: [driverId])
   driverId Int
@@ -163,7 +163,7 @@ model VehicleTracker {
   status           Status    @default(ACTIVE)
   startDate        DateTime  @default(now())
   endDate          DateTime? @db.Timestamp(0)
-  comments         String
+  comments         String    @db.VarChar(2000)
 
   vehicle   Vehicle @relation(fields: [vehicleId], references: [vehicleId])
   vehicleId Int
