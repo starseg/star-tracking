@@ -35,7 +35,7 @@ export default function UpdateIButton() {
   };
   const status = async () => {
     try {
-      const response = await api.get("deviceStatus");
+      const response = await api.get("device-status");
       setDeviceStatus(response.data);
     } catch (error) {
       console.error("Erro ao obter dados:", error);

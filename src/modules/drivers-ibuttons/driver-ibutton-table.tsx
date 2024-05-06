@@ -44,7 +44,6 @@ interface DriverIButtonData extends DriverIButton {
 }
 
 export default function DriverIButtonTable() {
-  // busca das frotas
   const [driversIButtons, setDriversIButtons] = useState<DriverIButtonData[]>(
     []
   );

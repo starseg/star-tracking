@@ -64,7 +64,7 @@ export default function DriverTable() {
   useEffect(() => {
     fetch();
   }, [searchParams]);
-  // deletar frota
+
   const deleteDriver = async (id: number) => {
     Swal.fire({
       title: "Excluir motorista?",
