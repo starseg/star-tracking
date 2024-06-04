@@ -44,8 +44,25 @@ Este é um projeto desenvolvido com Next.js 14, TypeScript, Prisma ORM e MySQL, 
    ```
 
 3. **Execução:**
+
    ```bash
    npm run dev
+   ```
+
+4. **Deploy:**
+   Dentro do servidor VPS, é utilzada a ferramenta pm2 para gerenciar o run de pacotes. Como esta aplicação é um mono-repo, basta rodar um comando de build e depois utilizar os comandos do pm2 listados abaixo.
+   Mais informações em: https://pm2.keymetrics.io/.
+
+   ```bash
+   pm2 start --name "star-tracking" -p 3001
+
+   pm2 restart star-tracking
+
+   pm2 stop star-tracking
+
+   pm2 delete star-tracking
+
+   pm2 status
    ```
 
 (Obs: é necessário configurar um banco de dados para rodar o projeto)
