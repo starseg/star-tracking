@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
   if (!query) {
     ibuttons = await prisma.iButton.findMany({
       include: { deviceStatus: true },
-      orderBy: [{ deviceStatusId: "asc" }, { ibuttonId: "asc" }],
+      orderBy: [{ deviceStatusId: "asc" }, { programmedField: "desc" }],
     });
   } else {
     ibuttons = await prisma.iButton.findMany({

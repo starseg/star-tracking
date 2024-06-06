@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
   if (!query) {
     vehicles = await prisma.vehicle.findMany({
       include: { fleet: true },
-      orderBy: [{ status: "asc" }, { licensePlate: "asc" }],
+      orderBy: [{ status: "asc" }, { fleet: { name: "asc" } }],
     });
   } else {
     vehicles = await prisma.vehicle.findMany({

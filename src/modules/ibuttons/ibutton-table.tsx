@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import {
   FilePlus,
+  FileXls,
   MagnifyingGlass,
   PencilLine,
   RadioButton,
@@ -23,6 +24,8 @@ import api from "@/lib/axios";
 import Swal from "sweetalert2";
 import { useSearchParams } from "next/navigation";
 import { SkeletonTable } from "@/components/skeletons/skeleton-table";
+import * as XLSX from "xlsx";
+import { format } from "date-fns";
 
 interface IButtonProps extends IButton {
   deviceStatus: {
@@ -45,6 +48,7 @@ export default function IButtonTable() {
       else path = `ibutton?query=${params.get("query")}`;
       const response = await api.get(path);
       setIButtons(response.data);
+      // console.log(response.data);
       setIsLoading(false);
     } catch (error) {
       console.error("Erro ao obter dados:", error);
@@ -79,6 +83,35 @@ export default function IButtonTable() {
         }
       }
     });
+  };
+
+  const handleDownloadExcel = () => {
+    const formattedIButtons = IButtons.map((ibutton) => ({
+      numero: ibutton.number,
+      codigo: ibutton.code,
+      campo_prog: ibutton.programmedField,
+      observacoes: ibutton.comments ? ibutton.comments : "nenhuma",
+      status: ibutton.deviceStatus.description,
+    }));
+    const worksheet = XLSX.utils.json_to_sheet(formattedIButtons);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+    // Gera um arquivo Excel e cria um link temporário para download
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const date = format(new Date(), "dd-MM-yyyy");
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `relatorio-ibuttons-${date}.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -163,6 +196,12 @@ export default function IButtonTable() {
                   <UserCircle size={24} /> + <RadioButton size={24} />
                 </Button>
               </Link>
+              <Button
+                className="flex gap-2 font-semibold"
+                onClick={handleDownloadExcel}
+              >
+                <FileXls size={24} /> Relatório
+              </Button>
             </div>
             <div className="py-2 px-6 rounded-md bg-muted">
               Total: {IButtons.length}
