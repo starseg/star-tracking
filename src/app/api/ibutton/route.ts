@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
   if (!query) {
     ibuttons = await prisma.iButton.findMany({
       include: { deviceStatus: true },
-      orderBy: [{ deviceStatusId: "asc" }, { programmedField: "desc" }],
+      orderBy: [{ code: "asc" }, { programmedField: "desc" }],
     });
   } else {
     ibuttons = await prisma.iButton.findMany({
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
         ],
       },
       include: { deviceStatus: true },
-      orderBy: [{ deviceStatusId: "asc" }, { ibuttonId: "asc" }],
+      orderBy: [{ code: "asc" }, { programmedField: "desc" }],
     });
   }
   return NextResponse.json(ibuttons);

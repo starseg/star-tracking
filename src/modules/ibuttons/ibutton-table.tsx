@@ -26,6 +26,8 @@ import { useSearchParams } from "next/navigation";
 import { SkeletonTable } from "@/components/skeletons/skeleton-table";
 import * as XLSX from "xlsx";
 import { format } from "date-fns";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 interface IButtonProps extends IButton {
   deviceStatus: {
@@ -37,6 +39,7 @@ interface IButtonProps extends IButton {
 export default function IButtonTable() {
   const [IButtons, setIButtons] = useState<IButtonProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSorted, setIsSorted] = useState(false);
 
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
@@ -46,9 +49,10 @@ export default function IButtonTable() {
       let path;
       if (!params.get("query")) path = "ibutton";
       else path = `ibutton?query=${params.get("query")}`;
-      const response = await api.get(path);
-      setIButtons(response.data);
-      // console.log(response.data);
+      const response = await api.get<IButtonProps[]>(path);
+      let data = response.data;
+
+      setIButtons(data);
       setIsLoading(false);
     } catch (error) {
       console.error("Erro ao obter dados:", error);
@@ -112,6 +116,21 @@ export default function IButtonTable() {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+  };
+
+  const orderByProgFieldChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setIsSorted(event.target.checked);
+    if (event.target.checked) {
+      setIButtons((prevIButtons) =>
+        [...prevIButtons].sort(
+          (a, b) => Number(b.programmedField) - Number(a.programmedField)
+        )
+      );
+    } else {
+      fetch();
+    }
   };
 
   return (
@@ -202,6 +221,14 @@ export default function IButtonTable() {
               >
                 <FileXls size={24} /> Relatório
               </Button>
+              <div className="flex gap-2 items-center p-2 border rounded">
+                <input
+                  type="checkbox"
+                  checked={isSorted}
+                  onChange={orderByProgFieldChange}
+                />
+                <Label>Ordenar por campo programado</Label>
+              </div>
             </div>
             <div className="py-2 px-6 rounded-md bg-muted">
               Total: {IButtons.length}
