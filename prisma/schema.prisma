@@ -68,6 +68,7 @@ model Fleet {
   vehicle      Vehicle[]
   fleetContact FleetContact[]
   fleetEmail   FleetEmail[]
+  fleetLogin   FleetLogin[]
 }
 
 model FleetContact {
@@ -82,6 +83,16 @@ model FleetContact {
 model FleetEmail {
   fleetEmailId Int    @id @default(autoincrement())
   email        String
+
+  fleet   Fleet @relation(fields: [fleetId], references: [fleetId], onDelete: Cascade)
+  fleetId Int
+}
+
+model FleetLogin {
+  fleetLoginId Int    @id @default(autoincrement())
+  login        String
+  password     String
+  accessTo     String
 
   fleet   Fleet @relation(fields: [fleetId], references: [fleetId], onDelete: Cascade)
   fleetId Int

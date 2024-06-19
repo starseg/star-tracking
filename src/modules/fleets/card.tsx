@@ -37,6 +37,7 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Toast } from "@/lib/utils";
 import "react-toastify/dist/ReactToastify.css";
+import { Textarea } from "@/components/ui/textarea";
 
 interface FleetCardProps {
   fleet: FleetProps;
@@ -49,6 +50,11 @@ const ContactFormSchema = z.object({
 });
 const EmailFormSchema = z.object({
   email: z.string(),
+});
+const LoginFormSchema = z.object({
+  login: z.string(),
+  password: z.string(),
+  accessTo: z.string(),
 });
 
 export default function FleetCard({ fleet, fetchData }: FleetCardProps) {
@@ -64,6 +70,15 @@ export default function FleetCard({ fleet, fetchData }: FleetCardProps) {
     resolver: zodResolver(EmailFormSchema),
     defaultValues: {
       email: "",
+    },
+  });
+
+  const loginForm = useForm<z.infer<typeof LoginFormSchema>>({
+    resolver: zodResolver(LoginFormSchema),
+    defaultValues: {
+      login: "",
+      password: "",
+      accessTo: "",
     },
   });
 
@@ -101,6 +116,30 @@ export default function FleetCard({ fleet, fetchData }: FleetCardProps) {
       }
       emailForm.reset({
         email: "",
+      });
+      Toast("registro criado!", "success");
+    } catch (error) {
+      console.error("Erro ao enviar dados para a API:", error);
+      throw error;
+    }
+  };
+
+  const loginOnSubmit = async (data: z.infer<typeof LoginFormSchema>) => {
+    const values = {
+      fleetId: fleet.fleetId,
+      login: data.login,
+      password: data.password,
+      accessTo: data.accessTo,
+    };
+    try {
+      const response = await api.post("fleet/login", values);
+      if (response.status === 201) {
+        fetchData();
+      }
+      loginForm.reset({
+        login: "",
+        password: "",
+        accessTo: "",
       });
       Toast("registro criado!", "success");
     } catch (error) {
@@ -302,6 +341,104 @@ export default function FleetCard({ fleet, fetchData }: FleetCardProps) {
                   <button
                     title="Excluir email"
                     onClick={() => deleteItem(item.fleetEmailId, "fleet/email")}
+                  >
+                    <Trash size={20} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* LOGIN */}
+      <Separator className="my-1" />
+      <div className="flex gap-2 items-center mt-2">
+        <p className="text-lg font-semibold">Logins</p>
+        <Dialog>
+          <DialogTrigger asChild>
+            <button
+              title="Adicionar novo"
+              className="underline text-primary transition-colors"
+            >
+              + adicionar novo
+            </button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <Form {...loginForm}>
+              <form
+                onSubmit={loginForm.handleSubmit(loginOnSubmit)}
+                className="space-y-4"
+              >
+                <DialogHeader>
+                  <DialogTitle>Criar novo login</DialogTitle>
+                  <DialogDescription>
+                    Adicione o login, a senha e o que esta pessoa pode acessar.
+                  </DialogDescription>
+                </DialogHeader>
+                <FormField
+                  control={loginForm.control}
+                  name="login"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Login</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Digite o login" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={loginForm.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Senha</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Digite a senha" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={loginForm.control}
+                  name="accessTo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Acesso a</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Digite ao que este login dá acesso"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <DialogFooter>
+                  <Button type="submit">Registrar</Button>
+                </DialogFooter>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
+      </div>
+      <div>
+        {fleet.fleetLogin.map((item) => {
+          return (
+            <div key={item.fleetLoginId}>
+              <div className="flex justify-between items-center py-1 border-b">
+                <p className="text-stone-200">
+                  {item.login} - {item.password}
+                </p>
+                <p className="text-stone-200">{item.accessTo}</p>
+                <div>
+                  <button
+                    title="Excluir login"
+                    onClick={() => deleteItem(item.fleetLoginId, "fleet/login")}
                   >
                     <Trash size={20} />
                   </button>

@@ -82,13 +82,11 @@ export default function DriverIButtonUpdateForm({
       const response = await api.put(`driver-ibutton/${id}`, data);
       if (response.status === 200) {
         if (data.status === "INACTIVE") {
-          const ibutton = await api.put(`ibutton/${data.ibuttonId}`, {
+          await api.put(`ibutton/${data.ibuttonId}`, {
             deviceStatusId: 1,
           });
-          if (ibutton.status === 200) {
-            router.push("/motoristas-ibuttons");
-          }
         }
+        router.back();
       }
     } catch (error) {
       console.error("Erro ao enviar dados para a API:", error);

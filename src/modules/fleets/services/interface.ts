@@ -10,4 +10,10 @@ export interface FleetProps extends Fleet {
     fleetEmailId: number;
     email: string;
   }[];
+  fleetLogin: {
+    fleetLoginId: number;
+    login: string;
+    password: string;
+    accessTo: string;
+  }[];
 }

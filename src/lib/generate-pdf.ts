@@ -2,6 +2,7 @@ import { DriverIButton, Vehicle, Driver } from "@prisma/client";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { dateFormat } from "./utils";
+import { subDays } from "date-fns";
 
 interface VehicleProps extends Vehicle {
   fleet: {
@@ -84,7 +85,11 @@ export const vehicleReport = (data: VehicleProps[]) => {
   doc.save(`Relatório_de_veículos_-_Star_Seg.pdf`);
 };
 
-export const driversIButtonsReport = (data: DriverIButtonProps[]) => {
+export const driversIButtonsReport = (
+  data: DriverIButtonProps[],
+  active: boolean,
+  lastMonthOnly: boolean
+) => {
   const doc = new jsPDF({ orientation: "landscape" });
 
   doc.text(`Relatório de motoristas + IButtons - STAR SEG`, 15, 10);
@@ -97,16 +102,27 @@ export const driversIButtonsReport = (data: DriverIButtonProps[]) => {
     "Status",
   ];
 
-  const tableData = data.map((row) => {
-    const ibutton = `${row.ibutton.code} - ${row.ibutton.number}`;
-    return [
-      ibutton,
-      row.driver.name,
-      dateFormat(row.startDate),
-      row.comments ? row.comments : "Nenhuma",
-      row.status === "ACTIVE" ? "Ativo" : "Inativo",
-    ];
-  });
+  const oneMonthAgo = subDays(new Date(), 30);
+
+  const tableData = data
+    .filter((row) => {
+      const startDate = new Date(row.startDate);
+
+      if (active && row.status === "INACTIVE") return false;
+      if (lastMonthOnly && startDate < oneMonthAgo) return false;
+
+      return true;
+    })
+    .map((row) => {
+      const ibutton = `${row.ibutton.code} - ${row.ibutton.number}`;
+      return [
+        ibutton,
+        row.driver.name,
+        dateFormat(row.startDate),
+        row.comments ? row.comments : "Nenhuma",
+        row.status === "ACTIVE" ? "Ativo" : "Inativo",
+      ];
+    });
 
   // Transforme os dados em objetos
   const tableRows = tableData.map((row) => {

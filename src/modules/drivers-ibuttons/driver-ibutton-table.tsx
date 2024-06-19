@@ -32,6 +32,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { dateFormat } from "@/lib/utils";
 import { driversIButtonsReport } from "@/lib/generate-pdf";
+import { subDays } from "date-fns";
 
 interface DriverIButtonData extends DriverIButton {
   driver: {
@@ -49,7 +50,10 @@ export default function DriverIButtonTable() {
   );
   const [isLoading, setIsLoading] = useState(true);
   const [active, setActive] = useState(false);
+  const [lastMonthOnly, setLastMonthOnly] = useState(false);
+
   let count = 0;
+  const oneMonthAgo = subDays(new Date(), 30);
 
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
@@ -119,6 +123,8 @@ export default function DriverIButtonTable() {
                 {driversIButtons.length > 0 ? (
                   driversIButtons.map((item) => {
                     if (active && item.status === "INACTIVE") return;
+                    const startDate = new Date(item.startDate);
+                    if (lastMonthOnly && startDate < oneMonthAgo) return;
                     count++;
                     return (
                       <TableRow key={item.driverIButtonId}>
@@ -200,7 +206,9 @@ export default function DriverIButtonTable() {
               </Link>
               <Button
                 className="flex gap-2 font-semibold"
-                onClick={() => driversIButtonsReport(driversIButtons)}
+                onClick={() =>
+                  driversIButtonsReport(driversIButtons, active, lastMonthOnly)
+                }
               >
                 <FilePdf size={24} /> Relatório
               </Button>
@@ -214,6 +222,18 @@ export default function DriverIButtonTable() {
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
                   Apenas ATIVOS
+                </label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="statusFilter"
+                  onClick={() => setLastMonthOnly(!lastMonthOnly)}
+                />
+                <label
+                  htmlFor="statusFilter"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Último mês
                 </label>
               </div>
             </div>

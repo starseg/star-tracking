@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
   let fleets;
   if (!query) {
     fleets = await prisma.fleet.findMany({
-      include: { fleetContact: true, fleetEmail: true },
+      include: { fleetContact: true, fleetEmail: true, fleetLogin: true },
       orderBy: [{ status: "asc" }, { name: "asc" }],
     });
   } else {
@@ -52,6 +52,7 @@ export async function GET(request: NextRequest) {
       include: {
         fleetContact: true,
         fleetEmail: true,
+        fleetLogin: true,
       },
       where: {
         OR: [
@@ -63,6 +64,7 @@ export async function GET(request: NextRequest) {
             },
           },
           { fleetEmail: { some: { email: { contains: query as string } } } },
+          { fleetLogin: { some: { login: { contains: query as string } } } },
         ],
       },
       orderBy: [{ status: "asc" }, { name: "asc" }],
