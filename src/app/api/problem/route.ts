@@ -77,6 +77,7 @@ export async function GET(request: NextRequest) {
         },
         comunicationDescription: {
           select: {
+            comunicationDescriptionId: true,
             description: true,
             date: true,
             userId: true,

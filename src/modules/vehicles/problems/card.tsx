@@ -173,13 +173,13 @@ export default function ProblemCard({ problem, fetchData }: ProblemCardProps) {
     <div>
       <div className="flex justify-between">
         <p className="font-semibold">Veículo</p>
-        <p>
+        <div>
           {problem.status === "ACTIVE" ? (
             <p className="text-red-400">Problema ativo</p>
           ) : (
             <p className="text-green-400">Problema resolvido</p>
           )}
-        </p>
+        </div>
       </div>
       <div className="flex justify-between py-2 border-b border-stone-50">
         <p>
