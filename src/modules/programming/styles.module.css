@@ -1,0 +1,17 @@
+/* styles.module.css */
+.quill-container {
+  position: relative;
+  height: 80vh; /* Ajuste conforme necessário */
+}
+
+.quill-editor {
+  height: calc(
+    100% - 42px
+  ); /* Ajuste conforme necessário para a altura da toolbar */
+}
+
+.ql-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* Ajuste conforme necessário */
+}

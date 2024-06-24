@@ -2,6 +2,7 @@
 import { Menu } from "@/components/menu";
 import ModuleButton from "@/components/moduleButton";
 import {
+  CodeBlock,
   Cpu,
   Footprints,
   RadioButton,
@@ -18,7 +19,7 @@ export default function Home() {
         <h1 className="text-4xl flex gap-2 items-center mb-8 px-2 hover:animate-bounce hover:text-primary transition-all">
           <Footprints weight="fill" /> Rastreamento
         </h1>
-        <div className="flex gap-16 flex-wrap items-center justify-center">
+        <div className="flex gap-16 flex-wrap items-center px-4">
           <ModuleButton url="motoristas">
             <UserCircle /> Motoristas
           </ModuleButton>
@@ -39,6 +40,9 @@ export default function Home() {
           </ModuleButton>
           <ModuleButton url="frotas">
             <UsersThree /> Frotas
+          </ModuleButton>
+          <ModuleButton url="programacao">
+            <CodeBlock /> Programação
           </ModuleButton>
         </div>
       </main>

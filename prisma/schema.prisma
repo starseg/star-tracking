@@ -183,6 +183,13 @@ model VehicleTracker {
   trackerId Int
 }
 
+model Programming {
+  programmingId Int      @id @default(autoincrement())
+  text          String   @db.LongText
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
 enum Status {
   ACTIVE
   INACTIVE
