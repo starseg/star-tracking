@@ -190,6 +190,14 @@ model Programming {
   updatedAt     DateTime @updatedAt
 }
 
+model Declaration {
+  declarationId Int      @id @default(autoincrement())
+  title         String
+  url           String   @db.VarChar(255)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
 enum Status {
   ACTIVE
   INACTIVE

@@ -5,6 +5,7 @@ import {
   CodeBlock,
   Cpu,
   Footprints,
+  Note,
   RadioButton,
   Truck,
   UserCircle,
@@ -43,6 +44,9 @@ export default function Home() {
           </ModuleButton>
           <ModuleButton url="programacao">
             <CodeBlock /> Programação
+          </ModuleButton>
+          <ModuleButton url="declaracoes">
+            <Note /> Declarações
           </ModuleButton>
         </div>
       </main>
