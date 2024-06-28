@@ -45,9 +45,9 @@ export default function Home() {
           <ModuleButton url="programacao">
             <CodeBlock /> Programação
           </ModuleButton>
-          <ModuleButton url="declaracoes">
+          {/* <ModuleButton url="declaracoes">
             <Note /> Declarações
-          </ModuleButton>
+          </ModuleButton> */}
         </div>
       </main>
     </>

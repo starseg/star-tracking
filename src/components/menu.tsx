@@ -11,7 +11,9 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowLeft,
+  CodeBlock,
   Cpu,
+  GoogleDriveLogo,
   List,
   RadioButton,
   SignOut,
@@ -106,6 +108,15 @@ export function Menu({ url = "" }: { url?: string }) {
 
           <DropdownMenuItem>
             <Link
+              href="/programacao"
+              className="flex items-center justify-center gap-2"
+            >
+              <CodeBlock size={24} /> Programação
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem>
+            <Link
               href="/motoristas-ibuttons"
               className="flex items-center justify-center gap-2"
             >
@@ -122,6 +133,45 @@ export function Menu({ url = "" }: { url?: string }) {
             </Link>
           </DropdownMenuItem>
 
+          <DropdownMenuSeparator />
+          <DropdownMenuLabel className="flex items-center gap-2">
+            <GoogleDriveLogo size={24} /> Links Drive
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>
+            <Link
+              href="https://drive.google.com/drive/folders/1Dd6R14VNHM-uBln2Pg9r_BB_Ey97epuX?usp=drive_link"
+              target="_blank"
+            >
+              Declaração
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link
+              href="https://drive.google.com/drive/folders/1dQPOLiPuYkKbHXNiawkU98XgIZRAeZE9?usp=drive_link"
+              target="_blank"
+            >
+              Etiquetas I-Button
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link
+              href="https://drive.google.com/drive/folders/1U8y1q2Ay9Fwfiw-erGzrSCNLqk2GSSnp?usp=drive_link"
+              target="_blank"
+            >
+              Manuais Suporte Stc
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link
+              href="https://drive.google.com/drive/folders/1xI097PKNpYxWGxVWFredmCo0JRYHZ_mL?usp=drive_link"
+              target="_blank"
+            >
+              Procedimento Geral
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
           <DropdownMenuItem>
             <Link
               href="/sair"
