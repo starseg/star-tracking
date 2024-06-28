@@ -31,6 +31,13 @@ export async function GET(request: NextRequest) {
           select: {
             licensePlate: true,
             code: true,
+            fleet: {
+              select: {
+                fleetId: true,
+                name: true,
+                color: true,
+              },
+            },
           },
         },
         tracker: {
@@ -48,6 +55,13 @@ export async function GET(request: NextRequest) {
           select: {
             licensePlate: true,
             code: true,
+            fleet: {
+              select: {
+                fleetId: true,
+                name: true,
+                color: true,
+              },
+            },
           },
         },
         tracker: {

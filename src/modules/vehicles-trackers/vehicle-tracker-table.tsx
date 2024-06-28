@@ -35,6 +35,11 @@ interface VehicleTrackerData extends VehicleTracker {
   vehicle: {
     licensePlate: string;
     code: string;
+    fleet: {
+      fleetId: number;
+      name: string;
+      color: string;
+    };
   };
   tracker: {
     number: string;
@@ -123,7 +128,15 @@ export default function VehicleTrackerTable() {
                       <TableRow key={item.vehicleTrackerId}>
                         <TableCell>{item.tracker.number}</TableCell>
                         <TableCell>
-                          {item.vehicle.licensePlate} - {item.vehicle.code}
+                          <p>
+                            {item.vehicle.licensePlate} - {item.vehicle.code}
+                          </p>
+                          <p
+                            className="font-bold"
+                            style={{ color: item.vehicle.fleet.color }}
+                          >
+                            {item.vehicle.fleet.name}
+                          </p>
                         </TableCell>
                         <TableCell>
                           {dateFormat(item.startDate)}
