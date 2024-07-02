@@ -75,6 +75,7 @@ export async function GET(request: NextRequest) {
           { vehicle: { licensePlate: { contains: query as string } } },
           { vehicle: { code: { contains: query as string } } },
           { tracker: { number: { contains: query as string } } },
+          { vehicle: { fleet: { name: { contains: query as string } } } },
         ],
       },
       orderBy: [{ status: "asc" }],

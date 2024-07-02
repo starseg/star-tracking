@@ -7,10 +7,8 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import {
   Form,
@@ -23,9 +21,8 @@ import {
 import { Input } from "@/components/ui/input";
 import api from "@/lib/axios";
 import { useRouter } from "next/navigation";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { InputPassword } from "./input-password";
-import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
 
 const FormSchema = z.object({
@@ -50,7 +47,7 @@ export function LoginForm() {
     try {
       const response = await api.post("users/login", data);
       if (response.status === 200) {
-        router.push("painel");
+        router.push("/painel");
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 401) {
@@ -71,66 +68,63 @@ export function LoginForm() {
     }
   };
   return (
-    <>
-      <ToastContainer />
-      <Card className="w-[300px] md:w-[400px] border-yellow-600">
-        <CardHeader className="flex flex-col items-center mt-2">
-          <Image
-            src="/logo.svg"
-            alt="Logo"
-            height={45}
-            width={237}
-            priority={true}
-          />
-        </CardHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <CardContent>
-              <div className="grid w-full items-center gap-2">
-                <div className="flex flex-col space-y-1.5">
-                  <FormField
-                    control={form.control}
-                    name="username"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Usuário</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Seu nome de usuário"
-                            autoComplete="off"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="flex flex-col space-y-1.5">
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Senha</FormLabel>
-                        <FormControl>
-                          <InputPassword placeholder="Sua senha" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+    <Card className="w-[300px] md:w-[400px] border-yellow-600">
+      <CardHeader className="flex flex-col items-center mt-2">
+        <Image
+          src="/logo.svg"
+          alt="Logo"
+          height={45}
+          width={237}
+          priority={true}
+        />
+      </CardHeader>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <CardContent>
+            <div className="grid w-full items-center gap-2">
+              <div className="flex flex-col space-y-1.5">
+                <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Usuário</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Seu nome de usuário"
+                          autoComplete="off"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
-            </CardContent>
-            <CardFooter>
-              <Button className="w-full" type="submit">
-                Entrar
-              </Button>
-            </CardFooter>
-          </form>
-        </Form>
-      </Card>
-    </>
+              <div className="flex flex-col space-y-1.5">
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Senha</FormLabel>
+                      <FormControl>
+                        <InputPassword placeholder="Sua senha" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button className="w-full" type="submit">
+              Entrar
+            </Button>
+          </CardFooter>
+        </form>
+      </Form>
+    </Card>
   );
 }
