@@ -85,10 +85,8 @@ export default function VehicleTrackerUpdateForm({
           const tracker = await api.put(`tracker/${data.trackerId}`, {
             deviceStatusId: 1,
           });
-          if (tracker.status === 200) {
-            router.push("/veiculos-rastreadores");
-          }
         }
+        router.back();
       }
     } catch (error) {
       console.error("Erro ao enviar dados para a API:", error);

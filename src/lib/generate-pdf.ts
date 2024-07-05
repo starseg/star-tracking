@@ -1,4 +1,4 @@
-import { DriverIButton, Vehicle, Driver } from "@prisma/client";
+import { DriverIButton, Vehicle, Driver, VehicleTracker } from "@prisma/client";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { dateFormat } from "./utils";
@@ -23,6 +23,21 @@ interface DriverIButtonProps extends DriverIButton {
 interface DriverProps extends Driver {
   fleet: {
     name: string;
+  };
+}
+
+interface VehicleTrackerProps extends VehicleTracker {
+  vehicle: {
+    licensePlate: string;
+    code: string;
+    fleet: {
+      fleetId: number;
+      name: string;
+      color: string;
+    };
+  };
+  tracker: {
+    number: string;
   };
 }
 
@@ -200,4 +215,76 @@ export const driversReport = (data: DriverProps[]) => {
   // doc.table(10, 30, tableRows, headers, { autoSize: true });
 
   doc.save(`Relatório_Motoristas_-_Star_Seg.pdf`);
+};
+
+export const vehiclesTrackersReport = (
+  data: VehicleTrackerProps[],
+  active: boolean,
+  lastMonthOnly: boolean
+) => {
+  const doc = new jsPDF({ orientation: "landscape" });
+
+  doc.text(`Relatório de veículos e rastreadores - STAR SEG`, 15, 10);
+
+  const headers = [
+    "Rastreador",
+    "Veículo",
+    "Vinculação",
+    "Observação",
+    "Status",
+  ];
+
+  const oneMonthAgo = subDays(new Date(), 30);
+
+  const tableData = data
+    .filter((row) => {
+      const startDate = new Date(row.startDate);
+
+      if (active && row.status === "INACTIVE") return false;
+      if (lastMonthOnly && startDate < oneMonthAgo) return false;
+
+      return true;
+    })
+    .map((row) => {
+      return [
+        row.tracker.number,
+        row.vehicle.licensePlate +
+          " - " +
+          row.vehicle.code +
+          "\n" +
+          row.vehicle.fleet.name,
+        dateFormat(row.startDate),
+        row.comments ? row.comments : "Nenhuma",
+        row.status === "ACTIVE" ? "Ativo" : "Inativo",
+      ];
+    });
+
+  // Transforme os dados em objetos
+  const tableRows = tableData.map((row) => {
+    const obj: { [key: string]: string } = {};
+    headers.forEach((header, index) => {
+      obj[header] = row[index];
+    });
+    return obj;
+  });
+
+  doc.setFontSize(12);
+
+  const columnWidths = [40, 40, 30, 30, 40, 30];
+  autoTable(doc, {
+    body: tableRows,
+    columns: headers.map((header, index) => ({
+      header,
+      dataKey: header,
+      width: columnWidths[index],
+    })),
+    margin: { top: 25 },
+    startY: 25,
+    theme: "striped", // Pode ajustar conforme preferir
+  });
+
+  // Insira a tabela no documento PDF
+  // doc.table(10, 30, tableRows, headers, { autoSize: true });
+
+  doc.save(`Relatório_Veículos-Rastreadores_-_Star_Seg.pdf`);
 };

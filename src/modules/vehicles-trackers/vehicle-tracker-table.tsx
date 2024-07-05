@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import {
   Cpu,
+  FilePdf,
   FilePlus,
   PencilLine,
   Trash,
@@ -30,6 +31,8 @@ import {
 } from "@/components/ui/tooltip";
 import { Checkbox } from "@/components/ui/checkbox";
 import { dateFormat } from "@/lib/utils";
+import { vehiclesTrackersReport } from "@/lib/generate-pdf";
+import { subDays } from "date-fns";
 
 interface VehicleTrackerData extends VehicleTracker {
   vehicle: {
@@ -53,7 +56,9 @@ export default function VehicleTrackerTable() {
   >([]);
   const [isLoading, setIsLoading] = useState(true);
   const [active, setActive] = useState(false);
+  const [lastMonthOnly, setLastMonthOnly] = useState(false);
   let count = 0;
+  const oneMonthAgo = subDays(new Date(), 30);
 
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
@@ -123,6 +128,8 @@ export default function VehicleTrackerTable() {
                 {vehiclesTrackers.length > 0 ? (
                   vehiclesTrackers.map((item) => {
                     if (active && item.status === "INACTIVE") return;
+                    const startDate = new Date(item.startDate);
+                    if (lastMonthOnly && startDate < oneMonthAgo) return;
                     count++;
                     return (
                       <TableRow key={item.vehicleTrackerId}>
@@ -212,6 +219,18 @@ export default function VehicleTrackerTable() {
                   <Cpu size={24} /> Rastreadores
                 </Button>
               </Link>
+              <Button
+                className="flex gap-2 font-semibold"
+                onClick={() =>
+                  vehiclesTrackersReport(
+                    vehiclesTrackers,
+                    active,
+                    lastMonthOnly
+                  )
+                }
+              >
+                <FilePdf size={24} /> Relatório
+              </Button>
               <div className="flex items-center gap-2">
                 <Checkbox
                   id="statusFilter"
@@ -222,6 +241,18 @@ export default function VehicleTrackerTable() {
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
                   Apenas ATIVOS
+                </label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="dateFilter"
+                  onClick={() => setLastMonthOnly(!lastMonthOnly)}
+                />
+                <label
+                  htmlFor="dateFilter"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Último mês
                 </label>
               </div>
             </div>

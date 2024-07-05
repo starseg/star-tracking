@@ -226,11 +226,11 @@ export default function DriverIButtonTable() {
               </div>
               <div className="flex items-center gap-2">
                 <Checkbox
-                  id="statusFilter"
+                  id="dateFilter"
                   onClick={() => setLastMonthOnly(!lastMonthOnly)}
                 />
                 <label
-                  htmlFor="statusFilter"
+                  htmlFor="dateFilter"
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
                   Último mês
