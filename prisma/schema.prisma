@@ -198,6 +198,15 @@ model Declaration {
   updatedAt     DateTime @updatedAt
 }
 
+model AccessLink {
+  accessLinkId Int      @id @default(autoincrement())
+  title        String
+  login        String
+  password     String
+  link         String   @db.VarChar(255)
+  createdAt    DateTime @default(now())
+}
+
 enum Status {
   ACTIVE
   INACTIVE
