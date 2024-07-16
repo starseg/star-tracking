@@ -170,6 +170,14 @@ export function Menu({ url = "" }: { url?: string }) {
               Procedimento Geral
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link
+              href="https://drive.google.com/drive/folders/1hWXqlHRGWi1mtFCnO6IeKWFDkbgtA-P2"
+              target="_blank"
+            >
+              Plataforma Chips e Config APN
+            </Link>
+          </DropdownMenuItem>
 
           <DropdownMenuSeparator />
           <DropdownMenuItem>
