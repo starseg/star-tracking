@@ -26,7 +26,6 @@ import { useSearchParams } from "next/navigation";
 import { SkeletonTable } from "@/components/skeletons/skeleton-table";
 import * as XLSX from "xlsx";
 import { format } from "date-fns";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 
 interface IButtonProps extends IButton {

@@ -15,6 +15,7 @@ import {
   Cpu,
   FilePdf,
   FilePlus,
+  FileXls,
   PencilLine,
   Trash,
   Truck,
@@ -32,7 +33,14 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { dateFormat } from "@/lib/utils";
 import { vehiclesTrackersReport } from "@/lib/generate-pdf";
-import { subDays } from "date-fns";
+import { format, subDays } from "date-fns";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import * as XLSX from "xlsx";
 
 interface VehicleTrackerData extends VehicleTracker {
   vehicle: {
@@ -104,6 +112,40 @@ export default function VehicleTrackerTable() {
         }
       }
     });
+  };
+
+  const handleDownloadExcel = () => {
+    const formattedIButtons = vehiclesTrackers.map((item) => ({
+      rastreador: item.tracker.number,
+      veiculo:
+        item.vehicle.licensePlate +
+        " - " +
+        item.vehicle.code +
+        " - " +
+        item.vehicle.fleet.name,
+      vinculacao: dateFormat(item.startDate),
+      observacoes: item.comments ? item.comments : "nenhuma",
+      status: item.status === "ACTIVE" ? "Ativo" : "Inativo",
+    }));
+    const worksheet = XLSX.utils.json_to_sheet(formattedIButtons);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+    // Gera um arquivo Excel e cria um link temporário para download
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const date = format(new Date(), "dd-MM-yyyy");
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `relatorio-veiculos-rastreadores-${date}.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -219,18 +261,39 @@ export default function VehicleTrackerTable() {
                   <Cpu size={24} /> Rastreadores
                 </Button>
               </Link>
-              <Button
-                className="flex gap-2 font-semibold"
-                onClick={() =>
-                  vehiclesTrackersReport(
-                    vehiclesTrackers,
-                    active,
-                    lastMonthOnly
-                  )
-                }
-              >
-                <FilePdf size={24} /> Relatório
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button className="flex gap-2 font-semibold">
+                    Relatórios
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem>
+                    <Button
+                      variant={"ghost"}
+                      className="flex gap-2 font-semibold w-full"
+                      onClick={() =>
+                        vehiclesTrackersReport(
+                          vehiclesTrackers,
+                          active,
+                          lastMonthOnly
+                        )
+                      }
+                    >
+                      <FilePdf size={24} /> PDF
+                    </Button>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Button
+                      variant={"ghost"}
+                      className="flex gap-2 font-semibold w-full"
+                      onClick={handleDownloadExcel}
+                    >
+                      <FileXls size={24} /> Excel
+                    </Button>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <div className="flex items-center gap-2">
                 <Checkbox
                   id="statusFilter"
