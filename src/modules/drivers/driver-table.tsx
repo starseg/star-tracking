@@ -104,8 +104,7 @@ export default function DriverTable() {
                 <TableRow>
                   <TableHead>Frota</TableHead>
                   <TableHead>Nome</TableHead>
-                  <TableHead>CPF</TableHead>
-                  <TableHead>CNH</TableHead>
+                  <TableHead>CPF e CNH</TableHead>
                   <TableHead>Observação</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Ações</TableHead>
@@ -117,16 +116,21 @@ export default function DriverTable() {
                     if (active && driver.status === "INACTIVE") return;
                     count++;
                     return (
-                      <TableRow key={driver.fleetId}>
+                      <TableRow key={driver.driverId}>
                         <TableCell
-                          className="font-bold "
+                          className="font-bold max-w-52 break-words"
                           style={{ color: driver.fleet.color }}
                         >
                           {driver.fleet.name}
                         </TableCell>
-                        <TableCell>{driver.name}</TableCell>
-                        <TableCell>{driver.cpf}</TableCell>
-                        <TableCell>{driver.cnh}</TableCell>
+                        <TableCell className="max-w-52">
+                          {driver.name}
+                        </TableCell>
+                        <TableCell>
+                          {driver.cpf}
+                          <br />
+                          {driver.cnh}
+                        </TableCell>
                         <TableCell>
                           {driver.comments ? (
                             <TooltipProvider>
