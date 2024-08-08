@@ -33,8 +33,8 @@ export default function IButtonDetails() {
   }, []);
 
   return (
-    <div className="border border-primary rounded-md p-8 flex gap-8">
-      <div className="w-1/2 space-y-2">
+    <div className="flex gap-8 border-primary p-8 border rounded-md">
+      <div className="space-y-2 w-1/2">
         <DetailsItem label="Número" value={IButton?.number} />
         <DetailsItem label="Código" value={IButton?.code} />
         <DetailsItem
@@ -48,26 +48,17 @@ export default function IButtonDetails() {
 
         <DetailsItem label="Observações" value={IButton?.comments} />
       </div>
-      <div className="w-1/2 space-y-2">
-        <h3 className="font-semibold text-lg text-primary">Imagens</h3>
-        <div className="flex gap-4 flex-wrap">
+      <div className="space-y-2 w-1/2">
+        <h3 className="font-semibold text-lg text-primary">Imagem</h3>
+        <div className="flex flex-wrap gap-4">
           {IButton?.url1 ? (
             <img
               src={IButton.url1}
               alt="Foto 1 do IButton"
-              className="max-h-48 rounded-md border border-primary bg-stone-900 "
+              className="border-primary bg-stone-900 border rounded-md max-h-48"
             />
           ) : (
-            <Image className="h-48 w-48 rounded-md border border-primary bg-stone-900" />
-          )}
-          {IButton?.url2 ? (
-            <img
-              src={IButton.url2}
-              alt="Foto 2 do IButton"
-              className="max-h-48 rounded-md border border-primary bg-stone-900 "
-            />
-          ) : (
-            <Image className="h-48 w-48 rounded-md border border-primary bg-stone-900" />
+            <Image className="border-primary bg-stone-900 border rounded-md w-48 h-48" />
           )}
         </div>
       </div>

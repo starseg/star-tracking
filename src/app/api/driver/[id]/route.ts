@@ -50,6 +50,7 @@ export async function PUT(
           name: data.name,
           cpf: data.cpf,
           cnh: data.cnh,
+          imageUrl: data.imageUrl,
           comments: data.comments,
           status: data.status,
           fleetId: Number(data.fleetId),

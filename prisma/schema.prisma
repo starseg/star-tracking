@@ -105,6 +105,7 @@ model Driver {
   cnh      String
   comments String? @db.VarChar(2000)
   status   Status  @default(ACTIVE)
+  imageUrl String? @db.VarChar(255)
 
   fleet   Fleet @relation(fields: [fleetId], references: [fleetId])
   fleetId Int

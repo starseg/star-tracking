@@ -8,8 +8,20 @@ import { Fleet } from "@prisma/client";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
+interface Values {
+  driverId: number;
+  name: string;
+  cpf: string;
+  cnh: string;
+  imageUrl: File;
+  comments: string;
+  status: "ACTIVE" | "INACTIVE";
+  fleetId: number;
+}
+
 export default function UpdateDriver() {
   const [driver, setDriver] = useState<DriverValues | null>(null);
+  const [values, setValues] = useState<Values>();
 
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
@@ -37,13 +49,33 @@ export default function UpdateDriver() {
     fetchFleets();
   }, []);
 
+  useEffect(() => {
+    if (driver) {
+      setValues({
+        driverId: driver.driverId,
+        name: driver.name,
+        cpf: driver.cpf,
+        cnh: driver.cnh,
+        imageUrl: new File([], ""),
+        comments: driver.comments,
+        status: driver.status,
+        fleetId: driver.fleetId,
+      });
+    }
+  }, [driver]);
+
   return (
     <>
       <Menu />
       <section className="flex flex-col justify-center items-center mb-12">
-        <h1 className="text-4xl mt-2 mb-4">Atualizar motorista</h1>
-        {driver && fleets ? (
-          <DriverUpdateForm preloadedValues={driver} id={id} fleets={fleets} />
+        <h1 className="mt-2 mb-4 text-4xl">Atualizar motorista</h1>
+        {values && driver && fleets ? (
+          <DriverUpdateForm
+            preloadedValues={values}
+            id={id}
+            driver={driver}
+            fleets={fleets}
+          />
         ) : (
           <Loading />
         )}

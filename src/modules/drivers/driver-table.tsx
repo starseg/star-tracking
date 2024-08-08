@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Checkbox } from "@/components/ui/checkbox";
 import { driversReport } from "@/lib/generate-pdf";
+import ImageDialog from "./image-dialog";
 
 interface DriverData extends Driver {
   fleet: {
@@ -99,7 +100,7 @@ export default function DriverTable() {
       ) : (
         <>
           <div className="max-h-[60vh] overflow-y-auto">
-            <Table className="border border-stone-800">
+            <Table className="border-stone-800 border">
               <TableHeader className="bg-stone-800 font-semibold">
                 <TableRow>
                   <TableHead>Frota</TableHead>
@@ -107,6 +108,7 @@ export default function DriverTable() {
                   <TableHead>CPF e CNH</TableHead>
                   <TableHead>Observação</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Img</TableHead>
                   <TableHead>Ações</TableHead>
                 </TableRow>
               </TableHeader>
@@ -118,7 +120,7 @@ export default function DriverTable() {
                     return (
                       <TableRow key={driver.driverId}>
                         <TableCell
-                          className="font-bold max-w-52 break-words"
+                          className="max-w-52 font-bold break-words"
                           style={{ color: driver.fleet.color }}
                         >
                           {driver.fleet.name}
@@ -136,11 +138,11 @@ export default function DriverTable() {
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <button className="max-w-[15ch] text-ellipsis overflow-hidden whitespace-nowrap">
+                                  <button className="max-w-[15ch] text-ellipsis whitespace-nowrap overflow-hidden">
                                     {driver.comments}
                                   </button>
                                 </TooltipTrigger>
-                                <TooltipContent className="max-w-[300px] border-primary bg-stone-800 p-4 break-words">
+                                <TooltipContent className="border-primary bg-stone-800 p-4 max-w-[300px] break-words">
                                   <p>{driver.comments}</p>
                                 </TooltipContent>
                               </Tooltip>
@@ -156,7 +158,13 @@ export default function DriverTable() {
                             <p className="text-red-400">INATIVO</p>
                           )}
                         </TableCell>
-                        <TableCell className="flex gap-4 text-2xl">
+                        <TableCell className="text-2xl">
+                          <ImageDialog
+                            name={driver.name}
+                            url={driver.imageUrl}
+                          />
+                        </TableCell>
+                        <TableCell className="flex justify-center items-center gap-4 text-2xl">
                           <Link
                             href={`/motoristas-ibuttons?query=${driver.name}`}
                           >
@@ -187,7 +195,7 @@ export default function DriverTable() {
               </TableBody>
             </Table>
           </div>
-          <div className="mt-8 flex justify-between">
+          <div className="flex justify-between mt-8">
             <div className="flex gap-4">
               <Link href="motoristas/registro">
                 <Button className="flex gap-2 font-semibold">
@@ -212,13 +220,13 @@ export default function DriverTable() {
                 />
                 <label
                   htmlFor="statusFilter"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  className="peer-disabled:opacity-70 font-medium text-sm leading-none peer-disabled:cursor-not-allowed"
                 >
                   Apenas ATIVOS
                 </label>
               </div>
             </div>
-            <div className="py-2 px-6 rounded-md bg-muted">Total: {count}</div>
+            <div className="bg-muted px-6 py-2 rounded-md">Total: {count}</div>
           </div>
         </>
       )}

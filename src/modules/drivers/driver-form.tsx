@@ -1,8 +1,14 @@
 "use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
+import InputFile from "@/components/form/inputFile";
+import InputImage from "@/components/form/inputImage";
 import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
 import {
   Form,
   FormControl,
@@ -11,26 +17,23 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useRouter } from "next/navigation";
-import api from "@/lib/axios";
 import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Check, ChevronsUpDown } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
-import { Fleet } from "@prisma/client";
 import { Textarea } from "@/components/ui/textarea";
+import api from "@/lib/axios";
+import { handleFileUpload } from "@/lib/firebase-upload";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Fleet } from "@prisma/client";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
 const FormSchema = z.object({
   fleetId: z.number(),
@@ -38,6 +41,7 @@ const FormSchema = z.object({
   cpf: z.string(),
   cnh: z.string(),
   comments: z.string(),
+  imageUrl: z.instanceof(File),
 });
 
 export default function DriverForm() {
@@ -50,6 +54,7 @@ export default function DriverForm() {
       cpf: "",
       cnh: "",
       comments: "",
+      imageUrl: new File([], ""),
     },
   });
   const router = useRouter();
@@ -70,8 +75,26 @@ export default function DriverForm() {
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     setIsSendind(true);
+    const timestamp = new Date().toISOString();
+    // upload imagem 1
+    let file;
+    if (data.imageUrl instanceof File && data.imageUrl.size > 0) {
+      const fileExtension = data.imageUrl.name.split(".").pop();
+      file = await handleFileUpload(
+        data.imageUrl,
+        `star-tracking/drivers/foto-${timestamp}.${fileExtension}`
+      );
+    } else file = "";
+    const info = {
+      fleetId: data.fleetId,
+      name: data.name,
+      cpf: data.cpf,
+      cnh: data.cnh,
+      comments: data.comments,
+      imageUrl: file,
+    };
     try {
-      const response = await api.post("driver", data);
+      const response = await api.post("driver", info);
       if (response.status === 201) {
         router.push("/motoristas");
       }
@@ -87,7 +110,7 @@ export default function DriverForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-3/4 lg:w-[40%] 2xl:w-1/3 space-y-6"
+        className="space-y-6 w-3/4 lg:w-[40%] 2xl:w-1/3"
       >
         <FormField
           control={form.control}
@@ -110,7 +133,7 @@ export default function DriverForm() {
                         ? fleets.find((item) => item.fleetId === field.value)
                             ?.name
                         : "Selecione a frota"}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      <ChevronsUpDown className="opacity-50 ml-2 w-4 h-4 shrink-0" />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
@@ -191,6 +214,8 @@ export default function DriverForm() {
             </FormItem>
           )}
         />
+
+        <InputImage control={form.control} name="imageUrl" />
 
         <FormField
           control={form.control}

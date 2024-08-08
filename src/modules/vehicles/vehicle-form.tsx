@@ -32,6 +32,7 @@ import { useEffect, useState } from "react";
 import { Fleet } from "@prisma/client";
 import { Textarea } from "@/components/ui/textarea";
 import { handleFileUpload } from "@/lib/firebase-upload";
+import InputImage from "@/components/form/inputImage";
 
 const FormSchema = z.object({
   fleetId: z.number(),
@@ -120,7 +121,7 @@ export default function VehicleForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-3/4 lg:w-[40%] 2xl:w-1/3 space-y-6"
+        className="space-y-6 w-3/4 lg:w-[40%] 2xl:w-1/3"
       >
         <FormField
           control={form.control}
@@ -143,7 +144,7 @@ export default function VehicleForm() {
                         ? fleets.find((item) => item.fleetId === field.value)
                             ?.name
                         : "Selecione a frota"}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      <ChevronsUpDown className="opacity-50 ml-2 w-4 h-4 shrink-0" />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
@@ -278,24 +279,7 @@ export default function VehicleForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="url"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Anexo (opcional)</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  onChange={(e) =>
-                    field.onChange(e.target.files ? e.target.files[0] : null)
-                  }
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <InputImage control={form.control} name="url" />
 
         <FormField
           control={form.control}

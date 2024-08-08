@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { handleFileUpload } from "@/lib/firebase-upload";
 import { useState } from "react";
+import InputImage from "@/components/form/inputImage";
 
 const FormSchema = z.object({
   number: z.string(),
@@ -88,7 +89,7 @@ export default function IButtonForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-3/4 lg:w-[40%] 2xl:w-1/3 space-y-6"
+        className="space-y-6 w-3/4 lg:w-[40%] 2xl:w-1/3"
       >
         <FormField
           control={form.control}
@@ -129,44 +130,7 @@ export default function IButtonForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="url1"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Foto 1 (opcional)</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) =>
-                    field.onChange(e.target.files ? e.target.files[0] : null)
-                  }
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="url2"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Foto 2 (opcional)</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) =>
-                    field.onChange(e.target.files ? e.target.files[0] : null)
-                  }
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <InputImage control={form.control} name="url1" />
         <FormField
           control={form.control}
           name="comments"

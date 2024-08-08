@@ -32,8 +32,11 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 import { cn, englishDateFormat } from "@/lib/utils";
-import { handleFileUpload } from "@/lib/firebase-upload";
+import { deleteFile, handleFileUpload } from "@/lib/firebase-upload";
 import { useState } from "react";
+import { Image } from "@phosphor-icons/react/dist/ssr";
+import InputImage from "@/components/form/inputImage";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const FormSchema = z.object({
   fleetId: z.number(),
@@ -94,12 +97,18 @@ export default function VehicleUpdateForm({
   });
   const router = useRouter();
 
+  const [removeFile, setRemoveFile] = useState(false);
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     setIsSendind(true);
     // upload anexo
     const timestamp = new Date().toISOString();
     let file;
-    if (data.url instanceof File && data.url.size > 0) {
+    if (removeFile) {
+      file = "";
+      if (vehicle.url && vehicle.url.length > 0) {
+        deleteFile(vehicle.url);
+      }
+    } else if (data.url instanceof File && data.url.size > 0) {
       const fileExtension = data.url.name.split(".").pop();
       file = await handleFileUpload(
         data.url,
@@ -137,7 +146,7 @@ export default function VehicleUpdateForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-3/4 lg:w-[40%] 2xl:w-1/3 space-y-6"
+        className="space-y-6 w-3/4 lg:w-[40%] 2xl:w-1/3"
       >
         <FormField
           control={form.control}
@@ -160,7 +169,7 @@ export default function VehicleUpdateForm({
                         ? fleets.find((item) => item.fleetId === field.value)
                             ?.name
                         : "Selecione a frota"}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      <ChevronsUpDown className="opacity-50 ml-2 w-4 h-4 shrink-0" />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
@@ -296,27 +305,41 @@ export default function VehicleUpdateForm({
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="url"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Anexo</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  onChange={(e) =>
-                    field.onChange(e.target.files ? e.target.files[0] : null)
-                  }
-                />
-              </FormControl>
-              <FormDescription>
-                Não preencha esse campo se quiser manter o arquivo anterior
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
+        <div className="flex justify-center items-center gap-4">
+          {vehicle.url && vehicle.url.length > 0 ? (
+            <div className="flex flex-col justify-center items-center">
+              <img
+                src={vehicle.url}
+                alt="Foto veículo"
+                className="rounded w-20 h-20 object-cover"
+              />
+              <p className="mt-2 text-center text-sm">Foto atual</p>
+            </div>
+          ) : (
+            <div className="flex flex-col justify-center items-center">
+              <Image className="w-20 h-20" />
+              <p className="mt-2 text-center text-sm">Sem foto</p>
+            </div>
           )}
-        />
+          <div className="w-10/12">
+            <InputImage control={form.control} name="url" />
+
+            <div className="flex items-center space-x-2 mt-2">
+              <Checkbox
+                id="check"
+                onClick={() => {
+                  setRemoveFile(!removeFile);
+                }}
+              />
+              <label
+                htmlFor="check"
+                className="peer-disabled:opacity-70 font-medium text-sm leading-none peer-disabled:cursor-not-allowed"
+              >
+                Remover foto - {removeFile ? "sim" : "não"}
+              </label>
+            </div>
+          </div>
+        </div>
         <FormField
           control={form.control}
           name="comments"

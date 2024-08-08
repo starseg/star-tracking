@@ -31,8 +31,11 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
-import { handleFileUpload } from "@/lib/firebase-upload";
+import { deleteFile, handleFileUpload } from "@/lib/firebase-upload";
 import { useState } from "react";
+import { Image } from "@phosphor-icons/react/dist/ssr";
+import InputImage from "@/components/form/inputImage";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const FormSchema = z.object({
   number: z.string(),
@@ -70,12 +73,18 @@ export default function IButtonUpdateForm({
   });
   const router = useRouter();
 
+  const [removeFile, setRemoveFile] = useState(false);
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     setIsSendind(true);
     const timestamp = new Date().toISOString();
     // upload imagem 1
     let file1;
-    if (data.url1 instanceof File && data.url1.size > 0) {
+    if (removeFile) {
+      file1 = "";
+      if (ibutton.url1 && ibutton.url1.length > 0) {
+        deleteFile(ibutton.url1);
+      }
+    } else if (data.url1 instanceof File && data.url1.size > 0) {
       const fileExtension = data.url1.name.split(".").pop();
       file1 = await handleFileUpload(
         data.url1,
@@ -118,7 +127,7 @@ export default function IButtonUpdateForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-3/4 lg:w-[40%] 2xl:w-1/3 space-y-6"
+        className="space-y-6 w-3/4 lg:w-[40%] 2xl:w-1/3"
       >
         <FormField
           control={form.control}
@@ -159,50 +168,41 @@ export default function IButtonUpdateForm({
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="url1"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Foto 1</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) =>
-                    field.onChange(e.target.files ? e.target.files[0] : null)
-                  }
-                />
-              </FormControl>
-              <FormDescription>
-                Não preencha esse campo se quiser manter o arquivo anterior
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
+        <div className="flex justify-center items-center gap-4">
+          {ibutton.url1 && ibutton.url1.length > 0 ? (
+            <div className="flex flex-col justify-center items-center">
+              <img
+                src={ibutton.url1}
+                alt="Foto ibutton"
+                className="rounded w-20 h-20 object-cover"
+              />
+              <p className="mt-2 text-center text-sm">Foto atual</p>
+            </div>
+          ) : (
+            <div className="flex flex-col justify-center items-center">
+              <Image className="w-20 h-20" />
+              <p className="mt-2 text-center text-sm">Sem foto</p>
+            </div>
           )}
-        />
-        <FormField
-          control={form.control}
-          name="url2"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Foto 2</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) =>
-                    field.onChange(e.target.files ? e.target.files[0] : null)
-                  }
-                />
-              </FormControl>
-              <FormDescription>
-                Não preencha esse campo se quiser manter o arquivo anterior
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <div className="w-10/12">
+            <InputImage control={form.control} name="url1" />
+
+            <div className="flex items-center space-x-2 mt-2">
+              <Checkbox
+                id="check"
+                onClick={() => {
+                  setRemoveFile(!removeFile);
+                }}
+              />
+              <label
+                htmlFor="check"
+                className="peer-disabled:opacity-70 font-medium text-sm leading-none peer-disabled:cursor-not-allowed"
+              >
+                Remover foto - {removeFile ? "sim" : "não"}
+              </label>
+            </div>
+          </div>
+        </div>
         <FormField
           control={form.control}
           name="comments"
@@ -241,7 +241,7 @@ export default function IButtonUpdateForm({
                             (item) => item.deviceStatusId === field.value
                           )?.description
                         : "Selecione o status"}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      <ChevronsUpDown className="opacity-50 ml-2 w-4 h-4 shrink-0" />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>

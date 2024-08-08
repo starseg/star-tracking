@@ -13,6 +13,7 @@ export async function POST(request: NextRequest) {
           cnh: data.cnh,
           comments: data.comments,
           fleetId: data.fleetId,
+          imageUrl: data.imageUrl,
         },
       });
       return NextResponse.json({ data }, { status: 201 });
