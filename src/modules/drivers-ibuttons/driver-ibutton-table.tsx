@@ -37,6 +37,10 @@ import { subDays } from "date-fns";
 interface DriverIButtonData extends DriverIButton {
   driver: {
     name: string;
+    fleet: {
+      name: string;
+      color: string;
+    };
   };
   ibutton: {
     number: string;
@@ -108,7 +112,7 @@ export default function DriverIButtonTable() {
       ) : (
         <>
           <div className="max-h-[60vh] overflow-y-auto">
-            <Table className="border border-stone-800">
+            <Table className="border-stone-800 border">
               <TableHeader className="bg-stone-800 font-semibold">
                 <TableRow>
                   <TableHead>IButton</TableHead>
@@ -131,7 +135,16 @@ export default function DriverIButtonTable() {
                         <TableCell>
                           {item.ibutton.code} - {item.ibutton.number}
                         </TableCell>
-                        <TableCell>{item.driver.name}</TableCell>
+                        <TableCell>
+                          {item.driver.name}
+                          <br />
+                          <span
+                            className="font-bold text-xs"
+                            style={{ color: item.driver.fleet.color }}
+                          >
+                            {item.driver.fleet.name}
+                          </span>
+                        </TableCell>
                         <TableCell>
                           {dateFormat(item.startDate)}
                           {item.endDate && " a " + dateFormat(item.endDate)}
@@ -141,11 +154,11 @@ export default function DriverIButtonTable() {
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <button className="max-w-[15ch] text-ellipsis overflow-hidden whitespace-nowrap">
+                                  <button className="max-w-[15ch] text-ellipsis whitespace-nowrap overflow-hidden">
                                     {item.comments}
                                   </button>
                                 </TooltipTrigger>
-                                <TooltipContent className="max-w-[300px] border-primary bg-stone-800 p-4 break-words">
+                                <TooltipContent className="border-primary bg-stone-800 p-4 max-w-[300px] break-words">
                                   <p>{item.comments}</p>
                                 </TooltipContent>
                               </Tooltip>
@@ -187,7 +200,7 @@ export default function DriverIButtonTable() {
               </TableBody>
             </Table>
           </div>
-          <div className="mt-8 flex justify-between">
+          <div className="flex justify-between mt-8">
             <div className="flex gap-4">
               <Link href="motoristas-ibuttons/registro">
                 <Button className="flex gap-2 font-semibold">
@@ -219,7 +232,7 @@ export default function DriverIButtonTable() {
                 />
                 <label
                   htmlFor="statusFilter"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  className="peer-disabled:opacity-70 font-medium text-sm leading-none peer-disabled:cursor-not-allowed"
                 >
                   Apenas ATIVOS
                 </label>
@@ -231,13 +244,13 @@ export default function DriverIButtonTable() {
                 />
                 <label
                   htmlFor="dateFilter"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  className="peer-disabled:opacity-70 font-medium text-sm leading-none peer-disabled:cursor-not-allowed"
                 >
                   Último mês
                 </label>
               </div>
             </div>
-            <div className="py-2 px-6 rounded-md bg-muted">Total: {count}</div>
+            <div className="bg-muted px-6 py-2 rounded-md">Total: {count}</div>
           </div>
         </>
       )}

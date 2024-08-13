@@ -30,6 +30,12 @@ export async function GET(request: NextRequest) {
         driver: {
           select: {
             name: true,
+            fleet: {
+              select: {
+                name: true,
+                color: true,
+              },
+            },
           },
         },
         ibutton: {
@@ -47,6 +53,12 @@ export async function GET(request: NextRequest) {
         driver: {
           select: {
             name: true,
+            fleet: {
+              select: {
+                name: true,
+                color: true,
+              },
+            },
           },
         },
         ibutton: {
@@ -59,6 +71,7 @@ export async function GET(request: NextRequest) {
       where: {
         OR: [
           { driver: { name: { contains: query as string } } },
+          { driver: { fleet: { name: { contains: query as string } } } },
           { ibutton: { number: { contains: query as string } } },
           { ibutton: { code: { contains: query as string } } },
         ],
