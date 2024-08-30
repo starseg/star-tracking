@@ -42,6 +42,7 @@ import {
 } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
 
 interface ProblemCardProps {
   problem: Problem;
@@ -169,6 +170,12 @@ export default function ProblemCard({ problem, fetchData }: ProblemCardProps) {
     // }
   };
 
+  const [showAll, setShowAll] = useState(false);
+  const displayedItems = showAll
+    ? problem.comunicationDescription
+    : problem.comunicationDescription.slice(0, 3);
+  const toggleShowAll = () => setShowAll(!showAll);
+
   return (
     <div>
       <div className="flex justify-between">
@@ -181,11 +188,11 @@ export default function ProblemCard({ problem, fetchData }: ProblemCardProps) {
           )}
         </div>
       </div>
-      <div className="flex justify-between py-2 border-b border-stone-50">
+      <div className="flex justify-between border-stone-50 py-2 border-b">
         <p>
           {problem.vehicle.licensePlate} - cod.{problem.vehicle.code}
         </p>
-        <div className="flex gap-2 items-center">
+        <div className="flex items-center gap-2">
           {problem.status === "ACTIVE" ? (
             <button
               title="Marcar como resolvido"
@@ -219,10 +226,10 @@ export default function ProblemCard({ problem, fetchData }: ProblemCardProps) {
           <DialogTrigger asChild>
             <button
               title="Adicionar nova descrição"
-              className="p-1 aspect-square rounded-md hover:bg-muted transition-colors"
+              className="hover:bg-muted p-1 rounded-md transition-colors aspect-square"
               onClick={() => createDescription(problem.comunicationProblemId)}
             >
-              <PlusCircle className="text-primary w-6 h-6" />
+              <PlusCircle className="w-6 h-6 text-primary" />
             </button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
@@ -259,11 +266,11 @@ export default function ProblemCard({ problem, fetchData }: ProblemCardProps) {
                               ) : (
                                 <span>Selecione uma data</span>
                               )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              <CalendarIcon className="opacity-50 ml-auto w-4 h-4" />
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
+                        <PopoverContent className="p-0 w-auto" align="start">
                           <Calendar
                             locale={ptBR}
                             mode="single"
@@ -303,7 +310,7 @@ export default function ProblemCard({ problem, fetchData }: ProblemCardProps) {
       </div>
       {/* MAP NAS DESCRIÇÕES */}
       <div>
-        {problem.comunicationDescription.map((item) => {
+        {displayedItems.map((item) => {
           return (
             <div key={item.comunicationDescriptionId}>
               <Separator className="my-2" />
@@ -330,6 +337,13 @@ export default function ProblemCard({ problem, fetchData }: ProblemCardProps) {
             </div>
           );
         })}
+        {problem.comunicationDescription.length > 3 && (
+          <div className="flex justify-end w-full">
+            <Button onClick={toggleShowAll}>
+              {showAll ? "Mostrar menos" : "Mostrar mais"}
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

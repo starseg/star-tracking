@@ -62,6 +62,7 @@ export async function GET(request: NextRequest) {
               },
             },
           },
+          orderBy: [{ date: "desc" }],
         },
       },
       orderBy: [{ status: "asc" }],
@@ -87,6 +88,7 @@ export async function GET(request: NextRequest) {
               },
             },
           },
+          orderBy: [{ date: "desc" }],
         },
       },
       where: {
