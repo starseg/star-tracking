@@ -1,20 +1,5 @@
 "use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import api from "@/lib/axios";
-import {
-  Car,
-  CheckCircle,
-  PencilLine,
-  PlusCircle,
-  Trash,
-  XCircle,
-} from "@phosphor-icons/react/dist/ssr";
-import Swal from "sweetalert2";
-import { FleetProps } from "./services/interface";
-import { Separator } from "@/components/ui/separator";
 import {
   Dialog,
   DialogContent,
@@ -32,12 +17,20 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import ColorItem from "./color-item";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
-import { Toast } from "@/lib/utils";
-import "react-toastify/dist/ReactToastify.css";
+import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import api from "@/lib/axios";
+import { Toast } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Car, PencilLine, Trash } from "@phosphor-icons/react/dist/ssr";
+import Link from "next/link";
+import { useForm } from "react-hook-form";
+import "react-toastify/dist/ReactToastify.css";
+import Swal from "sweetalert2";
+import { z } from "zod";
+import ColorItem from "./color-item";
+import { FleetProps } from "./services/interface";
 
 interface FleetCardProps {
   fleet: FleetProps;
@@ -177,18 +170,18 @@ export default function FleetCard({ fleet, fetchData }: FleetCardProps) {
 
   return (
     <div>
-      <div className="flex justify-between border-b border-stone-50">
+      <div className="flex justify-between border-stone-50 border-b">
         <div className="flex items-center gap-2">
           <ColorItem color={fleet.color} />
           <p className="font-semibold">{fleet.name}</p>
         </div>
         <div className="flex flex-col items-end gap-2">
           {fleet.status === "ACTIVE" ? (
-            <p className="text-green-400 font-semibold">Ativa</p>
+            <p className="font-semibold text-green-400">Ativa</p>
           ) : (
-            <p className="text-red-400 font-semibold">Inativa</p>
+            <p className="font-semibold text-red-400">Inativa</p>
           )}
-          <div className="flex gap-2 items-center text-2xl mb-2">
+          <div className="flex items-center gap-2 mb-2 text-2xl">
             <Link href={`/veiculos?query=${fleet.name}`}>
               <Car />
             </Link>
@@ -205,13 +198,13 @@ export default function FleetCard({ fleet, fetchData }: FleetCardProps) {
         </div>
       </div>
       {/* CONTATOS */}
-      <div className="flex gap-2 items-center mt-2">
-        <p className="text-lg font-semibold">Contatos</p>
+      <div className="flex items-center gap-2 mt-2">
+        <p className="font-semibold text-lg">Contatos</p>
         <Dialog>
           <DialogTrigger asChild>
             <button
               title="Adicionar novo"
-              className="underline text-primary transition-colors"
+              className="text-primary underline transition-colors"
             >
               + adicionar novo
             </button>
@@ -287,13 +280,13 @@ export default function FleetCard({ fleet, fetchData }: FleetCardProps) {
       </div>
       {/* EMAIL */}
       <Separator className="my-1" />
-      <div className="flex gap-2 items-center mt-2">
-        <p className="text-lg font-semibold">E-mails</p>
+      <div className="flex items-center gap-2 mt-2">
+        <p className="font-semibold text-lg">E-mails</p>
         <Dialog>
           <DialogTrigger asChild>
             <button
               title="Adicionar novo"
-              className="underline text-primary transition-colors"
+              className="text-primary underline transition-colors"
             >
               + adicionar novo
             </button>
@@ -353,13 +346,13 @@ export default function FleetCard({ fleet, fetchData }: FleetCardProps) {
 
       {/* LOGIN */}
       <Separator className="my-1" />
-      <div className="flex gap-2 items-center mt-2">
-        <p className="text-lg font-semibold">Logins</p>
+      <div className="flex items-center gap-2 mt-2">
+        <p className="font-semibold text-lg">Logins</p>
         <Dialog>
           <DialogTrigger asChild>
             <button
               title="Adicionar novo"
-              className="underline text-primary transition-colors"
+              className="text-primary underline transition-colors"
             >
               + adicionar novo
             </button>
@@ -448,6 +441,13 @@ export default function FleetCard({ fleet, fetchData }: FleetCardProps) {
           );
         })}
       </div>
+
+      {fleet.comments && (
+        <div className="flex flex-col mt-2">
+          <p className="font-semibold text-lg">Observações</p>
+          <p>{fleet.comments}</p>
+        </div>
+      )}
     </div>
   );
 }

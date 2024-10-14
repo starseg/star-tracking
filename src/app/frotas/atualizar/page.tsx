@@ -11,6 +11,7 @@ interface Values {
   name: string;
   color: string;
   status: "ACTIVE" | "INACTIVE";
+  comments: string;
 }
 
 export default function UpdateFleet() {
@@ -39,6 +40,7 @@ export default function UpdateFleet() {
         name: fleet?.name || "",
         color: fleet?.color || "",
         status: fleet?.status || "ACTIVE",
+        comments: fleet?.comments || "",
       });
     }
   }, [fleet]);
@@ -47,7 +49,7 @@ export default function UpdateFleet() {
     <>
       <Menu />
       <section className="flex flex-col justify-center items-center mb-12">
-        <h1 className="text-4xl mt-2 mb-4">Atualizar frota</h1>
+        <h1 className="mt-2 mb-4 text-4xl">Atualizar frota</h1>
         {values ? (
           <FleetUpdateForm preloadedValues={values} id={id} />
         ) : (

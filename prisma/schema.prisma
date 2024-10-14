@@ -59,10 +59,11 @@ model Tracker {
 }
 
 model Fleet {
-  fleetId Int    @id @default(autoincrement())
-  name    String
-  color   String
-  status  Status @default(ACTIVE)
+  fleetId  Int     @id @default(autoincrement())
+  name     String
+  color    String
+  status   Status  @default(ACTIVE)
+  comments String? @db.VarChar(1000)
 
   driver       Driver[]
   vehicle      Vehicle[]

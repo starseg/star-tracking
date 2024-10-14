@@ -16,17 +16,20 @@ import api from "@/lib/axios";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useState } from "react";
+import { Textarea } from "@/components/ui/textarea";
 
 const FormSchema = z.object({
   name: z.string(),
   color: z.string(),
   status: z.enum(["ACTIVE", "INACTIVE"]),
+  comments: z.string(),
 });
 
 interface Values {
   name: string;
   color: string;
   status: "ACTIVE" | "INACTIVE";
+  comments: string;
 }
 
 export default function FleetUpdateForm({
@@ -46,6 +49,7 @@ export default function FleetUpdateForm({
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     setIsSendind(true);
     try {
+      console.log(data);
       const response = await api.put(`fleet/${id}`, data);
       if (response.status === 200) {
         router.push("/frotas");
@@ -62,7 +66,7 @@ export default function FleetUpdateForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-3/4 lg:w-[40%] 2xl:w-1/3 space-y-6"
+        className="space-y-6 w-3/4 lg:w-[40%] 2xl:w-1/3"
       >
         <FormField
           control={form.control}
@@ -116,6 +120,19 @@ export default function FleetUpdateForm({
                     <FormLabel className="font-normal">Inativa</FormLabel>
                   </FormItem>
                 </RadioGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="comments"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Observações</FormLabel>
+              <FormControl>
+                <Textarea placeholder="Algum dado adicional..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

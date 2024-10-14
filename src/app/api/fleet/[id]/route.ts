@@ -50,6 +50,7 @@ export async function PUT(
           name: data.name,
           color: data.color,
           status: data.status,
+          comments: data.comments,
         },
       });
       return NextResponse.json({ data }, { status: 200 });
