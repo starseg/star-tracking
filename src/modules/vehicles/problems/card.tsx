@@ -189,9 +189,15 @@ export default function ProblemCard({ problem, fetchData }: ProblemCardProps) {
         </div>
       </div>
       <div className="flex justify-between border-stone-50 py-2 border-b">
-        <p>
-          {problem.vehicle.licensePlate} - cod.{problem.vehicle.code}
-        </p>
+        <div className="flex flex-col gap-2">
+          <p>
+            {problem.vehicle.licensePlate} - cod.{problem.vehicle.code}
+          </p>
+          <p>
+            {problem.vehicle.fleet.name}
+          </p>
+        </div>
+
         <div className="flex items-center gap-2">
           {problem.status === "ACTIVE" ? (
             <button

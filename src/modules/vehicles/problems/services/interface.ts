@@ -4,6 +4,9 @@ export interface Problem extends ComunicationProblem {
   vehicle: {
     licensePlate: string;
     code: string;
+    fleet: {
+      name: string;
+    };
   };
   comunicationDescription: {
     comunicationDescriptionId: number;
