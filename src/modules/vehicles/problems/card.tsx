@@ -128,6 +128,16 @@ export default function ProblemCard({ problem, fetchData }: ProblemCardProps) {
     }
   };
 
+  const updateEmphasisItem = async (id: number, emphasis: boolean) => {
+    emphasis = !emphasis;
+    try {
+      await api.patch(`problem/emphasis/${id}`, { emphasis });
+      fetchData();
+    } catch (error) {
+      console.error("Erro atualizar dado:", error);
+    }
+  };
+
   const deleteDescription = async (id: number) => {
     Swal.fire({
       title: "Excluir registro?",
@@ -193,9 +203,36 @@ export default function ProblemCard({ problem, fetchData }: ProblemCardProps) {
           <p>
             {problem.vehicle.licensePlate} - cod.{problem.vehicle.code}
           </p>
-          <p>
-            {problem.vehicle.fleet.name}
-          </p>
+          <p>{problem.vehicle.fleet.name}</p>
+
+          <div className="flex items-center gap-2">
+            <p>STATUS OS: </p>
+            {problem.emphasis ? (
+              <button
+                title="Marcar como Inativa"
+                onClick={() =>
+                  updateEmphasisItem(
+                    problem.comunicationProblemId,
+                    problem.emphasis
+                  )
+                }
+              >
+                <CheckCircle size={24} className="text-green-400" />
+              </button>
+            ) : (
+              <button
+                title="Marcar como Ativa"
+                onClick={() =>
+                  updateEmphasisItem(
+                    problem.comunicationProblemId,
+                    problem.emphasis
+                  )
+                }
+              >
+                <XCircle size={24} className="text-red-500" />
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="flex items-center gap-2">

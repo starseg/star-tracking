@@ -138,6 +138,7 @@ model ComunicationProblem {
   comunicationProblemId Int      @id @default(autoincrement())
   createdAt             DateTime @default(now())
   status                Status   @default(ACTIVE)
+  emphasis              Boolean  @default(false)
 
   vehicle   Vehicle @relation(fields: [vehicleId], references: [vehicleId], onDelete: Cascade)
   vehicleId Int

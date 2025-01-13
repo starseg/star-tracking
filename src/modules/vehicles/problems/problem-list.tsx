@@ -10,6 +10,8 @@ import { Problem } from "./services/interface";
 import ProblemCard from "./card";
 import { SkeletonCard } from "@/components/skeletons/skeleton-card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
+import clsx from "clsx";
 
 export default function ProblemList() {
   const searchParams = useSearchParams();
@@ -42,7 +44,7 @@ export default function ProblemList() {
         <SkeletonCard />
       ) : (
         <div className="px-4">
-          <div className="flex flex-col justify-end gap-2 md:justify-between  md:flex-row mb-4">
+          <div className="flex md:flex-row flex-col justify-end md:justify-between gap-2 mb-4">
             <div className="flex gap-4">
               <Link href="problemas/registro">
                 <Button className="flex gap-2 font-semibold">
@@ -56,7 +58,7 @@ export default function ProblemList() {
                 />
                 <label
                   htmlFor="statusFilter"
-                  className="text-sm font-medium leading-none"
+                  className="font-medium text-sm leading-none"
                 >
                   Apenas ATIVOS
                 </label>
@@ -69,7 +71,12 @@ export default function ProblemList() {
               if (active && problem.status === "INACTIVE") return;
               return (
                 <div
-                  className="border border-primary rounded-lg p-4 flex flex-col md:w-[48%] lg:w-[49%] w-full"
+                  className={cn(
+                    "flex flex-col border-primary p-4 border rounded-lg w-full md:w-[48%] lg:w-[49%]",
+                    problem.emphasis
+                      ? "border-green-500 border-2"
+                      : "border-primary"
+                  )}
                   key={problem.comunicationProblemId}
                 >
                   <ProblemCard problem={problem} fetchData={fetch} />
