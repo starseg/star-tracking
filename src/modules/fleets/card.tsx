@@ -23,7 +23,13 @@ import { Textarea } from "@/components/ui/textarea";
 import api from "@/lib/axios";
 import { Toast } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Car, PencilLine, Trash } from "@phosphor-icons/react/dist/ssr";
+import {
+  Car,
+  CheckCircle,
+  PencilLine,
+  Trash,
+  XCircle,
+} from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import "react-toastify/dist/ReactToastify.css";
@@ -166,6 +172,20 @@ export default function FleetCard({ fleet, fetchData }: FleetCardProps) {
         }
       }
     });
+  };
+
+  const updateLoginStatus = async (id: number, status: string) => {
+    const newStatus = status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+    try {
+      const res = await api.patch(`fleet/login/${id}`, { status: newStatus });
+      Swal.fire({
+        title: "Status atualizado!",
+        icon: "success",
+      });
+      fetchData();
+    } catch (error) {
+      console.error("Erro atualizar dado:", error);
+    }
   };
 
   return (
@@ -428,7 +448,28 @@ export default function FleetCard({ fleet, fetchData }: FleetCardProps) {
                   {item.login} - {item.password}
                 </p>
                 <p className="text-stone-200">{item.accessTo}</p>
-                <div>
+                <div className="flex items-center gap-1">
+                  {item.status === "ACTIVE" ? (
+                    <button
+                      title="Marcar como inativo"
+                      onClick={() =>
+                        updateLoginStatus(item.fleetLoginId, item.status)
+                      }
+                      className="hover:text-red-500 transition-colors"
+                    >
+                      <CheckCircle size={24} />
+                    </button>
+                  ) : (
+                    <button
+                      title="Marcar como ativo"
+                      onClick={() =>
+                        updateLoginStatus(item.fleetLoginId, item.status)
+                      }
+                      className="hover:text-green-500 transition-colors"
+                    >
+                      <XCircle size={24} />
+                    </button>
+                  )}
                   <button
                     title="Excluir login"
                     onClick={() => deleteItem(item.fleetLoginId, "fleet/login")}

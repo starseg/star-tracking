@@ -94,6 +94,7 @@ model FleetLogin {
   login        String
   password     String
   accessTo     String
+  status       Status @default(ACTIVE)
 
   fleet   Fleet @relation(fields: [fleetId], references: [fleetId], onDelete: Cascade)
   fleetId Int

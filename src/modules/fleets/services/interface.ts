@@ -15,5 +15,6 @@ export interface FleetProps extends Fleet {
     login: string;
     password: string;
     accessTo: string;
+    status: "ACTIVE" | "INACTIVE";
   }[];
 }
