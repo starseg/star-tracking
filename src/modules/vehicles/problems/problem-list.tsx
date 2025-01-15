@@ -72,10 +72,9 @@ export default function ProblemList() {
               return (
                 <div
                   className={cn(
-                    "flex flex-col border-primary p-4 border rounded-lg w-full md:w-[48%] lg:w-[49%]",
-                    problem.emphasis
-                      ? "border-green-500 border-2"
-                      : "border-primary"
+                    "flex flex-col border-2 border-primary p-4 rounded-lg w-full md:w-[48%] lg:w-[49%]",
+                    problem.emphasis ? "border-green-500" : "",
+                    problem.isUnderMaintenance ? "border-blue-500" : ""
                   )}
                   key={problem.comunicationProblemId}
                 >

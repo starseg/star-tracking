@@ -138,6 +138,16 @@ export default function ProblemCard({ problem, fetchData }: ProblemCardProps) {
     }
   };
 
+  const updateMaintenanceItem = async (id: number, maintenance: boolean) => {
+    maintenance = !maintenance;
+    try {
+      await api.patch(`problem/maintenance/${id}`, { maintenance });
+      fetchData();
+    } catch (error) {
+      console.error("Erro atualizar dado:", error);
+    }
+  };
+
   const deleteDescription = async (id: number) => {
     Swal.fire({
       title: "Excluir registro?",
@@ -233,6 +243,36 @@ export default function ProblemCard({ problem, fetchData }: ProblemCardProps) {
               </button>
             )}
           </div>
+
+          <div className="flex items-center gap-2">
+            <p>STATUS MANUTENÇÃO: </p>
+            {problem.isUnderMaintenance ? (
+              <button
+                title="Em manutenção"
+                onClick={() =>
+                  updateMaintenanceItem(
+                    problem.comunicationProblemId,
+                    problem.isUnderMaintenance
+                  )
+                }
+              >
+                <XCircle size={24} className="text-blue-400" />
+              </button>
+            ) : (
+              <button
+                title="Não está em manutenção"
+                onClick={() =>
+                  updateMaintenanceItem(
+                    problem.comunicationProblemId,
+                    problem.isUnderMaintenance
+                  )
+                }
+              >
+                <CheckCircle size={24} className="text-green-500" />
+              </button>
+            )}
+          </div>
+
         </div>
 
         <div className="flex items-center gap-2">
