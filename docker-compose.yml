@@ -1,0 +1,65 @@
+services:
+  star-tracking-web:
+    container_name: star-tracking-web
+    profiles: [ prod ]
+    build:
+      context: .
+      args:
+        - DATABASE_URL=${DATABASE_URL}
+    command: npm run start:prod
+    ports:
+      - "3001:3000"
+    environment:
+      - DATABASE_URL=${CONTAINER_DATABASE_URL}
+      - NODE_ENV=production
+      - AUTH_SECRET=${AUTH_SECRET}
+      - FIREBASE_API_KEY=${FIREBASE_API_KEY}
+      - FIREBASE_APP_ID=${FIREBASE_APP_ID}
+      - FIREBASE_MESSAGING_SENDER_ID=${FIREBASE_MESSAGING_SENDER_ID}
+      - FIREBASE_MEASUREMENT_ID=${FIREBASE_MEASUREMENT_ID}
+    restart: unless-stopped
+    networks:
+      - star-tracking-network
+
+  star-tracking-db:
+    container_name: star-tracking-db
+    profiles: [ dev ]
+    image: mysql:latest
+    restart: unless-stopped
+    environment:
+      - MYSQL_DATABASE=star-tracking
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+      - MYSQL_ROOT_PASSWORD=
+    ports:
+      - "3306:3306"
+    volumes:
+      - star-tracking-db:/var/lib/mysql
+    networks:
+      - star-tracking-network
+
+  phpmyadmin:
+    container_name: star-tracking-phpmyadmin
+    profiles: [ dev ]
+    image: phpmyadmin/phpmyadmin:latest
+    restart: unless-stopped
+    environment:
+      PMA_HOST: star-tracking-db
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD:
+      MYSQL_ROOT_PASSWORD:
+      UPLOAD_LIMIT: 50M
+    ports:
+      - "8080:80"
+    depends_on:
+      - star-tracking-db
+    networks:
+      - star-tracking-network
+
+networks:
+  star-tracking-network:
+    driver: bridge
+
+volumes:
+  star-tracking-db:
+    driver: local

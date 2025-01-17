@@ -1,0 +1,7 @@
+node_modules/
+.next/
+build/
+docker-compose.yml
+Dockerfile
+.dockerignore
+.env
