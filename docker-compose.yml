@@ -5,13 +5,15 @@ services:
     build:
       context: .
       args:
-        - DATABASE_URL=${DATABASE_URL}
+        - DATABASE_URL=${CONTAINER_DATABASE_URL}
+        - NEXT_PUBLIC_API_URL=http://localhost:3001/api
     command: npm run start:prod
     ports:
       - "3001:3000"
     environment:
       - DATABASE_URL=${CONTAINER_DATABASE_URL}
       - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://localhost:3001/api
       - AUTH_SECRET=${AUTH_SECRET}
       - FIREBASE_API_KEY=${FIREBASE_API_KEY}
       - FIREBASE_APP_ID=${FIREBASE_APP_ID}
