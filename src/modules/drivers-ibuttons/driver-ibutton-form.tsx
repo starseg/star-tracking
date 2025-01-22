@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
 import api from "@/lib/axios";
-import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
@@ -29,7 +28,7 @@ import {
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
-import { Driver, Fleet, IButton } from "@prisma/client";
+import { Driver, IButton } from "@prisma/client";
 import { Textarea } from "@/components/ui/textarea";
 
 const FormSchema = z.object({
@@ -98,7 +97,7 @@ export default function DriverIButtonForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-3/4 lg:w-[40%] 2xl:w-1/3 space-y-6"
+        className="space-y-6 w-3/4 lg:w-[40%] 2xl:w-1/3"
       >
         <FormField
           control={form.control}
@@ -121,7 +120,7 @@ export default function DriverIButtonForm() {
                         ? drivers.find((item) => item.driverId === field.value)
                             ?.name
                         : "Selecione o motorista"}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      <ChevronsUpDown className="opacity-50 ml-2 w-4 h-4 shrink-0" />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
@@ -180,7 +179,7 @@ export default function DriverIButtonForm() {
                             (item) => item.ibuttonId === field.value
                           )?.number
                         : "Selecione o IButton"}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      <ChevronsUpDown className="opacity-50 ml-2 w-4 h-4 shrink-0" />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
@@ -191,7 +190,7 @@ export default function DriverIButtonForm() {
                     <CommandGroup>
                       {ibuttons.map((item) => (
                         <CommandItem
-                          value={item.number}
+                          value={item.number + item.code}
                           key={item.ibuttonId}
                           onSelect={() => {
                             form.setValue("ibuttonId", item.ibuttonId);
@@ -210,7 +209,7 @@ export default function DriverIButtonForm() {
                               {item.number} - {item.code}
                             </p>
                           ) : (
-                            <p className="text-red-400 font-semibold">
+                            <p className="font-semibold text-red-400">
                               {item.number} - {item.code}
                             </p>
                           )}

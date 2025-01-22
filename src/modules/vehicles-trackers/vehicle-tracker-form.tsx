@@ -97,7 +97,7 @@ export default function VehicleTrackerForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-3/4 lg:w-[40%] 2xl:w-1/3 space-y-6"
+        className="space-y-6 w-3/4 lg:w-[40%] 2xl:w-1/3"
       >
         <FormField
           control={form.control}
@@ -121,7 +121,7 @@ export default function VehicleTrackerForm() {
                             (item) => item.vehicleId === field.value
                           )?.licensePlate
                         : "Selecione o veículo"}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      <ChevronsUpDown className="opacity-50 ml-2 w-4 h-4 shrink-0" />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
@@ -180,7 +180,7 @@ export default function VehicleTrackerForm() {
                             (item) => item.trackerId === field.value
                           )?.number
                         : "Selecione o rastreador"}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      <ChevronsUpDown className="opacity-50 ml-2 w-4 h-4 shrink-0" />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
@@ -191,7 +191,7 @@ export default function VehicleTrackerForm() {
                     <CommandGroup>
                       {trackers.map((item) => (
                         <CommandItem
-                          value={item.number}
+                          value={item.iccid + item.number}
                           key={item.trackerId}
                           onSelect={() => {
                             form.setValue("trackerId", item.trackerId);
@@ -210,7 +210,7 @@ export default function VehicleTrackerForm() {
                               {item.number} - {item.iccid}
                             </p>
                           ) : (
-                            <p className="text-red-400 font-semibold">
+                            <p className="font-semibold text-red-400">
                               {item.number} - {item.iccid}
                             </p>
                           )}
