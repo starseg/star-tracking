@@ -7,12 +7,14 @@ export default function IButtons() {
   return (
     <>
       <Menu url="/painel" />
-      <main className="max-w-screen-lg mx-auto">
-        <h1 className="text-4xl flex gap-2 items-center justify-center mb-8 hover:animate-bounce hover:text-primary transition-all">
-          <RadioButton /> I Buttons
-        </h1>
-        <div className="flex justify-end mb-4">
-          <Search placeholder="Buscar..." pagination={false} />
+      <main className="mx-auto max-w-screen-lg">
+        <div className="flex justify-between items-center mb-4 w-full">
+          <h1 className="flex flex-1 items-center gap-2 text-4xl hover:text-primary transition-all hover:animate-bounce">
+            <RadioButton /> I Buttons
+          </h1>
+          <div className="flex flex-1 justify-end pr-4">
+            <Search placeholder="Buscar..." pagination={false} />
+          </div>
         </div>
         <IButtonTable />
       </main>

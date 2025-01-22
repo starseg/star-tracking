@@ -27,7 +27,7 @@ export default function Search({
   }, 300);
 
   return (
-    <div className="flex items-center gap-2 w-full md:w-1/2 lg:w-4/12">
+    <div className="flex items-center gap-2 w-full md:w-1/2 lg:w-60">
       <Input
         type="search"
         placeholder={placeholder}
