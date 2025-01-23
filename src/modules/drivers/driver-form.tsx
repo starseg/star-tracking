@@ -1,35 +1,15 @@
 "use client";
-import InputFile from "@/components/form/inputFile";
+import ComboboxDefault from "@/components/form/combobox-default";
+import InputDefault from "@/components/form/input-default";
 import InputImage from "@/components/form/inputImage";
+import TextareaDefault from "@/components/form/textarea-default";
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Textarea } from "@/components/ui/textarea";
+import { Form } from "@/components/ui/form";
 import api from "@/lib/axios";
 import { handleFileUpload } from "@/lib/firebase-upload";
-import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Fleet } from "@prisma/client";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Value } from "@radix-ui/react-select";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -106,132 +86,55 @@ export default function DriverForm() {
     }
   };
 
+  const fleetItem = fleets.map((fleet) => {
+    return {
+      label: fleet.name,
+      value: fleet.fleetId,
+      color: fleet.color,
+    };
+  });
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-6 w-3/4 lg:w-[40%] 2xl:w-1/3"
       >
-        <FormField
+        <ComboboxDefault
           control={form.control}
           name="fleetId"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Frota</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "justify-between",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value
-                        ? fleets.find((item) => item.fleetId === field.value)
-                            ?.name
-                        : "Selecione a frota"}
-                      <ChevronsUpDown className="opacity-50 ml-2 w-4 h-4 shrink-0" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="p-0 max-h-[60vh] overflow-x-auto">
-                  <Command className="w-full">
-                    <CommandInput placeholder="Buscar frota..." />
-                    <CommandEmpty>Nenhum item encontrado.</CommandEmpty>
-                    <CommandGroup>
-                      {fleets.map((item) => (
-                        <CommandItem
-                          value={item.name}
-                          key={item.fleetId}
-                          onSelect={() => {
-                            form.setValue("fleetId", item.fleetId);
-                          }}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              item.fleetId === field.value
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                          <p
-                            className="font-bold"
-                            style={{ color: item.color }}
-                          >
-                            {item.name}
-                          </p>
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
+          object={fleetItem}
+          label="Selecione a frota"
+          searchLabel="Buscar frota..."
+          selectLabel="Frota"
+          onSelect={(value: number) => {
+            form.setValue("fleetId", value);
+          }}
         />
-        <FormField
+        <InputDefault
           control={form.control}
           name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nome do motorista</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite o nome do motorista" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Nome do motorista"
+          placeholder="Digite o nome do motorista"
         />
-
-        <FormField
+        <InputDefault
           control={form.control}
           name="cpf"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>CPF</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite o CPF" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="CPF"
+          placeholder="Digite o CPF"
         />
-        <FormField
+        <InputDefault
           control={form.control}
           name="cnh"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>CNH</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite a CNH" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="CNH"
+          placeholder="Digite a CNH"
         />
-
         <InputImage control={form.control} name="imageUrl" />
-
-        <FormField
+        <TextareaDefault
           control={form.control}
           name="comments"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Observação</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Alguma informação adicional"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Observação"
+          placeholder="Alguma informação adicional"
         />
         <Button type="submit" className="w-full text-lg" disabled={isSending}>
           {isSending ? "Registrando..." : "Registrar"}

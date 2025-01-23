@@ -1,48 +1,14 @@
 "use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import api from "@/lib/axios";
-import {
-  CheckCircle,
-  PencilLine,
-  PlusCircle,
-  Trash,
-  XCircle,
-} from "@phosphor-icons/react/dist/ssr";
-import Swal from "sweetalert2";
-import { Problem } from "./services/interface";
-import { cn, dateFormat } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
-import { Textarea } from "@/components/ui/textarea";
+import api from "@/lib/axios";
+import { dateFormat } from "@/lib/utils";
+import { CheckCircle, Trash, XCircle } from "@phosphor-icons/react/dist/ssr";
 import { useState } from "react";
+import Swal from "sweetalert2";
+import { z } from "zod";
+import DescriptionProblem from "./description-form";
+import { Problem } from "./services/interface";
 
 interface ProblemCardProps {
   problem: Problem;
@@ -57,35 +23,6 @@ const FormSchema = z.object({
 });
 
 export default function ProblemCard({ problem, fetchData }: ProblemCardProps) {
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-      description: "",
-      date: undefined,
-    },
-  });
-
-  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    const values = {
-      comunicationProblemId: problem.comunicationProblemId,
-      description: data.description,
-      date: data.date,
-    };
-    try {
-      const response = await api.post("problem/description", values);
-      if (response.status === 201) {
-        fetchData();
-      }
-      form.reset({
-        description: "",
-        date: undefined,
-      });
-    } catch (error) {
-      console.error("Erro ao enviar dados para a API:", error);
-      throw error;
-    }
-  };
-
   const deleteItem = async (id: number) => {
     Swal.fire({
       title: "Excluir registro?",
@@ -175,20 +112,20 @@ export default function ProblemCard({ problem, fetchData }: ProblemCardProps) {
     });
   };
 
-  const createDescription = async (problem: number) => {
-    // TODO: abrir formulário para criar
-    // const data = {
-    //   date: date,
-    //   description: description,
-    //   comunicationProblemId: problem
-    // }
-    // try {
-    //   await api.patch(`problem/description`, data);
-    //   fetchData();
-    // } catch (error) {
-    //   console.error("Erro atualizar dado:", error);
-    // }
-  };
+  // const createDescription = async (problem: number) => {
+  //   // TODO: abrir formulário para criar
+  //   // const data = {
+  //   //   date: date,
+  //   //   description: description,
+  //   //   comunicationProblemId: problem
+  //   // }
+  //   // try {
+  //   //   await api.patch(`problem/description`, data);
+  //   //   fetchData();
+  //   // } catch (error) {
+  //   //   console.error("Erro atualizar dado:", error);
+  //   // }
+  // };
 
   const [showAll, setShowAll] = useState(false);
   const displayedItems = showAll
@@ -272,7 +209,6 @@ export default function ProblemCard({ problem, fetchData }: ProblemCardProps) {
               </button>
             )}
           </div>
-
         </div>
 
         <div className="flex items-center gap-2">
@@ -305,91 +241,7 @@ export default function ProblemCard({ problem, fetchData }: ProblemCardProps) {
       </div>
       <div className="flex justify-between items-center mt-2">
         <p className="font-semibold">Descrição</p>
-        <Dialog>
-          <DialogTrigger asChild>
-            <button
-              title="Adicionar nova descrição"
-              className="hover:bg-muted p-1 rounded-md transition-colors aspect-square"
-              onClick={() => createDescription(problem.comunicationProblemId)}
-            >
-              <PlusCircle className="w-6 h-6 text-primary" />
-            </button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
-                <DialogHeader>
-                  <DialogTitle>Criar nova descrição</DialogTitle>
-                  <DialogDescription>
-                    Descreva a data e a atividade tomada em relação a esse
-                    problema.
-                  </DialogDescription>
-                </DialogHeader>
-                <FormField
-                  control={form.control}
-                  name="date"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Data</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-[240px] pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP", { locale: ptBR })
-                              ) : (
-                                <span>Selecione uma data</span>
-                              )}
-                              <CalendarIcon className="opacity-50 ml-auto w-4 h-4" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="p-0 w-auto" align="start">
-                          <Calendar
-                            locale={ptBR}
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Descrição</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Descreva as ações tomadas"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <DialogFooter>
-                  <Button type="submit">Registrar</Button>
-                </DialogFooter>
-              </form>
-            </Form>
-          </DialogContent>
-        </Dialog>
+        <DescriptionProblem fetchData={fetchData} problem={problem} />
       </div>
       {/* MAP NAS DESCRIÇÕES */}
       <div>

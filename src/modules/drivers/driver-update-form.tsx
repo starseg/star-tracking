@@ -1,42 +1,23 @@
 "use client";
-import { Fleet } from "@prisma/client";
+import ComboboxDefault from "@/components/form/combobox-default";
+import InputDefault from "@/components/form/input-default";
+import InputRadio from "@/components/form/input-radio";
+import InputImage from "@/components/form/inputImage";
+import TextareaDefault from "@/components/form/textarea-default";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Form } from "@/components/ui/form";
+import api from "@/lib/axios";
+import { deleteFile, handleFileUpload } from "@/lib/firebase-upload";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Image } from "@phosphor-icons/react/dist/ssr";
+import { Fleet } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { useRouter } from "next/navigation";
-import api from "@/lib/axios";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Check, ChevronsUpDown } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import { cn } from "@/lib/utils";
 import { DriverValues } from "./services/interface";
-import { useState } from "react";
-import { Image } from "@phosphor-icons/react/dist/ssr";
-import InputImage from "@/components/form/inputImage";
-import { Checkbox } from "@/components/ui/checkbox";
-import { deleteFile, handleFileUpload } from "@/lib/firebase-upload";
+import { status } from "@/lib/utils";
 
 const FormSchema = z.object({
   name: z.string(),
@@ -120,113 +101,49 @@ export default function DriverUpdateForm({
     }
   };
 
+  const fleetItem = fleets.map((fleet) => {
+    return {
+      label: fleet.name,
+      value: fleet.fleetId,
+      color: fleet.color,
+    };
+  });
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-6 w-3/4 lg:w-[40%] 2xl:w-1/3"
       >
-        <FormField
+        <ComboboxDefault
           control={form.control}
           name="fleetId"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Frota</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "justify-between",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value
-                        ? fleets.find((item) => item.fleetId === field.value)
-                            ?.name
-                        : "Selecione a frota"}
-                      <ChevronsUpDown className="opacity-50 ml-2 w-4 h-4 shrink-0" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="p-0 max-h-[60vh] overflow-x-auto">
-                  <Command className="w-full">
-                    <CommandInput placeholder="Buscar frota..." />
-                    <CommandEmpty>Nenhum item encontrado.</CommandEmpty>
-                    <CommandGroup>
-                      {fleets.map((item) => (
-                        <CommandItem
-                          value={item.name}
-                          key={item.fleetId}
-                          onSelect={() => {
-                            form.setValue("fleetId", item.fleetId);
-                          }}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              item.fleetId === field.value
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                          <p
-                            className="font-bold"
-                            style={{ color: item.color }}
-                          >
-                            {item.name}
-                          </p>
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
+          object={fleetItem}
+          label="Selecione a frota"
+          searchLabel="Buscar frota..."
+          selectLabel="Frota"
+          onSelect={(value: number) => {
+            form.setValue("fleetId", value);
+          }}
         />
-        <FormField
+        <InputDefault
           control={form.control}
           name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nome do motorista</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite o nome do motorista" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Nome do motorista"
+          placeholder="Digite o nome do motorista"
         />
 
-        <FormField
+        <InputDefault
           control={form.control}
           name="cpf"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>CPF</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite o CPF" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="CPF"
+          placeholder="Digite o CPF"
         />
-        <FormField
+        <InputDefault
           control={form.control}
           name="cnh"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>CNH</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite a CNH" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="CNH"
+          placeholder="Digite a CNH"
         />
         {/* /////////////// */}
         <div className="flex justify-center items-center gap-4">
@@ -264,51 +181,19 @@ export default function DriverUpdateForm({
             </div>
           </div>
         </div>
-        <FormField
+        <TextareaDefault
           control={form.control}
           name="comments"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Observação</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Alguma informação adicional"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Observação"
+          placeholder="Alguma informação adicional"
         />
-        <FormField
+        <InputRadio
           control={form.control}
           name="status"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Status</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-col space-y-1"
-                >
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="ACTIVE" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Ativo</FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="INACTIVE" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Inativo</FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Status"
+          object={status}
+          idExtractor={(item) => item.value}
+          descriptionExtractor={(item) => item.label}
         />
         <Button type="submit" className="w-full text-lg" disabled={isSending}>
           {isSending ? "Atualizando..." : "Atualizar"}

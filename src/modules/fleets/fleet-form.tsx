@@ -1,20 +1,14 @@
 "use client";
+import ColorPicker from "@/components/form/color-picker";
+import InputDefault from "@/components/form/input-default";
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
+import api from "@/lib/axios";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { useRouter } from "next/navigation";
-import api from "@/lib/axios";
-import { Input } from "@/components/ui/input";
-import { useState } from "react";
 
 const FormSchema = z.object({
   name: z.string(),
@@ -56,83 +50,35 @@ export default function FleetForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-3/4 lg:w-[40%] 2xl:w-1/3 space-y-6"
+        className="space-y-6 w-3/4 lg:w-[40%] 2xl:w-1/3"
       >
-        <FormField
+        <InputDefault
           control={form.control}
           name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nome</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite o nome da frota" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Nome"
+          placeholder="Digite o nome da frota"
         />
-        <FormField
+        <InputDefault
           control={form.control}
           name="responsible"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Responsável</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Digite o nome do responsável da frota"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Responsável"
+          placeholder="Digite o nome do responsável da frota"
         />
-        <FormField
+        <InputDefault
           control={form.control}
           name="telephone"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Telefone</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Adicione um telefone ao responsável"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Telefone"
+          placeholder="Adicione um telefone ao responsável"
         />
-        <FormField
+        <InputDefault
           control={form.control}
           name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>E-mail</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Adicione um e-mail ao responsável"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          type="email"
+          label="E-mail"
+          placeholder="Adicione um e-mail ao responsável"
         />
 
-        <FormField
-          control={form.control}
-          name="color"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Cor</FormLabel>
-              <FormControl>
-                <Input type="color" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <ColorPicker name="color" valueControlBy="form" />
         <Button type="submit" className="w-full text-lg" disabled={isSending}>
           {isSending ? "Registrando..." : "Registrar"}
         </Button>

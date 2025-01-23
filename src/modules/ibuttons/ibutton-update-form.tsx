@@ -1,41 +1,20 @@
 "use client";
+import ComboboxDefault from "@/components/form/combobox-default";
+import InputDefault from "@/components/form/input-default";
+import InputImage from "@/components/form/inputImage";
+import TextareaDefault from "@/components/form/textarea-default";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Form } from "@/components/ui/form";
+import api from "@/lib/axios";
+import { deleteFile, handleFileUpload } from "@/lib/firebase-upload";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Image } from "@phosphor-icons/react/dist/ssr";
+import { DeviceStatus, IButton } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { useRouter } from "next/navigation";
-import api from "@/lib/axios";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { DeviceStatus, IButton } from "@prisma/client";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Check, ChevronsUpDown } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import { cn } from "@/lib/utils";
-import { deleteFile, handleFileUpload } from "@/lib/firebase-upload";
-import { useState } from "react";
-import { Image } from "@phosphor-icons/react/dist/ssr";
-import InputImage from "@/components/form/inputImage";
-import { Checkbox } from "@/components/ui/checkbox";
 
 const FormSchema = z.object({
   number: z.string(),
@@ -123,50 +102,36 @@ export default function IButtonUpdateForm({
     }
   };
 
+  const deviceStatusItem = status.map((status) => {
+    return {
+      label: status.description,
+      value: status.deviceStatusId,
+    };
+  });
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-6 w-3/4 lg:w-[40%] 2xl:w-1/3"
       >
-        <FormField
+        <InputDefault
           control={form.control}
           name="number"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Número</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite o número" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Número"
+          placeholder="Digite o número"
         />
-        <FormField
+        <InputDefault
           control={form.control}
           name="code"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Código</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite o código" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Código"
+          placeholder="Digite o código"
         />
-        <FormField
+        <InputDefault
           control={form.control}
           name="programmedField"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Campo programado</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite o número" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Campo programado"
+          placeholder="Digite o número"
         />
         <div className="flex justify-center items-center gap-4">
           {ibutton.url1 && ibutton.url1.length > 0 ? (
@@ -203,82 +168,22 @@ export default function IButtonUpdateForm({
             </div>
           </div>
         </div>
-        <FormField
+        <TextareaDefault
           control={form.control}
           name="comments"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Observação</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Alguma informação adicional"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Observação"
+          placeholder="Alguma informação adicional"
         />
-        <FormField
+        <ComboboxDefault
           control={form.control}
           name="deviceStatusId"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Status do dispositivo</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "justify-between",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value
-                        ? status.find(
-                            (item) => item.deviceStatusId === field.value
-                          )?.description
-                        : "Selecione o status"}
-                      <ChevronsUpDown className="opacity-50 ml-2 w-4 h-4 shrink-0" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="p-0 max-h-[60vh] overflow-x-auto">
-                  <Command className="w-full">
-                    <CommandInput placeholder="Buscar visitante..." />
-                    <CommandEmpty>Nenhum item encontrado.</CommandEmpty>
-                    <CommandGroup>
-                      {status.map((item) => (
-                        <CommandItem
-                          value={item.description}
-                          key={item.deviceStatusId}
-                          onSelect={() => {
-                            form.setValue(
-                              "deviceStatusId",
-                              item.deviceStatusId
-                            );
-                          }}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              item.deviceStatusId === field.value
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                          {item.description}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
+          object={deviceStatusItem}
+          label="Selecione o status"
+          searchLabel="Buscar status..."
+          selectLabel="status"
+          onSelect={(value: number) => {
+            form.setValue("deviceStatusId", value);
+          }}
         />
         <Button type="submit" className="w-full text-lg" disabled={isSending}>
           {isSending ? "Atualizando..." : "Atualizar"}

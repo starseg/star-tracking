@@ -1,21 +1,15 @@
 "use client";
+import InputDefault from "@/components/form/input-default";
+import InputFile from "@/components/form/inputFile";
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
+import api from "@/lib/axios";
+import { handleFileUpload } from "@/lib/firebase-upload";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { useRouter } from "next/navigation";
-import api from "@/lib/axios";
-import { Input } from "@/components/ui/input";
-import { handleFileUpload } from "@/lib/firebase-upload";
-import { useState } from "react";
 
 const FormSchema = z.object({
   title: z.string().min(4, { message: "Crie um nome válido" }),
@@ -71,39 +65,15 @@ export default function DeclarationForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-3/4 lg:w-[40%] 2xl:w-1/3 space-y-6"
+        className="space-y-6 w-3/4 lg:w-[40%] 2xl:w-1/3"
       >
-        <FormField
+        <InputDefault
           control={form.control}
           name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Título</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite o título" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Título"
+          placeholder="Digite o título"
         />
-        <FormField
-          control={form.control}
-          name="url"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Arquivo</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  onChange={(e) =>
-                    field.onChange(e.target.files ? e.target.files[0] : null)
-                  }
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <InputFile control={form.control} name="url" />
         <Button type="submit" className="w-full text-lg" disabled={isSending}>
           {isSending ? "Salvando..." : "Salvar"}
         </Button>

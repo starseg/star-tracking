@@ -30,11 +30,15 @@ import {
   CommandInput,
   CommandItem,
 } from "@/components/ui/command";
-import { cn } from "@/lib/utils";
+import { cn, status } from "@/lib/utils";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Calendar } from "@/components/ui/calendar";
 import { useState } from "react";
+import ComboboxDefault from "@/components/form/combobox-default";
+import DatePicker from "@/components/form/date-picker";
+import TextareaDefault from "@/components/form/textarea-default";
+import InputRadio from "@/components/form/input-radio";
 
 const FormSchema = z.object({
   vehicleId: z.number(),
@@ -82,7 +86,7 @@ export default function VehicleTrackerUpdateForm({
       const response = await api.put(`vehicle-tracker/${id}`, data);
       if (response.status === 200) {
         if (data.status === "INACTIVE") {
-          const tracker = await api.put(`tracker/${data.trackerId}`, {
+          await api.put(`tracker/${data.trackerId}`, {
             deviceStatusId: 1,
           });
         }
@@ -96,260 +100,78 @@ export default function VehicleTrackerUpdateForm({
     }
   };
 
+  const vehicleItem = vehicles.map((vehicle) => {
+    return {
+      label: `${vehicle.licensePlate} - ${vehicle.code}`,
+      value: vehicle.vehicleId,
+    };
+  });
+
+  const trackerItem = trackers.map((tracker) => {
+    return {
+      label: `${tracker.number} - ${tracker.iccid}`,
+      value: tracker.trackerId,
+      color: tracker.deviceStatusId !== 1 ? "#ff6467" : "",
+    };
+  });
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-3/4 lg:w-[40%] 2xl:w-1/3 space-y-6"
+        className="space-y-6 w-3/4 lg:w-[40%] 2xl:w-1/3"
       >
-        <FormField
+        <ComboboxDefault
           control={form.control}
           name="vehicleId"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Veículo</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "justify-between",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value
-                        ? vehicles.find(
-                            (item) => item.vehicleId === field.value
-                          )?.licensePlate
-                        : "Selecione o veículo"}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="p-0 max-h-[60vh] overflow-x-auto">
-                  <Command className="w-full">
-                    <CommandInput placeholder="Buscar veículo..." />
-                    <CommandEmpty>Nenhum item encontrado.</CommandEmpty>
-                    <CommandGroup>
-                      {vehicles.map((item) => (
-                        <CommandItem
-                          value={item.licensePlate}
-                          key={item.vehicleId}
-                          onSelect={() => {
-                            form.setValue("vehicleId", item.vehicleId);
-                          }}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              item.vehicleId === field.value
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                          {item.licensePlate} - {item.code}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
+          object={vehicleItem}
+          label="Selecione o veículo"
+          searchLabel="Buscar veículo..."
+          selectLabel="Veículo"
+          onSelect={(value: number) => {
+            form.setValue("vehicleId", value);
+          }}
         />
 
-        <FormField
+        <ComboboxDefault
           control={form.control}
           name="trackerId"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Rastreador</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "justify-between",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value
-                        ? trackers.find(
-                            (item) => item.trackerId === field.value
-                          )?.number
-                        : "Selecione o rastreador"}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="p-0 max-h-[60vh] overflow-x-auto">
-                  <Command className="w-full">
-                    <CommandInput placeholder="Buscar rastreador..." />
-                    <CommandEmpty>Nenhum item encontrado.</CommandEmpty>
-                    <CommandGroup>
-                      {trackers.map((item) => (
-                        <CommandItem
-                          value={item.number}
-                          key={item.trackerId}
-                          onSelect={() => {
-                            form.setValue("trackerId", item.trackerId);
-                          }}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              item.trackerId === field.value
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                          {item.number} - {item.iccid}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
+          object={trackerItem}
+          label="Selecione o Rastreador"
+          searchLabel="Buscar rastreado..."
+          selectLabel="Rastreador"
+          onSelect={(value: number) => {
+            form.setValue("trackerId", value);
+          }}
         />
-        <FormField
+        <DatePicker
           control={form.control}
           name="startDate"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Data de início</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        format(field.value, "PPP", { locale: ptBR })
-                      ) : (
-                        <span>Selecione uma data</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    locale={ptBR}
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Data de início"
         />
-        <FormField
+        <DatePicker
           control={form.control}
           name="endDate"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Data de fim</FormLabel>
-              <div className="flex gap-4">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-[240px] pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP", { locale: ptBR })
-                        ) : (
-                          <span>Selecione uma data</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      locale={ptBR}
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormDescription className="w-1/2">
-                  Este campo já será preenchido com a data atual se o status for
-                  alterado para inativo
-                </FormDescription>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Data de fim"
+          description="Este campo já será preenchido com a data atual se o status for alterado para inativo"
         />
-        {/* DEFAULT */}
-        <FormField
+
+        <TextareaDefault
           control={form.control}
           name="comments"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Observação</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Alguma informação adicional"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Observação"
+          placeholder="Alguma informação adicional"
         />
-        <FormField
+
+        <InputRadio
           control={form.control}
           name="status"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Status</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-col space-y-1"
-                >
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="ACTIVE" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Ativo</FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="INACTIVE" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Inativo</FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Status"
+          object={status}
+          idExtractor={(item) => item.value}
+          descriptionExtractor={(item) => item.label}
         />
+
         <Button type="submit" className="w-full text-lg" disabled={isSending}>
           {isSending ? "Atualizando..." : "Atualizar"}
         </Button>

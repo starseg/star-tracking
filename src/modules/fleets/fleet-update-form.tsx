@@ -3,20 +3,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
 import api from "@/lib/axios";
-import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useState } from "react";
-import { Textarea } from "@/components/ui/textarea";
+import InputDefault from "@/components/form/input-default";
+import ColorPicker from "@/components/form/color-picker";
+import TextareaDefault from "@/components/form/textarea-default";
+import InputRadio from "@/components/form/input-radio";
+import { status } from "@/lib/utils";
 
 const FormSchema = z.object({
   name: z.string(),
@@ -49,7 +44,6 @@ export default function FleetUpdateForm({
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     setIsSendind(true);
     try {
-      console.log(data);
       const response = await api.put(`fleet/${id}`, data);
       if (response.status === 200) {
         router.push("/frotas");
@@ -68,75 +62,31 @@ export default function FleetUpdateForm({
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-6 w-3/4 lg:w-[40%] 2xl:w-1/3"
       >
-        <FormField
+        <InputDefault
           control={form.control}
           name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nome</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite o nome da frota" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Nome"
+          placeholder="Digite o nome da frota"
         />
-        <FormField
-          control={form.control}
+        <ColorPicker
           name="color"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Cor</FormLabel>
-              <FormControl>
-                <Input type="color" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          valueControlBy="form"
+          defaultValue={preloadedValues.color}
         />
 
-        <FormField
-          control={form.control}
-          name="status"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Status</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-col space-y-1"
-                >
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="ACTIVE" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Ativa</FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="INACTIVE" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Inativa</FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
+        <TextareaDefault
           control={form.control}
           name="comments"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Observações</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Algum dado adicional..." {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Observação"
+          placeholder="Alguma informação adicional"
+        />
+        <InputRadio
+          control={form.control}
+          name="status"
+          label="Status"
+          object={status}
+          idExtractor={(item) => item.value}
+          descriptionExtractor={(item) => item.label}
         />
         <Button type="submit" className="w-full text-lg" disabled={isSending}>
           {isSending ? "Atualizando..." : "Atualizar"}

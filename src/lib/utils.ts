@@ -56,3 +56,14 @@ export function Toast(message: string, type: string) {
     });
   }
 }
+
+export const status = [
+  {
+    value: "ACTIVE",
+    label: "Ativo",
+  },
+  {
+    value: "INACTIVE",
+    label: "Inativo",
+  },
+];

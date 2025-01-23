@@ -30,6 +30,8 @@ import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { Vehicle, Tracker } from "@prisma/client";
 import { Textarea } from "@/components/ui/textarea";
+import ComboboxDefault from "@/components/form/combobox-default";
+import TextareaDefault from "@/components/form/textarea-default";
 
 const FormSchema = z.object({
   vehicleId: z.number(),
@@ -93,153 +95,56 @@ export default function VehicleTrackerForm() {
     }
   };
 
+  const vehicleItem = vehicles.map((vehicle) => {
+    return {
+      label: `${vehicle.licensePlate} - ${vehicle.code}`,
+      value: vehicle.vehicleId,
+    };
+  });
+
+  const trackerItem = trackers.map((tracker) => {
+    return {
+      label: `${tracker.number} - ${tracker.iccid}`,
+      value: tracker.trackerId,
+      color: tracker.deviceStatusId !== 1 ? "#ff6467" : "",
+    };
+  });
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-6 w-3/4 lg:w-[40%] 2xl:w-1/3"
       >
-        <FormField
+        <ComboboxDefault
           control={form.control}
           name="vehicleId"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Veículo</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "justify-between",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value
-                        ? vehicles.find(
-                            (item) => item.vehicleId === field.value
-                          )?.licensePlate
-                        : "Selecione o veículo"}
-                      <ChevronsUpDown className="opacity-50 ml-2 w-4 h-4 shrink-0" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="p-0 max-h-[60vh] overflow-x-auto">
-                  <Command className="w-full">
-                    <CommandInput placeholder="Buscar veículo..." />
-                    <CommandEmpty>Nenhum item encontrado.</CommandEmpty>
-                    <CommandGroup>
-                      {vehicles.map((item) => (
-                        <CommandItem
-                          value={item.licensePlate}
-                          key={item.vehicleId}
-                          onSelect={() => {
-                            form.setValue("vehicleId", item.vehicleId);
-                          }}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              item.vehicleId === field.value
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                          {item.licensePlate} - {item.code}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
+          object={vehicleItem}
+          label="Selecione o veículo"
+          searchLabel="Buscar veículo..."
+          selectLabel="Veículo"
+          onSelect={(value: number) => {
+            form.setValue("vehicleId", value);
+          }}
         />
 
-        <FormField
+        <ComboboxDefault
           control={form.control}
           name="trackerId"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Rastreador</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "justify-between",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value
-                        ? trackers.find(
-                            (item) => item.trackerId === field.value
-                          )?.number
-                        : "Selecione o rastreador"}
-                      <ChevronsUpDown className="opacity-50 ml-2 w-4 h-4 shrink-0" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="p-0 max-h-[60vh] overflow-x-auto">
-                  <Command className="w-full">
-                    <CommandInput placeholder="Buscar rastreador..." />
-                    <CommandEmpty>Nenhum item encontrado.</CommandEmpty>
-                    <CommandGroup>
-                      {trackers.map((item) => (
-                        <CommandItem
-                          value={item.iccid + item.number}
-                          key={item.trackerId}
-                          onSelect={() => {
-                            form.setValue("trackerId", item.trackerId);
-                          }}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              item.trackerId === field.value
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                          {item.deviceStatusId === 1 ? (
-                            <p>
-                              {item.number} - {item.iccid}
-                            </p>
-                          ) : (
-                            <p className="font-semibold text-red-400">
-                              {item.number} - {item.iccid}
-                            </p>
-                          )}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
+          object={trackerItem}
+          label="Selecione o Rastreador"
+          searchLabel="Buscar rastreado..."
+          selectLabel="Rastreador"
+          onSelect={(value: number) => {
+            form.setValue("trackerId", value);
+          }}
         />
 
-        <FormField
+        <TextareaDefault
           control={form.control}
           name="comments"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Observação</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Alguma informação adicional"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Observação"
+          placeholder="Alguma informação adicional"
         />
         <Button type="submit" className="w-full text-lg" disabled={isSending}>
           {isSending ? "Registrando..." : "Registrar"}

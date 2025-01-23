@@ -45,7 +45,14 @@ export async function GET(request: NextRequest) {
           },
         },
       },
-      orderBy: [{ status: "asc" }],
+      orderBy: [
+        { status: "asc" },
+        {
+          driver: {
+            name: "asc",
+          },
+        },
+      ],
     });
   } else {
     driversIButtons = await prisma.driverIButton.findMany({

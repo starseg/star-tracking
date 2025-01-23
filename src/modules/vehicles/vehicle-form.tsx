@@ -33,6 +33,9 @@ import { Fleet } from "@prisma/client";
 import { Textarea } from "@/components/ui/textarea";
 import { handleFileUpload } from "@/lib/firebase-upload";
 import InputImage from "@/components/form/inputImage";
+import ComboboxDefault from "@/components/form/combobox-default";
+import InputDefault from "@/components/form/input-default";
+import TextareaDefault from "@/components/form/textarea-default";
 
 const FormSchema = z.object({
   fleetId: z.number(),
@@ -117,186 +120,89 @@ export default function VehicleForm() {
     }
   };
 
+  const fleetItem = fleets.map((fleet) => {
+    return {
+      label: fleet.name,
+      value: fleet.fleetId,
+      color: fleet.color,
+    };
+  });
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-6 w-3/4 lg:w-[40%] 2xl:w-1/3"
       >
-        <FormField
+        <ComboboxDefault
           control={form.control}
           name="fleetId"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Frota</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "justify-between",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value
-                        ? fleets.find((item) => item.fleetId === field.value)
-                            ?.name
-                        : "Selecione a frota"}
-                      <ChevronsUpDown className="opacity-50 ml-2 w-4 h-4 shrink-0" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="p-0 max-h-[60vh] overflow-x-auto">
-                  <Command className="w-full">
-                    <CommandInput placeholder="Buscar frota..." />
-                    <CommandEmpty>Nenhum item encontrado.</CommandEmpty>
-                    <CommandGroup>
-                      {fleets.map((item) => (
-                        <CommandItem
-                          value={item.name}
-                          key={item.fleetId}
-                          onSelect={() => {
-                            form.setValue("fleetId", item.fleetId);
-                          }}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              item.fleetId === field.value
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                          <p
-                            className="font-bold"
-                            style={{ color: item.color }}
-                          >
-                            {item.name}
-                          </p>
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
+          object={fleetItem}
+          label="Selecione a frota"
+          searchLabel="Buscar frota..."
+          selectLabel="Frota"
+          onSelect={(value: number) => {
+            form.setValue("fleetId", value);
+          }}
         />
-        <FormField
+        <InputDefault
           control={form.control}
           name="model"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Modelo</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite o modelo" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Modelo"
+          placeholder="Digite o modelo"
         />
 
-        <FormField
+        <InputDefault
           control={form.control}
           name="licensePlate"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Placa</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite a placa" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Placa"
+          placeholder="Digite a placa"
         />
 
-        <FormField
+        <InputDefault
           control={form.control}
           name="code"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Código</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite o código" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Código"
+          placeholder="Digite o código"
         />
-        <FormField
+
+        <InputDefault
           control={form.control}
           name="renavam"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Renavam</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite o número" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Modelo"
+          placeholder="Digite o número"
         />
-        <FormField
+
+        <InputDefault
           control={form.control}
           name="chassis"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Chassis/Série</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite o número" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Chassis/Série"
+          placeholder="Digite o número"
         />
-        <FormField
+        <InputDefault
           control={form.control}
           name="year"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Ano</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite o ano" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Ano"
+          placeholder="Digite o ano"
         />
 
-        <FormField
+        <InputDefault
           control={form.control}
           name="installationDate"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Data de instalação</FormLabel>
-              <FormControl>
-                <Input type="date" placeholder="Digite o ano" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Data de instalação"
+          placeholder="Digite o ano"
+          type="date"
         />
+
         <InputImage control={form.control} name="url" />
 
-        <FormField
+        <TextareaDefault
           control={form.control}
           name="comments"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Observação</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Alguma informação adicional"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Observação"
+          placeholder="Alguma informação adicional"
         />
+
         <Button type="submit" className="w-full text-lg" disabled={isSending}>
           {isSending ? "Registrando..." : "Registrar"}
         </Button>

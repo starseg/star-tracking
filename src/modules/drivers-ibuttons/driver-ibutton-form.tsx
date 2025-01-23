@@ -3,33 +3,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
 import api from "@/lib/axios";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Check, ChevronsUpDown } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { Driver, IButton } from "@prisma/client";
-import { Textarea } from "@/components/ui/textarea";
+import ComboboxDefault from "@/components/form/combobox-default";
+import TextareaDefault from "@/components/form/textarea-default";
 
 const FormSchema = z.object({
   driverId: z.number(),
@@ -93,152 +73,53 @@ export default function DriverIButtonForm() {
     }
   };
 
+  const driverItem = drivers.map((driver) => {
+    return {
+      label: driver.name,
+      value: driver.driverId,
+    };
+  });
+
+  const ibuttonItem = ibuttons.map((ibutton) => {
+    return {
+      label: ibutton.number + " - " + ibutton.code,
+      value: ibutton.ibuttonId,
+    };
+  });
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-6 w-3/4 lg:w-[40%] 2xl:w-1/3"
       >
-        <FormField
+        <ComboboxDefault
           control={form.control}
           name="driverId"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Motorista</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "justify-between",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value
-                        ? drivers.find((item) => item.driverId === field.value)
-                            ?.name
-                        : "Selecione o motorista"}
-                      <ChevronsUpDown className="opacity-50 ml-2 w-4 h-4 shrink-0" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="p-0 max-h-[60vh] overflow-x-auto">
-                  <Command className="w-full">
-                    <CommandInput placeholder="Buscar motorista..." />
-                    <CommandEmpty>Nenhum item encontrado.</CommandEmpty>
-                    <CommandGroup>
-                      {drivers.map((item) => (
-                        <CommandItem
-                          value={item.name}
-                          key={item.driverId}
-                          onSelect={() => {
-                            form.setValue("driverId", item.driverId);
-                          }}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              item.driverId === field.value
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                          {item.name}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
+          object={driverItem}
+          label="Selecione o motorista"
+          searchLabel="Buscar motorista..."
+          selectLabel="Motorista"
+          onSelect={(value: number) => {
+            form.setValue("driverId", value);
+          }}
         />
-
-        <FormField
+        <ComboboxDefault
           control={form.control}
           name="ibuttonId"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>IButton</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "justify-between",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value
-                        ? ibuttons.find(
-                            (item) => item.ibuttonId === field.value
-                          )?.number
-                        : "Selecione o IButton"}
-                      <ChevronsUpDown className="opacity-50 ml-2 w-4 h-4 shrink-0" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="p-0 max-h-[60vh] overflow-x-auto">
-                  <Command className="w-full">
-                    <CommandInput placeholder="Buscar IButton..." />
-                    <CommandEmpty>Nenhum item encontrado.</CommandEmpty>
-                    <CommandGroup>
-                      {ibuttons.map((item) => (
-                        <CommandItem
-                          value={item.number + item.code}
-                          key={item.ibuttonId}
-                          onSelect={() => {
-                            form.setValue("ibuttonId", item.ibuttonId);
-                          }}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              item.ibuttonId === field.value
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                          {item.deviceStatusId === 1 ? (
-                            <p>
-                              {item.number} - {item.code}
-                            </p>
-                          ) : (
-                            <p className="font-semibold text-red-400">
-                              {item.number} - {item.code}
-                            </p>
-                          )}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
+          object={ibuttonItem}
+          label="Selecione o IButton"
+          searchLabel="Buscar IButton..."
+          selectLabel="IButton"
+          onSelect={(value: number) => {
+            form.setValue("ibuttonId", value);
+          }}
         />
-
-        <FormField
+        <TextareaDefault
           control={form.control}
           name="comments"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Observação</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Alguma informação adicional"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Observação"
+          placeholder="Alguma informação adicional"
         />
         <Button type="submit" className="w-full text-lg" disabled={isSending}>
           {isSending ? "Registrando..." : "Registrar"}

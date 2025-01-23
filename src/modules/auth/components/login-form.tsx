@@ -1,8 +1,6 @@
 "use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import axios from "axios";
+import InputDefault from "@/components/form/input-default";
+import InputPassword from "@/components/form/input-password";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,20 +8,15 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import api from "@/lib/axios";
-import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
-import { InputPassword } from "./input-password";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { z } from "zod";
 
 const FormSchema = z.object({
   username: z.string().min(5, {
@@ -68,7 +61,7 @@ export function LoginForm() {
     }
   };
   return (
-    <Card className="w-[300px] md:w-[400px] border-yellow-600">
+    <Card className="border-yellow-600 w-[300px] md:w-[400px]">
       <CardHeader className="flex flex-col items-center mt-2">
         <Image
           src="/logo.svg"
@@ -81,41 +74,20 @@ export function LoginForm() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent>
-            <div className="grid w-full items-center gap-2">
-              <div className="flex flex-col space-y-1.5">
-                <FormField
-                  control={form.control}
-                  name="username"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Usuário</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Seu nome de usuário"
-                          autoComplete="off"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="flex flex-col space-y-1.5">
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Senha</FormLabel>
-                      <FormControl>
-                        <InputPassword placeholder="Sua senha" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+            <div className="items-center gap-2 grid w-full">
+              <InputDefault
+                control={form.control}
+                name="username"
+                label="Nome de usuário"
+                type="text"
+                placeholder="Seu nome de usuário"
+              />
+              <InputPassword
+                control={form.control}
+                name="password"
+                label="Senha"
+                placeholder="Digite sua senha"
+              />
             </div>
           </CardContent>
           <CardFooter>

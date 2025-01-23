@@ -15,8 +15,10 @@ import { useRouter } from "next/navigation";
 import api from "@/lib/axios";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { InputPassword } from "../auth/components/input-password";
 import { useState } from "react";
+import InputDefault from "@/components/form/input-default";
+import InputPassword from "@/components/form/input-password";
+import InputRadio from "@/components/form/input-radio";
 
 const FormSchema = z.object({
   name: z.string().min(5, {
@@ -58,83 +60,48 @@ export default function UserForm() {
     }
   };
 
+  const type = [
+    {
+      value: "USER",
+      label: "Usuário Comum",
+    },
+    {
+      value: "ADMIN",
+      label: "Administrador",
+    },
+  ];
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-3/4 lg:w-[40%] 2xl:w-1/3 space-y-6"
+        className="space-y-6 w-3/4 lg:w-[40%] 2xl:w-1/3"
       >
-        <FormField
+        <InputDefault
           control={form.control}
           name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nome</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite o nome completo" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Nome"
+          placeholder="Digite o nome completo"
         />
-        <FormField
+        <InputDefault
           control={form.control}
           name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Usuário</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Crie um nome de usuário para acessar o sistema"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Usuário"
+          placeholder="Crie um nome de usuário para acessar o sistema"
         />
-        <FormField
+        <InputPassword
           control={form.control}
           name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Senha</FormLabel>
-              <FormControl>
-                <InputPassword placeholder="Crie uma senha forte" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Senha"
+          placeholder="Crie uma senha forte"
         />
-        <FormField
+        <InputRadio
           control={form.control}
           name="type"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tipo</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-col space-y-1"
-                >
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="USER" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Usuário comum</FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="ADMIN" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Administrador</FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Tipo"
+          object={type}
+          idExtractor={(item) => item.value}
+          descriptionExtractor={(item) => item.label}
         />
         <Button type="submit" className="w-full text-lg" disabled={isSending}>
           {isSending ? "Registrando..." : "Registrar"}

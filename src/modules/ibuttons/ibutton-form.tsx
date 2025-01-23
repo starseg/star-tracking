@@ -1,23 +1,16 @@
 "use client";
+import InputDefault from "@/components/form/input-default";
+import InputImage from "@/components/form/inputImage";
+import TextareaDefault from "@/components/form/textarea-default";
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
+import api from "@/lib/axios";
+import { handleFileUpload } from "@/lib/firebase-upload";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { useRouter } from "next/navigation";
-import api from "@/lib/axios";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { handleFileUpload } from "@/lib/firebase-upload";
-import { useState } from "react";
-import InputImage from "@/components/form/inputImage";
 
 const FormSchema = z.object({
   number: z.string(),
@@ -91,61 +84,30 @@ export default function IButtonForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-6 w-3/4 lg:w-[40%] 2xl:w-1/3"
       >
-        <FormField
+        <InputDefault
           control={form.control}
           name="number"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Número</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite o número" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Número"
+          placeholder="Digite o número"
         />
-        <FormField
+        <InputDefault
           control={form.control}
           name="code"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Código</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite o código" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Código"
+          placeholder="Digite o código"
         />
-        <FormField
+        <InputDefault
           control={form.control}
           name="programmedField"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Campo programado</FormLabel>
-              <FormControl>
-                <Input placeholder="Digite o número" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Campo programado"
+          placeholder="Digite o número"
         />
         <InputImage control={form.control} name="url1" />
-        <FormField
+        <TextareaDefault
           control={form.control}
           name="comments"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Observação</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Alguma informação adicional"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Observação"
+          placeholder="Alguma informação adicional"
         />
         <Button type="submit" className="w-full text-lg" disabled={isSending}>
           {isSending ? "Registrando..." : "Registrar"}

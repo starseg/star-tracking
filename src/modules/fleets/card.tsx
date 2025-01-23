@@ -1,4 +1,6 @@
 "use client";
+import InputDefault from "@/components/form/input-default";
+import TextareaDefault from "@/components/form/textarea-default";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,17 +11,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
 import api from "@/lib/axios";
 import { Toast } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -177,7 +170,7 @@ export default function FleetCard({ fleet, fetchData }: FleetCardProps) {
   const updateLoginStatus = async (id: number, status: string) => {
     const newStatus = status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
     try {
-      const res = await api.patch(`fleet/login/${id}`, { status: newStatus });
+      await api.patch(`fleet/login/${id}`, { status: newStatus });
       Swal.fire({
         title: "Status atualizado!",
         icon: "success",
@@ -241,31 +234,17 @@ export default function FleetCard({ fleet, fetchData }: FleetCardProps) {
                     Adicione o nome e o telefone do responsável da frota.
                   </DialogDescription>
                 </DialogHeader>
-                <FormField
+                <InputDefault
                   control={contactForm.control}
                   name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nome</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Digite o nome" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Nome"
+                  placeholder="Digite o nome"
                 />
-                <FormField
+                <InputDefault
                   control={contactForm.control}
                   name="telephone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Telefone</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Digite o telefone" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Telefone"
+                  placeholder="Digite o telefone"
                 />
                 <DialogFooter>
                   <Button type="submit">Registrar</Button>
@@ -323,18 +302,12 @@ export default function FleetCard({ fleet, fetchData }: FleetCardProps) {
                     Adicione o nome e o telefone do responsável da frota.
                   </DialogDescription>
                 </DialogHeader>
-                <FormField
+                <InputDefault
                   control={emailForm.control}
                   name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>E-mail</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Digite o e-mail" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  type="email"
+                  label="E-mail"
+                  placeholder="Digite o e-mail"
                 />
                 <DialogFooter>
                   <Button type="submit">Registrar</Button>
@@ -389,47 +362,23 @@ export default function FleetCard({ fleet, fetchData }: FleetCardProps) {
                     Adicione o login, a senha e o que esta pessoa pode acessar.
                   </DialogDescription>
                 </DialogHeader>
-                <FormField
+                <InputDefault
                   control={loginForm.control}
                   name="login"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Login</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Digite o login" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Login"
+                  placeholder="Digite o login"
                 />
-                <FormField
+                <InputDefault
                   control={loginForm.control}
                   name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Senha</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Digite a senha" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Senha"
+                  placeholder="Digite a senha"
                 />
-                <FormField
+                <TextareaDefault
                   control={loginForm.control}
                   name="accessTo"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Acesso a</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Digite ao que este login dá acesso"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  placeholder="Digite ao que este login dá acesso"
+                  label="Acesso a"
                 />
                 <DialogFooter>
                   <Button type="submit">Registrar</Button>
