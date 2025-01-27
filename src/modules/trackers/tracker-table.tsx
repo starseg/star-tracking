@@ -16,7 +16,6 @@ import {
   Cpu,
   FilePlus,
   PencilLine,
-  Person,
   Trash,
   Truck,
 } from "@phosphor-icons/react/dist/ssr";
@@ -30,6 +29,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { deleteAction } from "@/lib/delete-action";
 
 interface TrackerProps extends Tracker {
   deviceStatus: {
@@ -58,36 +58,10 @@ export default function TrackerTable() {
       console.error("Erro ao obter dados:", error);
     }
   };
+
   useEffect(() => {
     fetch();
   }, [searchParams]);
-  // deletar frota
-  const deleteTracker = async (id: number) => {
-    Swal.fire({
-      title: "Excluir rastreador?",
-      text: "Essa ação não poderá ser revertida!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#43C04F",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sim, excluir!",
-      cancelButtonText: "Cancelar",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await api.delete(`tracker/${id}`);
-          fetch();
-          Swal.fire({
-            title: "Excluído!",
-            text: "Esse rastreador acabou de ser apagado.",
-            icon: "success",
-          });
-        } catch (error) {
-          console.error("Erro excluir dado:", error);
-        }
-      }
-    });
-  };
 
   return (
     <div>
@@ -96,7 +70,7 @@ export default function TrackerTable() {
       ) : (
         <>
           <div className="max-h-[60vh] overflow-y-auto">
-            <Table className="border border-stone-800">
+            <Table className="border-stone-800 border">
               <TableHeader className="bg-stone-800 font-semibold">
                 <TableRow>
                   <TableHead>ID</TableHead>
@@ -121,11 +95,11 @@ export default function TrackerTable() {
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <button className="max-w-[12ch] text-ellipsis overflow-hidden whitespace-nowrap">
+                                <button className="max-w-[12ch] text-ellipsis whitespace-nowrap overflow-hidden">
                                   {tracker.model}
                                 </button>
                               </TooltipTrigger>
-                              <TooltipContent className="max-w-[300px] border-primary bg-stone-800 p-4 break-words">
+                              <TooltipContent className="border-primary bg-stone-800 p-4 max-w-[300px] break-words">
                                 <p>{tracker.model}</p>
                               </TooltipContent>
                             </Tooltip>
@@ -136,11 +110,11 @@ export default function TrackerTable() {
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <button className="max-w-[12ch] text-ellipsis overflow-hidden whitespace-nowrap">
+                                <button className="max-w-[12ch] text-ellipsis whitespace-nowrap overflow-hidden">
                                   {tracker.iccid}
                                 </button>
                               </TooltipTrigger>
-                              <TooltipContent className="max-w-[300px] border-primary bg-stone-800 p-4 break-words">
+                              <TooltipContent className="border-primary bg-stone-800 p-4 max-w-[300px] break-words">
                                 <p>{tracker.iccid}</p>
                               </TooltipContent>
                             </Tooltip>
@@ -166,7 +140,13 @@ export default function TrackerTable() {
                           </Link>
                           <button
                             title="Excluir"
-                            onClick={() => deleteTracker(tracker.trackerId)}
+                            onClick={() =>
+                              deleteAction(
+                                "rastreador",
+                                `tracker/${tracker.trackerId}`,
+                                fetch
+                              )
+                            }
                           >
                             <Trash />
                           </button>
@@ -184,7 +164,7 @@ export default function TrackerTable() {
               </TableBody>
             </Table>
           </div>
-          <div className="mt-8 flex justify-between">
+          <div className="flex justify-between mt-8">
             <div className="flex gap-4">
               <Link href="rastreadores/registro">
                 <Button className="flex gap-2 font-semibold">
@@ -197,7 +177,7 @@ export default function TrackerTable() {
                 </Button>
               </Link>
             </div>
-            <div className="py-2 px-6 rounded-md bg-muted">
+            <div className="bg-muted px-6 py-2 rounded-md">
               Total: {trackers.length}
             </div>
           </div>

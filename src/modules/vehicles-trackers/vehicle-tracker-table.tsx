@@ -21,7 +21,6 @@ import {
   Truck,
 } from "@phosphor-icons/react/dist/ssr";
 import api from "@/lib/axios";
-import Swal from "sweetalert2";
 import { useSearchParams } from "next/navigation";
 import { SkeletonTable } from "@/components/skeletons/skeleton-table";
 import {
@@ -41,6 +40,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import * as XLSX from "xlsx";
+import { deleteAction } from "@/lib/delete-action";
 
 interface VehicleTrackerData extends VehicleTracker {
   vehicle: {
@@ -87,33 +87,6 @@ export default function VehicleTrackerTable() {
     fetch();
   }, [searchParams]);
 
-  const deleteRelation = async (id: number) => {
-    Swal.fire({
-      title: "Excluir relação?",
-      text: "Essa ação não poderá ser revertida!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#43C04F",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sim, excluir!",
-      cancelButtonText: "Cancelar",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await api.delete(`vehicle-tracker/${id}`);
-          fetch();
-          Swal.fire({
-            title: "Excluída!",
-            text: "Essa relação acabou de ser apagada.",
-            icon: "success",
-          });
-        } catch (error) {
-          console.error("Erro excluir dado:", error);
-        }
-      }
-    });
-  };
-
   const handleDownloadExcel = () => {
     const formattedIButtons = vehiclesTrackers.map((item) => ({
       rastreador: item.tracker.number,
@@ -155,7 +128,7 @@ export default function VehicleTrackerTable() {
       ) : (
         <>
           <div className="max-h-[60vh] overflow-y-auto">
-            <Table className="border border-stone-800">
+            <Table className="border-stone-800 border">
               <TableHeader className="bg-stone-800 font-semibold">
                 <TableRow>
                   <TableHead>Rastreador</TableHead>
@@ -196,11 +169,11 @@ export default function VehicleTrackerTable() {
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <button className="max-w-[15ch] text-ellipsis overflow-hidden whitespace-nowrap">
+                                  <button className="max-w-[15ch] text-ellipsis whitespace-nowrap overflow-hidden">
                                     {item.comments}
                                   </button>
                                 </TooltipTrigger>
-                                <TooltipContent className="max-w-[300px] border-primary bg-stone-800 p-4 break-words">
+                                <TooltipContent className="border-primary bg-stone-800 p-4 max-w-[300px] break-words">
                                   <p>{item.comments}</p>
                                 </TooltipContent>
                               </Tooltip>
@@ -225,7 +198,11 @@ export default function VehicleTrackerTable() {
                           <button
                             title="Excluir"
                             onClick={() =>
-                              deleteRelation(item.vehicleTrackerId)
+                              deleteAction(
+                                "relação",
+                                `vehicle-tracker/${item.vehicleTrackerId}`,
+                                fetch
+                              )
                             }
                           >
                             <Trash />
@@ -244,7 +221,7 @@ export default function VehicleTrackerTable() {
               </TableBody>
             </Table>
           </div>
-          <div className="mt-8 flex justify-between">
+          <div className="flex justify-between mt-8">
             <div className="flex gap-4">
               <Link href="/veiculos-rastreadores/registro">
                 <Button className="flex gap-2 font-semibold">
@@ -271,7 +248,7 @@ export default function VehicleTrackerTable() {
                   <DropdownMenuItem>
                     <Button
                       variant={"ghost"}
-                      className="flex gap-2 font-semibold w-full"
+                      className="flex gap-2 w-full font-semibold"
                       onClick={() =>
                         vehiclesTrackersReport(
                           vehiclesTrackers,
@@ -286,7 +263,7 @@ export default function VehicleTrackerTable() {
                   <DropdownMenuItem>
                     <Button
                       variant={"ghost"}
-                      className="flex gap-2 font-semibold w-full"
+                      className="flex gap-2 w-full font-semibold"
                       onClick={handleDownloadExcel}
                     >
                       <FileXls size={24} /> Excel
@@ -301,7 +278,7 @@ export default function VehicleTrackerTable() {
                 />
                 <label
                   htmlFor="statusFilter"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  className="peer-disabled:opacity-70 font-medium text-sm leading-none peer-disabled:cursor-not-allowed"
                 >
                   Apenas ATIVOS
                 </label>
@@ -313,13 +290,13 @@ export default function VehicleTrackerTable() {
                 />
                 <label
                   htmlFor="dateFilter"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  className="peer-disabled:opacity-70 font-medium text-sm leading-none peer-disabled:cursor-not-allowed"
                 >
                   Último mês
                 </label>
               </div>
             </div>
-            <div className="py-2 px-6 rounded-md bg-muted">Total: {count}</div>
+            <div className="bg-muted px-6 py-2 rounded-md">Total: {count}</div>
           </div>
         </>
       )}

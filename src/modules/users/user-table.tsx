@@ -17,6 +17,7 @@ import Swal from "sweetalert2";
 import { useSearchParams } from "next/navigation";
 import { SkeletonTable } from "@/components/skeletons/skeleton-table";
 import { dateFormat } from "@/lib/utils";
+import { deleteAction } from "@/lib/delete-action";
 
 export default function UserTable() {
   // busca das frotas
@@ -38,36 +39,10 @@ export default function UserTable() {
       console.error("Erro ao obter dados:", error);
     }
   };
+
   useEffect(() => {
     fetch();
   }, [searchParams]);
-  // deletar frota
-  const deleteUser = async (id: number) => {
-    Swal.fire({
-      title: "Excluir usuário?",
-      text: "Essa ação não poderá ser revertida!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#43C04F",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sim, excluir!",
-      cancelButtonText: "Cancelar",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await api.delete(`users/${id}`);
-          fetch();
-          Swal.fire({
-            title: "Excluído!",
-            text: "Esse usuário acabou de ser apagado.",
-            icon: "success",
-          });
-        } catch (error) {
-          console.error("Erro excluir dado:", error);
-        }
-      }
-    });
-  };
 
   return (
     <div>
@@ -76,7 +51,7 @@ export default function UserTable() {
       ) : (
         <>
           <div className="max-h-[60vh] overflow-y-auto">
-            <Table className="border border-stone-800">
+            <Table className="border-stone-800 border">
               <TableHeader className="bg-stone-800 font-semibold">
                 <TableRow>
                   <TableHead>Nome</TableHead>
@@ -115,7 +90,13 @@ export default function UserTable() {
                           </Link>
                           <button
                             title="Excluir"
-                            onClick={() => deleteUser(user.userId)}
+                            onClick={() =>
+                              deleteAction(
+                                "usuário",
+                                `users/${user.userId}`,
+                                fetch
+                              )
+                            }
                           >
                             <Trash />
                           </button>
@@ -133,13 +114,13 @@ export default function UserTable() {
               </TableBody>
             </Table>
           </div>
-          <div className="mt-8 flex justify-between">
+          <div className="flex justify-between mt-8">
             <Link href="usuarios/registro">
               <Button className="flex gap-2 font-semibold">
                 <FilePlus size={24} /> Registrar novo
               </Button>
             </Link>
-            <div className="py-2 px-6 rounded-md bg-muted">
+            <div className="bg-muted px-6 py-2 rounded-md">
               Total: {users.length}
             </div>
           </div>

@@ -20,7 +20,6 @@ import {
   UserCircle,
 } from "@phosphor-icons/react/dist/ssr";
 import api from "@/lib/axios";
-import Swal from "sweetalert2";
 import { useSearchParams } from "next/navigation";
 import { SkeletonTable } from "@/components/skeletons/skeleton-table";
 import {
@@ -32,6 +31,8 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { driversReport } from "@/lib/generate-pdf";
 import ImageDialog from "./image-dialog";
+import { deleteAction } from "@/lib/delete-action";
+import { deleteFile } from "@/lib/firebase-upload";
 
 interface DriverData extends Driver {
   fleet: {
@@ -65,33 +66,6 @@ export default function DriverTable() {
   useEffect(() => {
     fetch();
   }, [searchParams]);
-
-  const deleteDriver = async (id: number) => {
-    Swal.fire({
-      title: "Excluir motorista?",
-      text: "Essa ação não poderá ser revertida!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#43C04F",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sim, excluir!",
-      cancelButtonText: "Cancelar",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await api.delete(`driver/${id}`);
-          fetch();
-          Swal.fire({
-            title: "Excluído!",
-            text: "Esse motorista acabou de ser apagado.",
-            icon: "success",
-          });
-        } catch (error) {
-          console.error("Erro excluir dado:", error);
-        }
-      }
-    });
-  };
 
   return (
     <div>
@@ -177,7 +151,14 @@ export default function DriverTable() {
                           </Link>
                           <button
                             title="Excluir"
-                            onClick={() => deleteDriver(driver.driverId)}
+                            onClick={() => {
+                              deleteAction(
+                                "motorista",
+                                `driver/${driver.driverId}`,
+                                fetch
+                              );
+                              driver.imageUrl && deleteFile(driver.imageUrl);
+                            }}
                           >
                             <Trash />
                           </button>

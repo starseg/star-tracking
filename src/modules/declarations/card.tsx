@@ -12,7 +12,6 @@ import { deleteFile } from "@/lib/firebase-upload";
 import { cn, dateFormat } from "@/lib/utils";
 import { BookOpen, Trash } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
-import Swal from "sweetalert2";
 
 interface DeclarationCardProps {
   id: number;
@@ -35,7 +34,7 @@ export default function DeclarationCard({
   };
 
   return (
-    <Card className="w-[30%] border-primary/50 m-2">
+    <Card className="border-primary/50 m-2 w-[30%]">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{dateFormat(date)}</CardDescription>

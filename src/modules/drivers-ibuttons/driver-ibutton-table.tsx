@@ -20,7 +20,6 @@ import {
   UserCircle,
 } from "@phosphor-icons/react/dist/ssr";
 import api from "@/lib/axios";
-import Swal from "sweetalert2";
 import { useSearchParams } from "next/navigation";
 import { SkeletonTable } from "@/components/skeletons/skeleton-table";
 import {
@@ -33,6 +32,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { dateFormat } from "@/lib/utils";
 import { driversIButtonsReport } from "@/lib/generate-pdf";
 import { subDays } from "date-fns";
+import { deleteAction } from "@/lib/delete-action";
 
 interface DriverIButtonData extends DriverIButton {
   driver: {
@@ -77,33 +77,6 @@ export default function DriverIButtonTable() {
   useEffect(() => {
     fetch();
   }, [searchParams]);
-
-  const deleteRelation = async (id: number) => {
-    Swal.fire({
-      title: "Excluir relação?",
-      text: "Essa ação não poderá ser revertida!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#43C04F",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sim, excluir!",
-      cancelButtonText: "Cancelar",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await api.delete(`driver-ibutton/${id}`);
-          fetch();
-          Swal.fire({
-            title: "Excluída!",
-            text: "Essa relação acabou de ser apagada.",
-            icon: "success",
-          });
-        } catch (error) {
-          console.error("Erro excluir dado:", error);
-        }
-      }
-    });
-  };
 
   return (
     <div>
@@ -182,7 +155,13 @@ export default function DriverIButtonTable() {
                           </Link>
                           <button
                             title="Excluir"
-                            onClick={() => deleteRelation(item.driverIButtonId)}
+                            onClick={() =>
+                              deleteAction(
+                                "relação",
+                                `driver-ibutton/${item.driverIButtonId}`,
+                                fetch
+                              )
+                            }
                           >
                             <Trash />
                           </button>

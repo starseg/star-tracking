@@ -34,6 +34,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { deleteAction } from "@/lib/delete-action";
+import { deleteFile } from "@/lib/firebase-upload";
 
 interface VehicleData extends Vehicle {
   fleet: {
@@ -67,33 +69,6 @@ export default function VehicleTable() {
   useEffect(() => {
     fetch();
   }, [searchParams]);
-  // deletar veiculo
-  const deleteVehicle = async (id: number) => {
-    Swal.fire({
-      title: "Excluir veículo?",
-      text: "Essa ação não poderá ser revertida!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#43C04F",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sim, excluir!",
-      cancelButtonText: "Cancelar",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await api.delete(`vehicle/${id}`);
-          fetch();
-          Swal.fire({
-            title: "Excluído!",
-            text: "Esse veículo acabou de ser apagado.",
-            icon: "success",
-          });
-        } catch (error) {
-          console.error("Erro excluir dado:", error);
-        }
-      }
-    });
-  };
 
   return (
     <div>
@@ -102,8 +77,8 @@ export default function VehicleTable() {
       ) : (
         <>
           <div className="max-h-[60vh] overflow-y-auto">
-            <Table className="border border-stone-800">
-              <TableHeader className="sticky top-0 bg-stone-800 font-semibold">
+            <Table className="border-stone-800 border">
+              <TableHeader className="top-0 sticky bg-stone-800 font-semibold">
                 <TableRow>
                   <TableHead>Frota</TableHead>
                   <TableHead>Placa</TableHead>
@@ -129,11 +104,11 @@ export default function VehicleTable() {
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <button className="max-w-[18ch] text-ellipsis overflow-hidden whitespace-nowrap">
+                                <button className="max-w-[18ch] text-ellipsis whitespace-nowrap overflow-hidden">
                                   {vehicle.fleet.name}
                                 </button>
                               </TooltipTrigger>
-                              <TooltipContent className="max-w-[300px] border-primary bg-stone-800 p-4 break-words">
+                              <TooltipContent className="border-primary bg-stone-800 p-4 max-w-[300px] break-words">
                                 <p>{vehicle.fleet.name}</p>
                               </TooltipContent>
                             </Tooltip>
@@ -145,11 +120,11 @@ export default function VehicleTable() {
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <button className="max-w-[15ch] text-ellipsis overflow-hidden whitespace-nowrap">
+                                <button className="max-w-[15ch] text-ellipsis whitespace-nowrap overflow-hidden">
                                   {vehicle.model}
                                 </button>
                               </TooltipTrigger>
-                              <TooltipContent className="max-w-[300px] border-primary bg-stone-800 p-4 break-words">
+                              <TooltipContent className="border-primary bg-stone-800 p-4 max-w-[300px] break-words">
                                 <p>{vehicle.model}</p>
                               </TooltipContent>
                             </Tooltip>
@@ -179,7 +154,14 @@ export default function VehicleTable() {
                           </Link>
                           <button
                             title="Excluir"
-                            onClick={() => deleteVehicle(vehicle.vehicleId)}
+                            onClick={() => {
+                              deleteAction(
+                                "Veículo",
+                                `vehicle/${vehicle.vehicleId}`,
+                                fetch
+                              );
+                              vehicle.url && deleteFile(vehicle.url);
+                            }}
                           >
                             <Trash />
                           </button>
@@ -197,7 +179,7 @@ export default function VehicleTable() {
               </TableBody>
             </Table>
           </div>
-          <div className="mt-8 flex justify-between">
+          <div className="flex justify-between mt-8">
             <div className="flex gap-4">
               <Link href="veiculos/registro">
                 <Button className="flex gap-2 font-semibold">
@@ -228,13 +210,13 @@ export default function VehicleTable() {
                 />
                 <label
                   htmlFor="statusFilter"
-                  className="text-sm font-medium leading-none"
+                  className="font-medium text-sm leading-none"
                 >
                   Apenas ATIVOS
                 </label>
               </div>
             </div>
-            <div className="py-2 px-6 rounded-md bg-muted">Total: {count}</div>
+            <div className="bg-muted px-6 py-2 rounded-md">Total: {count}</div>
           </div>
         </>
       )}

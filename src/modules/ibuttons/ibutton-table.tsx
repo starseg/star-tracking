@@ -27,6 +27,8 @@ import { SkeletonTable } from "@/components/skeletons/skeleton-table";
 import * as XLSX from "xlsx";
 import { format } from "date-fns";
 import { Label } from "@/components/ui/label";
+import { deleteAction } from "@/lib/delete-action";
+import { deleteFile } from "@/lib/firebase-upload";
 
 interface IButtonProps extends IButton {
   deviceStatus: {
@@ -60,33 +62,6 @@ export default function IButtonTable() {
   useEffect(() => {
     fetch();
   }, [searchParams]);
-
-  const deleteIButton = async (id: number) => {
-    Swal.fire({
-      title: "Excluir IButton?",
-      text: "Essa ação não poderá ser revertida!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#43C04F",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sim, excluir!",
-      cancelButtonText: "Cancelar",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await api.delete(`ibutton/${id}`);
-          fetch();
-          Swal.fire({
-            title: "Excluído!",
-            text: "Esse IButton acabou de ser apagado.",
-            icon: "success",
-          });
-        } catch (error) {
-          console.error("Erro excluir dado:", error);
-        }
-      }
-    });
-  };
 
   const handleDownloadExcel = () => {
     const formattedIButtons = IButtons.map((ibutton) => ({
@@ -139,7 +114,7 @@ export default function IButtonTable() {
       ) : (
         <>
           <div className="max-h-[60vh] overflow-y-auto">
-            <Table className="border border-stone-800">
+            <Table className="border-stone-800 border">
               <TableHeader className="bg-stone-800 font-semibold">
                 <TableRow>
                   <TableHead>ID</TableHead>
@@ -184,7 +159,15 @@ export default function IButtonTable() {
                           </Link>
                           <button
                             title="Excluir"
-                            onClick={() => deleteIButton(IButton.ibuttonId)}
+                            onClick={() => {
+                              deleteAction(
+                                "IButton",
+                                `ibutton/${IButton.ibuttonId}`,
+                                fetch
+                              );
+                              IButton.url1 && deleteFile(IButton.url1);
+                              IButton.url2 && deleteFile(IButton.url2);
+                            }}
                           >
                             <Trash />
                           </button>
@@ -202,7 +185,7 @@ export default function IButtonTable() {
               </TableBody>
             </Table>
           </div>
-          <div className="mt-8 flex justify-between">
+          <div className="flex justify-between mt-8">
             <div className="flex gap-4">
               <Link href="ibuttons/registro">
                 <Button className="flex gap-2 font-semibold">
@@ -220,7 +203,7 @@ export default function IButtonTable() {
               >
                 <FileXls size={24} /> Relatório
               </Button>
-              <div className="flex gap-2 items-center p-2 border rounded">
+              <div className="flex items-center gap-2 p-2 border rounded">
                 <input
                   type="checkbox"
                   checked={isSorted}
@@ -229,7 +212,7 @@ export default function IButtonTable() {
                 <Label>Ordenar por campo programado</Label>
               </div>
             </div>
-            <div className="py-2 px-6 rounded-md bg-muted">
+            <div className="bg-muted px-6 py-2 rounded-md">
               Total: {IButtons.length}
             </div>
           </div>

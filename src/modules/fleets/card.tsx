@@ -30,6 +30,7 @@ import Swal from "sweetalert2";
 import { z } from "zod";
 import ColorItem from "./color-item";
 import { FleetProps } from "./services/interface";
+import { deleteAction } from "@/lib/delete-action";
 
 interface FleetCardProps {
   fleet: FleetProps;
@@ -141,30 +142,7 @@ export default function FleetCard({ fleet, fetchData }: FleetCardProps) {
   };
 
   const deleteItem = async (id: number, route: string) => {
-    Swal.fire({
-      title: "Excluir registro?",
-      text: "Essa ação não poderá ser revertida!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#43C04F",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sim, excluir!",
-      cancelButtonText: "Cancelar",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await api.delete(`${route}/${id}`);
-          fetchData();
-          Swal.fire({
-            title: "Excluído!",
-            text: "Esse registro acabou de ser apagado.",
-            icon: "success",
-          });
-        } catch (error) {
-          console.error("Erro excluir dado:", error);
-        }
-      }
-    });
+    deleteAction("registro", `${route}/${id}`, fetchData);
   };
 
   const updateLoginStatus = async (id: number, status: string) => {
