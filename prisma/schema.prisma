@@ -8,85 +8,84 @@ datasource db {
 }
 
 model User {
-  userId    Int      @id @default(autoincrement())
-  name      String
-  username  String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  status    Status   @default(ACTIVE)
-  type      UserType @default(USER)
-
+  userId                  Int                       @id @default(autoincrement())
+  name                    String
+  username                String                    @unique
+  password                String
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+  status                  Status                    @default(ACTIVE)
+  type                    UserType                  @default(USER)
   ComunicationDescription ComunicationDescription[]
 }
 
 model DeviceStatus {
-  deviceStatusId Int    @id @default(autoincrement())
+  deviceStatusId Int       @id @default(autoincrement())
   description    String
-
-  ibutton IButton[]
-  tracker Tracker[]
+  ibutton        IButton[]
+  tracker        Tracker[]
 }
 
 model IButton {
-  ibuttonId       Int     @id @default(autoincrement())
+  ibuttonId       Int             @id @default(autoincrement())
   number          String
   code            String
   programmedField String
-  comments        String? @db.VarChar(2000)
+  comments        String?         @db.VarChar(2000)
   url1            String?
   url2            String?
+  deviceStatusId  Int             @default(1)
+  driverIButton   DriverIButton[]
+  deviceStatus    DeviceStatus    @relation(fields: [deviceStatusId], references: [deviceStatusId])
 
-  deviceStatus   DeviceStatus @relation(fields: [deviceStatusId], references: [deviceStatusId])
-  deviceStatusId Int          @default(1)
-
-  driverIButton DriverIButton[]
+  @@index([deviceStatusId], map: "IButton_deviceStatusId_fkey")
 }
 
 model Tracker {
-  trackerId    Int     @id @default(autoincrement())
-  number       String
-  model        String
-  chipOperator String
-  iccid        String
-  output       String
-  comments     String? @db.VarChar(2000)
-
-  deviceStatus   DeviceStatus @relation(fields: [deviceStatusId], references: [deviceStatusId])
-  deviceStatusId Int          @default(1)
-
+  trackerId      Int              @id @default(autoincrement())
+  number         String
+  model          String
+  chipOperator   String
+  iccid          String
+  output         String
+  comments       String?          @db.VarChar(2000)
+  deviceStatusId Int              @default(1)
+  deviceStatus   DeviceStatus     @relation(fields: [deviceStatusId], references: [deviceStatusId])
   vehicleTracker VehicleTracker[]
+
+  @@index([deviceStatusId], map: "Tracker_deviceStatusId_fkey")
 }
 
 model Fleet {
-  fleetId  Int     @id @default(autoincrement())
-  name     String
-  color    String
-  status   Status  @default(ACTIVE)
-  comments String? @db.VarChar(1000)
-
+  fleetId      Int            @id @default(autoincrement())
+  name         String
+  color        String
+  status       Status         @default(ACTIVE)
+  comments     String?        @db.VarChar(1000)
   driver       Driver[]
-  vehicle      Vehicle[]
   fleetContact FleetContact[]
   fleetEmail   FleetEmail[]
   fleetLogin   FleetLogin[]
+  vehicle      Vehicle[]
 }
 
 model FleetContact {
   fleetContactId Int    @id @default(autoincrement())
   name           String
   telephone      String
+  fleetId        Int
+  fleet          Fleet  @relation(fields: [fleetId], references: [fleetId], onDelete: Cascade)
 
-  fleet   Fleet @relation(fields: [fleetId], references: [fleetId], onDelete: Cascade)
-  fleetId Int
+  @@index([fleetId], map: "FleetContact_fleetId_fkey")
 }
 
 model FleetEmail {
   fleetEmailId Int    @id @default(autoincrement())
   email        String
+  fleetId      Int
+  fleet        Fleet  @relation(fields: [fleetId], references: [fleetId], onDelete: Cascade)
 
-  fleet   Fleet @relation(fields: [fleetId], references: [fleetId], onDelete: Cascade)
-  fleetId Int
+  @@index([fleetId], map: "FleetEmail_fleetId_fkey")
 }
 
 model FleetLogin {
@@ -94,70 +93,72 @@ model FleetLogin {
   login        String
   password     String
   accessTo     String
+  fleetId      Int
   status       Status @default(ACTIVE)
+  fleet        Fleet  @relation(fields: [fleetId], references: [fleetId], onDelete: Cascade)
 
-  fleet   Fleet @relation(fields: [fleetId], references: [fleetId], onDelete: Cascade)
-  fleetId Int
+  @@index([fleetId], map: "FleetLogin_fleetId_fkey")
 }
 
 model Driver {
-  driverId Int     @id @default(autoincrement())
-  name     String
-  cpf      String
-  cnh      String
-  comments String? @db.VarChar(2000)
-  status   Status  @default(ACTIVE)
-  imageUrl String? @db.VarChar(255)
-
-  fleet   Fleet @relation(fields: [fleetId], references: [fleetId])
-  fleetId Int
-
+  driverId      Int             @id @default(autoincrement())
+  name          String
+  cpf           String
+  cnh           String
+  comments      String?         @db.VarChar(2000)
+  status        Status          @default(ACTIVE)
+  fleetId       Int
+  imageUrl      String?         @db.VarChar(255)
+  fleet         Fleet           @relation(fields: [fleetId], references: [fleetId])
   driverIButton DriverIButton[]
+
+  @@index([fleetId], map: "Driver_fleetId_fkey")
 }
 
 model Vehicle {
-  vehicleId        Int      @id @default(autoincrement())
-  model            String
-  licensePlate     String
-  code             String
-  renavam          String
-  chassis          String
-  year             String
-  installationDate DateTime
-  comments         String?  @db.VarChar(2000)
-  url              String?
-  status           Status   @default(ACTIVE)
-
-  fleet   Fleet @relation(fields: [fleetId], references: [fleetId])
-  fleetId Int
-
-  vehicleTracker      VehicleTracker[]
+  vehicleId           Int                   @id @default(autoincrement())
+  model               String
+  licensePlate        String
+  code                String
+  renavam             String
+  chassis             String
+  year                String
+  installationDate    DateTime
+  comments            String?               @db.VarChar(2000)
+  url                 String?
+  status              Status                @default(ACTIVE)
+  fleetId             Int
   comunicationProblem ComunicationProblem[]
+  fleet               Fleet                 @relation(fields: [fleetId], references: [fleetId])
+  vehicleTracker      VehicleTracker[]
+
+  @@index([fleetId], map: "Vehicle_fleetId_fkey")
 }
 
 model ComunicationProblem {
-  comunicationProblemId Int      @id @default(autoincrement())
-  createdAt             DateTime @default(now())
-  status                Status   @default(ACTIVE)
-  emphasis              Boolean  @default(false)
-  isUnderMaintenance    Boolean  @default(false)
-
-  vehicle   Vehicle @relation(fields: [vehicleId], references: [vehicleId], onDelete: Cascade)
-  vehicleId Int
-
+  comunicationProblemId   Int                       @id @default(autoincrement())
+  createdAt               DateTime                  @default(now())
+  status                  Status                    @default(ACTIVE)
+  vehicleId               Int
+  emphasis                Boolean                   @default(false)
+  isUnderMaintenance      Boolean                   @default(false)
   comunicationDescription ComunicationDescription[]
+  vehicle                 Vehicle                   @relation(fields: [vehicleId], references: [vehicleId], onDelete: Cascade)
+
+  @@index([vehicleId], map: "ComunicationProblem_vehicleId_fkey")
 }
 
 model ComunicationDescription {
-  comunicationDescriptionId Int      @id @default(autoincrement())
+  comunicationDescriptionId Int                 @id @default(autoincrement())
   date                      DateTime
-  description               String   @db.VarChar(2000)
+  description               String              @db.VarChar(2000)
+  userId                    Int
+  comunicationProblemId     Int
+  comunicationProblem       ComunicationProblem @relation(fields: [comunicationProblemId], references: [comunicationProblemId], onDelete: Cascade)
+  user                      User                @relation(fields: [userId], references: [userId])
 
-  user   User @relation(fields: [userId], references: [userId])
-  userId Int
-
-  comunicationProblem   ComunicationProblem @relation(fields: [comunicationProblemId], references: [comunicationProblemId], onDelete: Cascade)
-  comunicationProblemId Int
+  @@index([comunicationProblemId], map: "ComunicationDescription_comunicationProblemId_fkey")
+  @@index([userId], map: "ComunicationDescription_userId_fkey")
 }
 
 model DriverIButton {
@@ -166,12 +167,13 @@ model DriverIButton {
   startDate       DateTime  @default(now())
   endDate         DateTime? @db.Timestamp(0)
   comments        String    @db.VarChar(2000)
+  driverId        Int
+  ibuttonId       Int
+  driver          Driver    @relation(fields: [driverId], references: [driverId])
+  ibutton         IButton   @relation(fields: [ibuttonId], references: [ibuttonId])
 
-  driver   Driver @relation(fields: [driverId], references: [driverId])
-  driverId Int
-
-  ibutton   IButton @relation(fields: [ibuttonId], references: [ibuttonId])
-  ibuttonId Int
+  @@index([driverId], map: "DriverIButton_driverId_fkey")
+  @@index([ibuttonId], map: "DriverIButton_ibuttonId_fkey")
 }
 
 model VehicleTracker {
@@ -180,12 +182,13 @@ model VehicleTracker {
   startDate        DateTime  @default(now())
   endDate          DateTime? @db.Timestamp(0)
   comments         String    @db.VarChar(2000)
+  vehicleId        Int
+  trackerId        Int
+  tracker          Tracker   @relation(fields: [trackerId], references: [trackerId])
+  vehicle          Vehicle   @relation(fields: [vehicleId], references: [vehicleId])
 
-  vehicle   Vehicle @relation(fields: [vehicleId], references: [vehicleId])
-  vehicleId Int
-
-  tracker   Tracker @relation(fields: [trackerId], references: [trackerId])
-  trackerId Int
+  @@index([trackerId], map: "VehicleTracker_trackerId_fkey")
+  @@index([vehicleId], map: "VehicleTracker_vehicleId_fkey")
 }
 
 model Programming {
