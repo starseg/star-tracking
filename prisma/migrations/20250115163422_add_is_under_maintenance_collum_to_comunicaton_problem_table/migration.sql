@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE `comunicationproblem` ADD COLUMN `isUnderMaintenance` BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE `ComunicationProblem` ADD COLUMN `isUnderMaintenance` BOOLEAN NOT NULL DEFAULT false;
