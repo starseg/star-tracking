@@ -11,19 +11,19 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
 
-      - name: Verificar versão do Node no SSH
-        run: |
-          ssh root@191.101.78.198 << 'EOF'
-            which node
-            node -v
-          EOF
-
       - name: Configurar SSH
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H 191.101.78.198 >> ~/.ssh/known_hosts
+
+      - name: Verificar versão do Node no SSH
+        run: |
+          ssh root@191.101.78.198 << 'EOF'
+            which node
+            node -v
+          EOF
 
       - name: Deploy da Aplicação
         run: |
