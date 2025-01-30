@@ -1,0 +1,36 @@
+name: Deploy
+
+on:
+  workflow_dispatch: # rodar manualmente
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 191.101.78.198 >> ~/.ssh/known_hosts
+
+      - name: Deploy da Aplicação
+        run: |
+          ssh root@191.101.78.198 << 'EOF'
+            cd /home/starseg-tracking/htdocs/star-tracking
+            git pull
+            npm install
+            npx prisma migrate deploy
+            npx prisma generate
+            npm run build
+          EOF
+
+      - name: Reinicialização do serviço no PM2
+        run: |
+          ssh root@191.101.78.198 << 'EOF'
+            pm2 restart star-tracking
+          EOF
