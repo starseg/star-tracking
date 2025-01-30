@@ -21,6 +21,9 @@ jobs:
       - name: Verificar versão do Node no SSH
         run: |
           ssh root@191.101.78.198 << 'EOF'
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm use 20
             which node
             node -v
           EOF
@@ -28,6 +31,9 @@ jobs:
       - name: Deploy da Aplicação
         run: |
           ssh root@191.101.78.198 << 'EOF'
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm use 20
             cd /home/starseg-tracking/htdocs/star-tracking
             git pull
             npm install
