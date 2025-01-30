@@ -45,5 +45,7 @@ jobs:
       - name: Reinicialização do serviço no PM2
         run: |
           ssh root@191.101.78.198 << 'EOF'
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             pm2 restart star-tracking
           EOF
