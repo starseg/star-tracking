@@ -17,11 +17,11 @@ export default function Home() {
   return (
     <>
       <Menu url="x" />
-      <main className="max-w-screen-lg mx-auto mb-12">
-        <h1 className="text-4xl flex gap-2 items-center mb-8 px-2 hover:animate-bounce hover:text-primary transition-all">
+      <main className="mx-auto mb-12 max-w-screen-lg">
+        <h1 className="flex items-center gap-2 mb-8 px-2 text-4xl hover:text-primary transition-all hover:animate-bounce">
           <Footprints weight="fill" /> Rastreamento
         </h1>
-        <div className="flex gap-16 flex-wrap items-center px-4">
+        <div className="flex flex-wrap items-center gap-6 px-4">
           <ModuleButton url="motoristas">
             <UserCircle /> Motoristas
           </ModuleButton>
@@ -51,7 +51,7 @@ export default function Home() {
           </ModuleButton> */}
         </div>
         <div className="flex flex-col mt-8 px-4">
-          <h2 className="text-3xl flex gap-2 items-center mb-4 hover:text-primary transition-all">
+          <h2 className="flex items-center gap-2 mb-4 text-3xl hover:text-primary transition-all">
             <Link /> Acessos ao sistema rastreador
           </h2>
           <AccessLinkList />
