@@ -11,6 +11,13 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
 
+      - name: Verificar versão do Node no SSH
+        run: |
+          ssh root@191.101.78.198 << 'EOF'
+            which node
+            node -v
+          EOF
+
       - name: Configurar SSH
         run: |
           mkdir -p ~/.ssh
