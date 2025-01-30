@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE `driver` ADD COLUMN `imageUrl` VARCHAR(255) NULL;
+ALTER TABLE `Driver` ADD COLUMN `imageUrl` VARCHAR(255) NULL;
