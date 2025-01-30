@@ -5,12 +5,12 @@ import { Button } from "@/components/ui/button";
 import { FloppyDisk } from "@phosphor-icons/react/dist/ssr";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css";
+import "react-quill-new/dist/quill.snow.css";
 import { Toast } from "@/lib/utils";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "./styles.module.css";
 
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
 const modules = {
   toolbar: [
@@ -92,10 +92,10 @@ export default function TextEditor() {
       ) : (
         <div className="flex flex-col mb-12">
           <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold">Editor de Texto</h1>
+            <h1 className="font-bold text-2xl">Editor de Texto</h1>
             <Button
               onClick={handleSave}
-              className="mb-2 flex gap-2 items-center justify-center"
+              className="flex justify-center items-center gap-2 mb-2"
             >
               <FloppyDisk size={24} /> Salvar
             </Button>
